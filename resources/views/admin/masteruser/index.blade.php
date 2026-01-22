@@ -44,6 +44,7 @@
                     <th>No</th>
                     <th>Nama</th>
                     <th>Email</th>
+                    <th>Role</th>
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -55,6 +56,7 @@
                     <th>No</th>
                     <th>Nama</th>
                     <th>Email</th>
+                    <th>Role</th>
                     <th>Action</th>
                   </tr>
                   </tfoot>
@@ -74,21 +76,21 @@
 @push('script')
 <script>
   // eye password
-  $('#togglePassword').on('click', function () {
-    const passwordInput = $('#password');
-    const icon = this.querySelector('i');
+document.getElementById('togglePassword').addEventListener('click', function () {
+    const input = document.getElementById('password');
+    const icon = document.getElementById('toggleIcon');
 
-    // Toggle type password / text
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        icon.classList.remove('bi-eye');
-        icon.classList.add('bi-eye-slash');
+    if (input.type === "password") {
+        input.type = "text";
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash'); // ubah ke icon hide
     } else {
-        passwordInput.type = 'password';
-        icon.classList.remove('bi-eye-slash');
-        icon.classList.add('bi-eye');
+        input.type = "password";
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye'); // kembali ke icon show
     }
 });
+
 
   // isi data table
   $(document).ready(function(){
@@ -108,10 +110,10 @@
         data    : 'email',
         render  : (data) => data ? `${data}` : `-`
       },
-      ,{
+      {
         data    : 'role',
         render  : (data) => data ? `${data}` : `-`
-      }
+      },
       {
         data: 'id',
         render: function(data, type, row){
@@ -233,6 +235,11 @@ $('.table').on('click','.edit-btn', function(){
     var updateUrl = "{{ route('masteruser.update',':id') }}".replace(':id',data.id);
     $('#EditDataForm').attr('action',updateUrl);
     $('#editData').modal('show');
+     $('#editData').on('shown.bs.modal', function () {
+        let roles = data.roles ?? [];
+        let roleIds = roles.map(role => role.id);
+        $('#editRole').val(roleIds).trigger('change');
+      });
   });
 });
 

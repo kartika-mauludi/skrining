@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Role;
-use App\Models\RoleUser;
 use Illuminate\Support\Facades\Hash;
 use Validator;
 use Exception;
@@ -18,8 +16,8 @@ class MasterUserController extends Controller
      */
     public function index()
     {
-        $roles = Role::all();
-        return view('admin.masteruser.index',compact('roles'));
+
+        return view('admin.masteruser.index');
     }
 
     /**
@@ -66,13 +64,12 @@ class MasterUserController extends Controller
             'name' => $validate['name'],
             'email' => $validate['email'],
             'password' => bcrypt($validate['password']),
+            'role' => $validate['role'],
         ]);
-
-        $result->roles()->sync($request->role);
 
          if($result){
             $status = 200;
-            $message = "Role Berhasil Ditambah";
+            $message = "Data Berhasil Ditambah";
         }
 
         return response()->json([
@@ -94,7 +91,7 @@ class MasterUserController extends Controller
      */
     public function edit(string $id)
     {
-        $data = User::with('roles')->find($id);
+        $data = User::find($id);
         return response()->json($data);
         
     }
@@ -133,9 +130,7 @@ class MasterUserController extends Controller
          }
 
          $result = $masteruser->update($validatedData);
-
-         $masteruser->roles()->sync($request->role);
-
+         
          if($result){
             $status = 200;
             $message = 'data berhasil di update';

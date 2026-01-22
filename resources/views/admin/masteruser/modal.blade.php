@@ -19,12 +19,12 @@
                      <label for="">Password</label>
                      <div class="input-group mb-3">
                         <input type="password" name="password" class="form-control" id="password" placeholder="Password">
-                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                            <i class="bi bi-eye"></i>
+                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
                         </button>
                     </div>
                     <label for="">Role</label>
-                    <select name="role" id=""  class="form-control form-control-sm select2" style="width: 100%" multiple required>
+                    <select name="role" id=""  class="form-control form-control-sm" style="width: 100%" required>
                         <option value="super_admin">Super Admin</option>
                         <option value="guru">Guru</option>
 
@@ -64,8 +64,8 @@
                      <label for="">Password</label>
                      <div class="input-group mb-0">
                         <input type="password" name="password" class="form-control" id="password" placeholder="Password">
-                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                            <i class="bi bi-eye"></i>
+                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye" id="toggleIcon"></i>
                         </button>
                     </div>
                    <small class="form-text mb-2 text-muted">
@@ -73,7 +73,7 @@
                     </small>
 
                     <label for="">Role</label>
-                   <select name="role" id=""  class="form-control form-control-sm select2" style="width: 100%" multiple required>
+                   <select name="role" id="editRole"  class="form-control form-control-sm" style="width: 100%" required>
                         <option value="super_admin">Super Admin</option>
                         <option value="guru">Guru</option>
 

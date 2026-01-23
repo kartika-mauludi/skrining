@@ -3,7 +3,7 @@
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
       <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">AdminLTE 3</span>
+      <span class="brand-text font-weight-light"></span>
     </a>
 
     <!-- Sidebar -->
@@ -57,16 +57,49 @@
               <li class="nav-item">
                 <a href="{{ url('admin/masteruser') }}" class="nav-link @if(Route::is('masteruser.index')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Master User</p>
+                  <p>Data User</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
-                  <p>Master Role</p>
+                  <p>Data Guru</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Data Sekolah</p>
                 </a>
               </li>
             </ul>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ url('admin/index') }}" class="nav-link @if(Route::is('admin.index')) active @endif">
+               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Angket
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ url('admin/index') }}" class="nav-link @if(Route::is('admin.index')) active @endif">
+               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Log Aktivitas
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ url('admin/index') }}" class="nav-link @if(Route::is('admin.index')) active @endif">
+               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Pengaturan
+              </p>
+            </a>
           </li>
            
         </ul>

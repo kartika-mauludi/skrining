@@ -1,11 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\MasterUserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\GuruController;
 
 
 
@@ -32,6 +34,8 @@ Route::middleware('role:super_admin')->group(function (){
     route::get('/admin/index', [DashboardController::class, 'index'])->name('admin.index');
     route::get("admin/masteruser/data",[MasterUserController::class,'data'])->name('admin.masteruser.data');
     route::resource('admin/masteruser',MasterUserController::class);
+    route::get('admin/dataguru',[GuruController::class,'data'])->name('admin.guru.data');
+    
 });
 
 

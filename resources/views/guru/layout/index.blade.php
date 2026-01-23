@@ -148,6 +148,8 @@
 <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
+<!-- dashboard -->
+ <script src="{{ asset('admin/assets-admin/dist/js/pages/dashboard.js') }}"></script>
 <script>
      $('.select2').select2();
 </script>

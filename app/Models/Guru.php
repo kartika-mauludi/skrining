@@ -14,4 +14,9 @@ class Guru extends Model
         'alamat',
         'no_tlp'
     ] ;
+
+    public function sekolah()
+    {
+        return $this->hasMany(Sekolah::class);
+    }
 }

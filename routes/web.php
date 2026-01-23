@@ -36,6 +36,6 @@ Route::middleware('role:super_admin')->group(function (){
 
 
 Route::middleware('role:guru')->group(function (){
-    route::get('/guru/index', [HomeController::class, 'index'])->name('guru.index');
+    route::get('/guru/index', [HomeController::class, 'guru'])->name('guru.index');
 });
 

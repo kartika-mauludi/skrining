@@ -70,10 +70,10 @@
         <a class="btn-getstarted flex-md-shrink-0" href="{{ url('/login') }}">Login</a>
       @endguest
       @auth
-        @if(auth::user()->role == 'admin')
+        @if(auth()->user()->role == 'admin')
           <a class="btn-getstarted flex-md-shrink-0" href="{{ route('admin.index') }}">Dashboard</a>
-        @elseif(auth::user()->role == 'guru')
-        <a class="btn-getstarted flex-md-shrink-0" href="{{ route('admin.index') }}">Dashboard</a>
+        @elseif(auth()->user()->role == 'guru')
+        <a class="btn-getstarted flex-md-shrink-0" href="{{ route('guru.index') }}">Dashboard</a>
         @endif
       @endauth
 

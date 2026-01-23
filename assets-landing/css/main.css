@@ -52,6 +52,15 @@
   --contrast-color: #ffffff;
 }
 
+.judul-light{
+  color: var(--contrast-color);
+}
+
+.subjudul-light{
+  color: #f5f6f8f4;
+}
+
+
 /* Smooth scroll */
 :root {
   scroll-behavior: smooth;
@@ -143,7 +152,7 @@ h6 {
 # Global Header
 --------------------------------------------------------------*/
 .header {
-  color: var(--default-color);
+  color: white;
   background-color: var(--background-color);
   padding: 20px 0;
   transition: all 0.5s;
@@ -223,6 +232,7 @@ h6 {
 @media (min-width: 1200px) {
   .navmenu {
     padding: 0;
+   
   }
 
   .navmenu ul {
@@ -239,7 +249,7 @@ h6 {
 
   .navmenu a,
   .navmenu a:focus {
-    color: var(--nav-color);
+    color: var(--nav-dropdown-background-color);
     padding: 18px 12px;
     font-size: 15px;
     font-family: var(--nav-font);
@@ -266,7 +276,7 @@ h6 {
   .navmenu li:hover>a,
   .navmenu .active,
   .navmenu .active:focus {
-    color: var(--nav-hover-color);
+    color: var(--nav-dropdown-color);
   }
 
   .navmenu .dropdown ul {
@@ -691,15 +701,15 @@ h6 {
 --------------------------------------------------------------*/
 .scroll-top {
   position: fixed;
-  visibility: hidden;
+  visibility: visible;
   opacity: 0;
   right: 15px;
-  bottom: 15px;
+  bottom: -15px;
   z-index: 99999;
-  background-color: var(--accent-color);
-  width: 40px;
-  height: 40px;
-  border-radius: 4px;
+  background-color: #25D366;
+  width: 54px;
+  height: 54px;
+  border-radius: 50px;
   transition: all 0.4s;
 }
 
@@ -710,13 +720,14 @@ h6 {
 }
 
 .scroll-top:hover {
-  background-color: color-mix(in srgb, var(--accent-color), transparent 20%);
+  background-color: color-mix(in srgb, #25D366, transparent 20%);
   color: var(--contrast-color);
 }
 
 .scroll-top.active {
   visibility: visible;
   opacity: 1;
+  bottom: 15px;
 }
 
 /*--------------------------------------------------------------

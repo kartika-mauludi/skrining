@@ -1,10 +1,11 @@
- <header id="header" class="header d-flex align-items-center fixed-top">
+ <header id="header" class="header d-flex align-items-center fixed-top" style="background-image:
+      linear-gradient(rgba(34, 157, 128, 0.8))">
     <div class="container-fluid container-xl position-relative d-flex align-items-center">
 
       <a href="{{ url('/') }}" class="logo d-flex align-items-center me-auto">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <img class="logo-img" src="{{ asset('assets-landing/img/logo/Logo-SDGs.png') }}" alt="">
-        <!-- <h1 class="sitename">SDGs Unusa</h1> -->
+        <!-- <img class="logo-img" src="{{ asset('assets-landing/img/logo/Logo-SDGs.png') }}" alt=""> -->
+        <h1 class="sitename" style="color:white">SKRINING</h1>
       </a>
 
       <nav id="navmenu" class="navmenu">
@@ -68,9 +69,12 @@
       @guest
         <a class="btn-getstarted flex-md-shrink-0" href="{{ url('/login') }}">Login</a>
       @endguest
-
       @auth
+        @if(auth::user()->role == 'admin')
+          <a class="btn-getstarted flex-md-shrink-0" href="{{ route('admin.index') }}">Dashboard</a>
+        @elseif(auth::user()->role == 'guru')
         <a class="btn-getstarted flex-md-shrink-0" href="{{ route('admin.index') }}">Dashboard</a>
+        @endif
       @endauth
 
     </div>

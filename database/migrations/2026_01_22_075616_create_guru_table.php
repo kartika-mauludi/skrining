@@ -11,8 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('guru', function (Blueprint $table) {
+        Schema::create('gurus', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('nip');
+            $table->string('nama_lengkap');
+            $table->string('alamat')->nullable();
+            $table->string('tempat_lahir')->nullable();
+            $table->date('tgl_lahir')->nullable();
+            $table->string('no_tlp')->nullable();
             $table->timestamps();
         });
     }

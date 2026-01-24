@@ -95,6 +95,9 @@ document.getElementById('togglePassword').addEventListener('click', function () 
   // isi data table
   $(document).ready(function(){
     var table = $('#tbl-user').DataTable({
+      dom         : 'Bfrtip',
+      responsive    : 'true',
+      buttons     : ['copy', 'csv', 'excel', 'pdf', 'print'],
       processing  : true,
       ordering    : true,
       serverSide  : false,
@@ -270,15 +273,15 @@ $('#EditDataForm').on('submit',function(e){
       form.reset();
       table.ajax.reload();
     },
-    error : function(respnse){
+    error : function(response){
       closeLoading();
       let errorMessage = 'Terjadi kesalahan ketika update data';
       if(response.responseJSON){
-        if(respnse.responseJSON.errors){
-          errorMessage = object.values(response.responseJSON.errors).flat().join('<br>');
+        if(response.responseJSON.errors){
+          errorMessage = Object.values(response.responseJSON.errors).flat().join('<br>');
         }
         else if(response.responseJSON.message){
-          errorMessage = respnse.responseJSON.message;
+          errorMessage = response.responseJSON.message;
         }
       }
       swal.fire({

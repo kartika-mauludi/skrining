@@ -55,12 +55,4 @@ class User extends Authenticatable
         return $this->hasOne(Guru::class);
     }
 
-     protected static function booted()
-    {
-        static::deleting(function ($user) {
-            if ($user->guru) {
-                $user->guru->delete();
-            }
-        });
-    }
 }

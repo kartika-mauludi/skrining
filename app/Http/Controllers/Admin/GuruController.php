@@ -84,6 +84,7 @@ class GuruController extends Controller
                 'tempat_lahir'  => $request->filled('tempat_lahir') ? $request->tempat_lahir : '-',
                 'tgl_lahir'     => $request->filled('tgl_lahir') ? $request->tgl_lahir : Null,
                 'no_tlp'        => $request->filled('no_tlp') ? $request->no_tlp : '-',
+                'email'         => $validate['email']
             ]);
 
             DB::commit();
@@ -118,7 +119,7 @@ class GuruController extends Controller
      */
     public function edit(string $id)
     {
-         $data = Guru::find($id);
+        $data = Guru::with('user')->find($id);
         return response()->json($data);
     }
 
@@ -128,15 +129,19 @@ class GuruController extends Controller
     public function update(Request $request, Guru $guru)
     {
         $validasi = $request->except('_token', '_method', 'password');
-        $input = Validator::make($validasi,[
+        $input = Validator::make($request->all(),[
             'name' => 'required',
-            'email' => 'required|email|unique:users,email,'.$guru->id,
-            'role' => 'required',
+            'email' => 'required|email|unique:users,email,'.$guru->user_id,
+            'nama_lengkap' => 'required',
+            'nip' => 'required|unique:gurus,nip,'.$guru->id
+            
         ],[
-            'name.required' =>'Nama tidak boleh dikosongkan',
+            'name.required' =>'Usernmae tidak boleh dikosongkan',
+            'nama_lengkap.required' =>'Nama lengkap tidak boleh dikosongkan',
+            'nip.required' =>'NIP tidak boleh dikosongkan',
+            'nip.unique' => 'NIP sudah pernah terpakai',
             'email.required' => 'email tidak boleh dikosongkan',
             'email.unique' => 'email sudah pernah didaftarkan',
-            'role.required' => 'role tidak boleh dikosongkan'
         ]);
 
         if($input->fails()){
@@ -150,12 +155,14 @@ class GuruController extends Controller
         $message = 'gagal edit data';
 
          $validatedData = $input->validated();
-
-         if($request->filled('password')){
-            $validatedData['password'] = Hash::make($request->password);
-         }
-
-         $result = $guru->update($validatedData);
+         $result = $guru->update([
+                'nip'           => $validatedData['nip'],
+                'nama_lengkap'  => $validatedData['nama_lengkap'],
+                'alamat'        => $request->filled('alamat') ? $request->alamat : '-',
+                'tempat_lahir'  => $request->filled('tempat_lahir') ? $request->tempat_lahir : '-',
+                'tgl_lahir'     => $request->filled('tgl_lahir') ? $request->tgl_lahir : Null,
+                'no_tlp'        => $request->filled('no_tlp') ? $request->no_tlp : '-',
+         ]);
          
          if($result){
             $status = 200;
@@ -173,9 +180,8 @@ class GuruController extends Controller
      */
     public function destroy(Guru $guru)
     {
-           try {
+        try {
         $guru->delete();
-
         return response()->json([
             'status' => 200,
             'message' => "Berhasil hapus user"

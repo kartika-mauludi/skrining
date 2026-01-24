@@ -23,7 +23,7 @@
                     <label for="">Alamat</label>
                     <input type="text" name="alamat" id="Alamat" class="form-control" placeholder="Masukkan Alamat">
                      <label for="">Tempat Lahir</label>
-                    <input type="text" name="tempat_lahir" id="TglLahir" class="form-control" placeholder="Masukkan Tempat Lahir (opsional)">
+                    <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control" placeholder="Masukkan Tempat Lahir (opsional)">
                     <label for="">Tanggal Lahir</label>
                     <input type="date" name="tgl_lahir" id="TglLahir" class="form-control" placeholder="Masukkan Tanggal Lahir (opsional)">
                      <label for="">No Wa</label>
@@ -73,7 +73,7 @@
                     <label for="">Alamat</label>
                     <input type="text" name="alamat" id="editAlamat" class="form-control">
                      <label for="">Tempat Lahir</label>
-                    <input type="text" name="tempat_lahir" id="editTglLahir" class="form-control">
+                    <input type="text" name="tempat_lahir" id="editTempatLahir" class="form-control">
                     <label for="">Tanggal Lahir</label>
                     <input type="date" name="tgl_lahir" id="editTglLahir" class="form-control">
                      <label for="">No Wa</label>

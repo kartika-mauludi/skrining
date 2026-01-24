@@ -27,10 +27,11 @@
   <link rel="stylesheet" href="{{ asset('admin/assets-admin/plugins/summernote/summernote-bs4.min.css') }}">
 
   <!-- DataTables -->
-  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
-  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
-  <link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
-  
+<link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+<link rel="stylesheet" href="https://adminlte.io/themes/v3/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
   <!-- select2 -->
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
   
@@ -138,15 +139,30 @@
   <link rel="stylesheet" href='{{ asset("admin/assets-admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css") }}'>
 
 <!-- DataTables  & Plugins -->
+<!-- DataTables core -->
 <script src="https://adminlte.io/themes/v3/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="https://adminlte.io/themes/v3/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+<!-- Responsive -->
 <script src="https://adminlte.io/themes/v3/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+<!-- Buttons -->
+<script src="https://adminlte.io/themes/v3/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+
+<!-- Export -->
+<script src="https://adminlte.io/themes/v3/plugins/jszip/jszip.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/pdfmake/pdfmake.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/pdfmake/vfs_fonts.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+<script src="https://adminlte.io/themes/v3/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
 
 <!-- Select 2 -->
 <script src="{{ asset('admin/assets-admin/dist/js/select2.min.js') }}"></script>
-<script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
-<script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 
 <script>
      $('.select2').select2();

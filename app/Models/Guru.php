@@ -13,7 +13,8 @@ class Guru extends Model
         'tgl_lahir',
         'tempat_lahir',
         'alamat',
-        'no_tlp'
+        'no_tlp',
+        'email'
     ] ;
 
     public function sekolah()
@@ -25,12 +26,6 @@ class Guru extends Model
         return $this->belongsTo(User::class);
     }
 
-    protected static function booted()
-{
-    static::deleting(function ($guru) {
-        if ($guru->user) {
-            $guru->user->delete();
-        }
-    });
-}
+    
+
 }

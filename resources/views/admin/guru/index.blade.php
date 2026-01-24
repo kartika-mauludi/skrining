@@ -35,10 +35,11 @@
               <div class="card-header">
                 <h3 class="card-title"></h3>
                  <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
+                 <button class="btn btn-sm btn-info" data-toggle="modal"data-target="#importAccountModal">Import</button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="tbl-user" class="table table-bordered table-striped">
+                <table id="tbl-guru" class="table table-bordered table-striped">
                  <thead>
                   <tr>
                     <th>No</th>
@@ -50,7 +51,7 @@
                     <th>Tempat Lahir</th>
                     <th>Tanggal Lahir</th>
                     <th>No Wa</th>
-                    <th>Action</th>
+                    <th class="no-export">Action</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -67,7 +68,7 @@
                     <th>Tempat Lahir</th>
                     <th>Tanggal Lahir</th>
                     <th>No Wa</th>
-                    <th>Action</th>
+                    <th class="no-export">Action</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -104,11 +105,34 @@ document.getElementById('togglePassword').addEventListener('click', function () 
 
   // isi data table
   $(document).ready(function(){
-    var table = $('#tbl-user').DataTable({
+    var table = $('#tbl-guru').DataTable({
+      dom         : 'Bfrtip',
+      lengthChange: false,
+      autoWidth   : false,
+      responsive  : 'true',
+      buttons     : [{
+            extend: 'csvHtml5',
+            title: 'Data Guru',
+            exportOptions: { columns: ':not(.no-export)' }
+        },
+        // PDF
+        {
+            extend: 'pdfHtml5',
+            title : 'Data Guru',
+            orientation: 'landscape',
+            exportOptions: { columns: ':not(.no-export)' }
+        },
+        // Print
+        {
+            extend: 'print',
+            title : 'Data Guru',
+            exportOptions: { columns: ':not(.no-export)' }
+        }],
       processing  : true,
       ordering    : true,
       serverSide  : false,
       ajax        : "{{ route('admin.guru.data') }}",
+      deferRender: true,
       columns     : [{
         data : null, render:(data,type,row,meta)=>{
           return `<div class='text-center'>${meta.row + 1}.</div>`;
@@ -117,15 +141,19 @@ document.getElementById('togglePassword').addEventListener('click', function () 
         data    : 'nip',
         render  : (data) => data ? `${data}` : `-` 
       },{
-        data    : 'user.name',
-        render  : (data) => data ? `${data}` : `-`
+         data: null,
+          render: (data, type, row) => {
+            return row.user?.name ?? '-';
+          }
       },
       {
         data    : 'nama_lengkap',
         render  : (data) => data ? `${data}` : `-`
       },{
-        data    : 'user.email',
-        render  : (data) => data ? `${data}` : `-`
+        data    : null,
+        render  : function(data, type, row) {
+                  return row.user?.email || row.email || '-';
+                }
       },{
         data    : 'alamat',
         render  : (data) => data ? `${data}` : `-`
@@ -142,12 +170,15 @@ document.getElementById('togglePassword').addEventListener('click', function () 
       {
         data: 'id',
         render: function(data, type, row){
+        let resetButton = row.user?.email 
+          ? `<button class="btn btn-sm btn-secondary reset-btn" data-id="${data}">Reset Password</button>` 
+        : '';
           return `
              <div class="btn-group d-flex gap-5">
                   <button class="btn btn-sm btn-warning edit-btn" data-id="${data}">Edit</button>
                   <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">Hapus</button>
-                  <button class="btn btn-sm btn-secondary delete-btn" data-id="${data}">Reset Password</button>
-              </div>
+                  ${resetButton}
+                  </div>
           `;
         }
       }
@@ -207,11 +238,11 @@ $(document).on('submit','#addDataForm', function(e){
 $(document).on('click','.delete-btn',function(){
 var table = $('.table').DataTable();
 var id    = $(this).data('id');
-var url   = "{{ route('masteruser.destroy',':id') }}".replace(':id',id);
+var url   = "{{ route('guru.destroy',':id') }}".replace(':id',id);
 
   swal.fire({
     title   :"Hapus User",
-    text    : "Anda Yakin Untuk Hapus User Ini ?",
+    text    : "Apakah Anda Yakin Untuk Hapus Data Ini ?",
     icon    : 'warning',
     showCancelButton  : true,
     confirmButtonText : "Hapus",
@@ -255,17 +286,17 @@ $('.table').on('click','.edit-btn', function(){
     console.log(data);
     closeLoading();
     $('#editId').val(data.id);
-    $('#editName').val(data.name);
-    $('#editEmail').val(data.email);
-    $('#editRole').val(data.role);
+    $('#editNIP').val(data.nip);
+    $('#editUsername').val(data.user.name);
+    $('#editName').val(data.nama_lengkap);
+    $('#editEmail').val(data.user.email);
+    $('#editAlamat').val(data.alamat);
+    $('#editTempatLahir').val(data.tempat_lahir);
+    $('#editTglLahir').val(data.tgl_lahir);
+    $('#editNoTlp').val(data.no_tlp);
     var updateUrl = "{{ route('guru.update',':id') }}".replace(':id',data.id);
     $('#EditDataForm').attr('action',updateUrl);
     $('#editData').modal('show');
-     $('#editData').on('shown.bs.modal', function () {
-        let roles = data.roles ?? [];
-        let roleIds = roles.map(role => role.id);
-        $('#editRole').val(roleIds).trigger('change');
-      });
   });
 });
 
@@ -296,15 +327,15 @@ $('#EditDataForm').on('submit',function(e){
       form.reset();
       table.ajax.reload();
     },
-    error : function(respnse){
+    error : function(response){
       closeLoading();
       let errorMessage = 'Terjadi kesalahan ketika update data';
       if(response.responseJSON){
-        if(respnse.responseJSON.errors){
-          errorMessage = object.values(response.responseJSON.errors).flat().join('<br>');
+        if(response.responseJSON.errors){
+          errorMessage = Object.values(response.responseJSON.errors).flat().join('<br>');
         }
         else if(response.responseJSON.message){
-          errorMessage = respnse.responseJSON.message;
+          errorMessage = response.responseJSON.message;
         }
       }
       swal.fire({

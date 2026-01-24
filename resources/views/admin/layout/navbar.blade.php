@@ -8,13 +8,10 @@
 
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-        <div class="image">
-          <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-        </div>
-        <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+     <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 p-2 mb-3 d-flex justify-content-center">
+        <div class="info p-0">
+          <a href="#" class="d-block m-0">Alexander Light</a>
         </div>
       </div>
 
@@ -45,8 +42,8 @@
             </a>
           </li>
 
-          <li class="nav-item @if (request()->is(['admin/masteruser','admin/role','admin/masterperingkat'])) menu-open @endif">
-            <a href="#" class="nav-link @if (request()->is(['admin/masteruser','admin/role','admin/masterperingkat'])) active @endif">
+          <li class="nav-item @if (request()->is(['admin/masteruser','admin/guru','admin/sekolah'])) menu-open @endif">
+            <a href="#" class="nav-link @if (request()->is(['admin/masteruser','admin/guru','admin/sekolah'])) active @endif">
               <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Master
@@ -61,7 +58,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('guru.index') }}" class="nav-link @if(Route::is('guru.index')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Guru</p>
                 </a>
@@ -76,7 +73,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link @if(Route::is('admin.index')) active @endif">
+            <a href="{{ url('admin/index') }}" class="nav-link">
                <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Angket
@@ -85,7 +82,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link @if(Route::is('admin.index')) active @endif">
+            <a href="{{ url('admin/index') }}" class="nav-link ">
                <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Log Aktivitas
@@ -94,7 +91,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link @if(Route::is('admin.index')) active @endif">
+            <a href="{{ url('admin/index') }}" class="nav-link ">
                <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Pengaturan

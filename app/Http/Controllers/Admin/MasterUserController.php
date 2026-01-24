@@ -101,7 +101,7 @@ class MasterUserController extends Controller
      */
     public function update(Request $request, User $masteruser)
     {
-         $validasi = $request->except('_token', '_method', 'password');
+        $validasi = $request->except('_token', '_method', 'password');
         $input = Validator::make($validasi,[
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$masteruser->id,
@@ -147,11 +147,8 @@ class MasterUserController extends Controller
      */
     public function destroy(User $masteruser)
     {
-        
         try {
-        $masteruser->roles()->detach();
         $masteruser->delete();
-
         return response()->json([
             'status' => 200,
             'message' => "Berhasil hapus user"

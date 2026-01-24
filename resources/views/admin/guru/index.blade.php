@@ -15,12 +15,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>DataTables</h1>
+            <h1>Data Guru</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">Home</a></li>
-              <li class="breadcrumb-item active">DataTables</li>
+              <li class="breadcrumb-item active">Data Guru</li>
             </ol>
           </div>
         </div>
@@ -42,9 +42,14 @@
                  <thead>
                   <tr>
                     <th>No</th>
-                    <th>Nama</th>
+                    <th>NIP</th>
+                    <th>Username</th>
+                    <th>Nama Lengkap</th>
                     <th>Email</th>
-                    <th>Role</th>
+                    <th>Alamat</th>
+                    <th>Tempat Lahir</th>
+                    <th>Tanggal Lahir</th>
+                    <th>No Wa</th>
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -53,10 +58,15 @@
                   </tbody>
                   <tfoot>
                   <tr>
-                    <th>No</th>
-                    <th>Nama</th>
+                   <th>No</th>
+                    <th>NIP</th>
+                    <th>Username</th>
+                    <th>Nama Lengkap</th>
                     <th>Email</th>
-                    <th>Role</th>
+                    <th>Alamat</th>
+                    <th>Tempat Lahir</th>
+                    <th>Tanggal Lahir</th>
+                    <th>No Wa</th>
                     <th>Action</th>
                   </tr>
                   </tfoot>
@@ -70,7 +80,7 @@
 </section>
 </div>
 
- @include('admin.masteruser.modal')
+ @include('admin.guru.modal')
 @endsection
 
 @push('script')
@@ -98,20 +108,35 @@ document.getElementById('togglePassword').addEventListener('click', function () 
       processing  : true,
       ordering    : true,
       serverSide  : false,
-      ajax        : "{{ route('admin.masteruser.data') }}",
+      ajax        : "{{ route('admin.guru.data') }}",
       columns     : [{
         data : null, render:(data,type,row,meta)=>{
           return `<div class='text-center'>${meta.row + 1}.</div>`;
         }
       },{
-        data    : 'name',
+        data    : 'nip',
         render  : (data) => data ? `${data}` : `-` 
       },{
-        data    : 'email',
+        data    : 'user.name',
         render  : (data) => data ? `${data}` : `-`
       },
       {
-        data    : 'role',
+        data    : 'nama_lengkap',
+        render  : (data) => data ? `${data}` : `-`
+      },{
+        data    : 'user.email',
+        render  : (data) => data ? `${data}` : `-`
+      },{
+        data    : 'alamat',
+        render  : (data) => data ? `${data}` : `-`
+      },{
+        data    : 'tempat_lahir',
+        render  : (data) => data ? `${data}` : `-`
+      },{
+        data    : 'tgl_lahir',
+        render  : (data) => data ? `${data}` : `-`
+      },{
+        data    : 'no_tlp',
         render  : (data) => data ? `${data}` : `-`
       },
       {
@@ -121,6 +146,7 @@ document.getElementById('togglePassword').addEventListener('click', function () 
              <div class="btn-group d-flex gap-5">
                   <button class="btn btn-sm btn-warning edit-btn" data-id="${data}">Edit</button>
                   <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">Hapus</button>
+                  <button class="btn btn-sm btn-secondary delete-btn" data-id="${data}">Reset Password</button>
               </div>
           `;
         }
@@ -224,7 +250,7 @@ var url   = "{{ route('masteruser.destroy',':id') }}".replace(':id',id);
 $('.table').on('click','.edit-btn', function(){
   var id = $(this).data('id');
   showLoading();
-  var url = "{{ route('masteruser.edit',':id') }}".replace(':id',id);
+  var url = "{{ route('guru.edit',':id') }}".replace(':id',id);
   $.get(url, function(data){
     console.log(data);
     closeLoading();
@@ -232,7 +258,7 @@ $('.table').on('click','.edit-btn', function(){
     $('#editName').val(data.name);
     $('#editEmail').val(data.email);
     $('#editRole').val(data.role);
-    var updateUrl = "{{ route('masteruser.update',':id') }}".replace(':id',data.id);
+    var updateUrl = "{{ route('guru.update',':id') }}".replace(':id',data.id);
     $('#EditDataForm').attr('action',updateUrl);
     $('#editData').modal('show');
      $('#editData').on('shown.bs.modal', function () {

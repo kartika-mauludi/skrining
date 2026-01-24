@@ -9,27 +9,32 @@
                     <span aria-hidden="true"></span>
                 </button>
             </div>
-            <form action="{{ route('masteruser.store') }}" method="POST" id="addDataForm" data-target-table="#table-user">
+            <form action="{{ route('guru.store') }}" method="POST" id="addDataForm" data-target-table="#table-user">
                 @csrf
                 <div class="modal-body">
-                    <label for=""> Nama </label>
-                    <input type="text" name="name" class="form-control" required>
+                    <label for=""> NIP </label>
+                    <input type="text" name="nip" id="NIP" class="form-control" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" placeholder="Masukkan NIP">
+                    <label for=""> Username </label>
+                    <input type="text" name="name" id="Username" class="form-control" required placeholder="Masukkan Username">
+                    <label for=""> Nama Lengkap </label>
+                    <input type="text" name="nama_lengkap" id="Name" class="form-control" required placeholder="Masukkan Nama Lengkap">
                     <label for="">Email</label>
-                    <input type="email" name="email" id="email" class="form-control" required>
-                     <label for="">Password</label>
+                    <input type="email" name="email" id="Email" class="form-control" required placeholder="Masukkan Email">
+                    <label for="">Alamat</label>
+                    <input type="text" name="alamat" id="Alamat" class="form-control" placeholder="Masukkan Alamat">
+                     <label for="">Tempat Lahir</label>
+                    <input type="text" name="tempat_lahir" id="TglLahir" class="form-control" placeholder="Masukkan Tempat Lahir (opsional)">
+                    <label for="">Tanggal Lahir</label>
+                    <input type="date" name="tgl_lahir" id="TglLahir" class="form-control" placeholder="Masukkan Tanggal Lahir (opsional)">
+                     <label for="">No Wa</label>
+                    <input type="text" name="no_tlp" id="NoTlp" class="form-control" oninput="this.value = this.value.replace(/\D/g, '+')" placeholder="Masukkan No WA"> 
+                    <label for="">Password</label>
                      <div class="input-group mb-3">
-                        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
                          <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                             <i class="fas fa-eye" id="toggleIcon"></i>
                         </button>
                     </div>
-                    <label for="">Role</label>
-                    <select name="role" id=""  class="form-control form-control-sm" style="width: 100%" required>
-                        <option value="super_admin">Super Admin</option>
-                        <option value="guru">Guru</option>
-
-                    </select>
-                   
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal"> Close </button>
@@ -57,27 +62,24 @@
                   @method('PUT')
                 <div class="modal-body">
                     <input type="hidden" name="id" id="editId">
-                    <label for=""> Nama </label>
-                    <input type="text" name="name" id="editName" class="form-control">
+                    <label for=""> NIP </label>
+                    <input type="text" name="nip" id="editNIP" readonly class="form-control">
+                    <label for=""> Username </label>
+                    <input type="text" name="name" id="editUsername" readonly class="form-control">
+                    <label for=""> Nama Lengkap </label>
+                    <input type="text" name="nama_lengkap" id="editName" class="form-control">
                     <label for="">Email</label>
                     <input type="email" name="email" id="editEmail" class="form-control">
-                     <label for="">Password</label>
-                     <div class="input-group mb-0">
-                        <input type="password" name="password" class="form-control" id="password" placeholder="Password">
-                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                            <i class="fas fa-eye" id="toggleIcon"></i>
-                        </button>
-                    </div>
-                   <small class="form-text mb-2 text-muted">
-                        Isi password jika ingin ubah password
-                    </small>
-
-                    <label for="">Role</label>
-                   <select name="role" id="editRole"  class="form-control form-control-sm" style="width: 100%" required>
-                        <option value="super_admin">Super Admin</option>
-                        <option value="guru">Guru</option>
-
-                    </select>
+                    <label for="">Alamat</label>
+                    <input type="text" name="alamat" id="editAlamat" class="form-control">
+                     <label for="">Tempat Lahir</label>
+                    <input type="text" name="tempat_lahir" id="editTglLahir" class="form-control">
+                    <label for="">Tanggal Lahir</label>
+                    <input type="date" name="tgl_lahir" id="editTglLahir" class="form-control">
+                     <label for="">No Wa</label>
+                    <input type="text" name="no_tlp" id="editNoTlp" class="form-control" oninput="this.value = this.value.replace(/\D/g, '+')">
+                   
+                   
                    
                 </div>
                 <div class="modal-footer">

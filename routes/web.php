@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Admin\GuruController;
+
 
 
 
@@ -29,16 +29,16 @@ Route::POST('/register', [RegisterController::class, 'register']);
 Route::post('/logout', [LoginController::class,'logout'])->name('logout');
 
 
-
+// start route super admin
 Route::middleware('role:super_admin')->group(function (){
     route::get('/admin/index', [DashboardController::class, 'index'])->name('admin.index');
     route::get("admin/masteruser/data",[MasterUserController::class,'data'])->name('admin.masteruser.data');
     route::resource('admin/masteruser',MasterUserController::class);
-    route::get('admin/dataguru',[GuruController::class,'data'])->name('admin.guru.data');
-    
+    route::get('/admin/guru/data',[GuruController::class,'data'])->name('admin.guru.data');
+    route::resource('/admin/guru',GuruController::class);
 });
 
-
+// start route guru
 Route::middleware('role:guru')->group(function (){
     route::get('/guru/index', [HomeController::class, 'guru'])->name('guru.index');
 });

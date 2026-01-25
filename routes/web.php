@@ -35,6 +35,7 @@ Route::middleware('role:super_admin')->group(function (){
     route::get("admin/masteruser/data",[MasterUserController::class,'data'])->name('admin.masteruser.data');
     route::resource('admin/masteruser',MasterUserController::class);
     route::get('/admin/guru/data',[GuruController::class,'data'])->name('admin.guru.data');
+    route::post('admin/guru/import',[GuruController::class, 'import'])->name('admin.guru.import');
     route::resource('/admin/guru',GuruController::class);
 });
 

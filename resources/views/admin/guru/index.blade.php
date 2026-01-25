@@ -34,11 +34,20 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title"></h3>
-                 <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
-                 <button class="btn btn-sm btn-info" data-toggle="modal"data-target="#importAccountModal">Import</button>
+                 
               </div>
               <!-- /.card-header -->
               <div class="card-body">
+                 <div class="d-flex mb-2 align-items-center justify-content-between flex-wrap gap-1">
+                    <!-- Tombol custom -->
+                     <div>
+                       <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
+                      <button class="btn btn-sm btn-info" data-toggle="modal"data-target="#importGuruModal">Import</button>
+                      <button class="btn btn-danger btn-sm">Hapus All User</button>
+                     </div>
+                    <!-- Tombol DataTables (CSV/PDF/Print) -->
+                    <div id="datatable-buttons" class="ml-2 gap-5"></div>
+                </div>
                 <table id="tbl-guru" class="table table-bordered table-striped">
                  <thead>
                   <tr>
@@ -82,6 +91,7 @@
 </div>
 
  @include('admin.guru.modal')
+ @include('admin.guru.modal_import_guru');
 @endsection
 
 @push('script')
@@ -184,7 +194,9 @@ document.getElementById('togglePassword').addEventListener('click', function () 
       }
     ]
     })
+    table.buttons().container().appendTo('#datatable-buttons');
   })
+
 
   // tambah data
 $(document).on('submit','#addDataForm', function(e){
@@ -234,7 +246,6 @@ $(document).on('submit','#addDataForm', function(e){
 
 
 // delete
-
 $(document).on('click','.delete-btn',function(){
 var table = $('.table').DataTable();
 var id    = $(this).data('id');
@@ -274,6 +285,8 @@ var url   = "{{ route('guru.destroy',':id') }}".replace(':id',id);
     }
   });
 });
+
+
 
 
 // edit modal

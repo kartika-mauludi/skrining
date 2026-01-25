@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Validator;
 use Exception;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class GuruController extends Controller
 {
@@ -200,5 +201,64 @@ class GuruController extends Controller
         return response()->json([
             "data" => $data
         ]);
+    }
+
+    public function import(Request $request, $universityId)
+    {
+        $data = $request->input('data');
+
+        if (!is_array($data) || empty($data)) {
+            return response()->json(['status' => 400, 'message' => 'Data tidak valid!']);
+        }
+
+        $response = new StreamedResponse(function () use ($data) {
+            $insertedCount = 0;
+            $updatedCount = 0;
+
+            foreach ($data as $index => $item) {
+                if (!isset($item['nip']) || !isset($item['username']) || !isset($item['nama_lengkap']) || !isset($item['alamat']) || !isset($item['tempat_lahir']) || !isset($item['tanggal_lahir'])|| !isset($item['no_wa'])) {
+                    echo json_encode(['status' => 400, 'message' => 'Format data tidak valid!']);
+                    ob_flush();
+                    flush();
+                    return;
+                }
+
+                $user = User::updateOrCreate(
+                    ['email' => $item['email']],
+                    ['username' => $item['username'], 'role' => 'guru', 'password' => bcrypt($item['nip']) ]
+                );
+
+                $record = Guru::updateOrCreate(
+                    ['nip' => $item['nip'], 'nama_lengkap' => $item['nama_lengkap'], 'user_id' => $user->id],
+                    ['email' => $item['email'],'alamat' => $item['alamat'], 'tempat_lahir' => $item['tempat_lahir'], 'tanggal_lahir' => $item['tanggal_lahir'], 'no_tlp' => $item['no_wa']]
+                );
+
+                if ($record->wasRecentlyCreated) {
+                    $insertedCount++;
+                } else {
+                    $updatedCount++;
+                }
+
+                echo json_encode([
+                    'status' => 200,
+                    'message' => 'Mengimport data...',
+                    'progress' => ($index + 1) . '/' . count($data),
+                    'procesed' => $insertedCount + $updatedCount
+                ]) . "\n";
+                ob_flush();
+                flush();
+            }
+
+            echo json_encode([
+                'status' => 200,
+                'message' => 'Import selesai!',
+                'procesed' => $insertedCount + $updatedCount
+            ]) . "\n";
+            ob_flush();
+            flush();
+        });
+
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 }

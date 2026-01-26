@@ -18,12 +18,7 @@ class SekolahSeeder extends Seeder
         ->limit(5)->get();
 
         foreach ($gurus as $guru) {
-            Sekolah::create([
-                'guru_id' => $guru->id,
-                'nama_sekolah' => fake()->name(),
-                'no_tlp' => fake()->phoneNumber(),
-                'alamat_lengkap' => fake()->address()
-            ]);
+            Sekolah::factory(15)->teacher($guru->id)->create();
         }
     }
 }

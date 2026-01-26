@@ -249,7 +249,7 @@ $(document).on('submit','#addDataForm', function(e){
 $(document).on('click','.delete-btn',function(){
 var table = $('.table').DataTable();
 var id    = $(this).data('id');
-var url   = "{{ route('guru.destroy',':id') }}".replace(':id',id);
+var url   = "{{ route('admin.guru.destroy',':id') }}".replace(':id',id);
 
   swal.fire({
     title   :"Hapus User",
@@ -294,7 +294,7 @@ var url   = "{{ route('guru.destroy',':id') }}".replace(':id',id);
 $('.table').on('click','.edit-btn', function(){
   var id = $(this).data('id');
   showLoading();
-  var url = "{{ route('guru.edit',':id') }}".replace(':id',id);
+  var url = "{{ route('admin.guru.edit',':id') }}".replace(':id',id);
   $.get(url, function(data){
     console.log(data);
     closeLoading();
@@ -307,7 +307,7 @@ $('.table').on('click','.edit-btn', function(){
     $('#editTempatLahir').val(data.tempat_lahir);
     $('#editTglLahir').val(data.tgl_lahir);
     $('#editNoTlp').val(data.no_tlp);
-    var updateUrl = "{{ route('guru.update',':id') }}".replace(':id',data.id);
+    var updateUrl = "{{ route('admin.guru.update',':id') }}".replace(':id',data.id);
     $('#EditDataForm').attr('action',updateUrl);
     $('#editData').modal('show');
   });

@@ -7,10 +7,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
-
-
-
-
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\SekolahController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 
@@ -36,11 +34,18 @@ Route::middleware('role:super_admin')->group(function (){
     route::resource('admin/masteruser',MasterUserController::class);
     route::get('/admin/guru/data',[GuruController::class,'data'])->name('admin.guru.data');
     route::post('admin/guru/import',[GuruController::class, 'import'])->name('admin.guru.import');
-    route::resource('/admin/guru',GuruController::class);
+    route::resource('/admin/guru',GuruController::class)->names('admin.guru');
 });
 
 // start route guru
-Route::middleware('role:guru')->group(function (){
-    route::get('/guru/index', [HomeController::class, 'guru'])->name('guru.index');
-});
+Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
+    Route::get('dashboard', [HomeController::class, 'guru'])->name('guru.index');
+    Route::post('sekolah/data', [SekolahController::class, 'index'])->name('guru.sekolah.data');
+    Route::resource('sekolah', SekolahController::class)->except('show')->names('guru.sekolah');
 
+    Route::post('kelas/data', [KelasController::class, 'index'])->name('guru.kelas.data');
+    Route::resource('kelas', KelasController::class)
+    ->except('show')
+    ->parameter('kelas', 'kelas')
+    ->names('guru.kelas');
+});

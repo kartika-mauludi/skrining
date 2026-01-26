@@ -25,6 +25,7 @@ class GuruSeeder extends Seeder
         
 
         Guru::create([
+            'email' => $result->email,
             'user_id' => $result->id,
             'nip' => '13213131',
             'nama_lengkap' => 'guru test',

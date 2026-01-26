@@ -14,7 +14,7 @@ class HomeController extends Controller
          return view('admin.index');
     }
 
-     public function guru(){
+    public function guru(){
          return view('guru.index');
     }
 

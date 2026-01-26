@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta content="{{ csrf_token() }}" name="csrf-token">
   <title>AdminLTE 3 | Dashboard</title>
 
   <!-- Google Font: Source Sans Pro -->
@@ -146,10 +147,9 @@
 <script src="{{ asset('admin/assets-admin/dist/js/select2.min.js') }}"></script>
 <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <!-- dashboard -->
- <script src="{{ asset('admin/assets-admin/dist/js/pages/dashboard.js') }}"></script>
+<script src="{{ asset('admin/assets-admin/dist/js/pages/dashboard.js') }}"></script>
 <script>
      $('.select2').select2();
 </script>

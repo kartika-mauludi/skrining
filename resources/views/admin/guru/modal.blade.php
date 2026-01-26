@@ -9,7 +9,7 @@
                     <span aria-hidden="true"></span>
                 </button>
             </div>
-            <form action="{{ route('guru.store') }}" method="POST" id="addDataForm" data-target-table="#table-user">
+            <form action="{{ route('admin.guru.store') }}" method="POST" id="addDataForm" data-target-table="#table-user">
                 @csrf
                 <div class="modal-body">
                     <label for=""> NIP </label>

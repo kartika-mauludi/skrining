@@ -15,7 +15,7 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->id();
             $table->foreignId('kelas_id')->constrained('kelas')->cascadeOnDelete();
-            $table->integer('no_absen')->unique();
+            $table->integer('no_absen');
             $table->string('nis', 20)->unique();
             $table->string('nama_lengkap', 200);
             $table->date('tgl_lahir');

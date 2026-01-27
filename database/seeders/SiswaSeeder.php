@@ -18,7 +18,17 @@ class SiswaSeeder extends Seeder
         ->limit(2)->get();
 
         foreach ($kelases as $kelas) {
-            Siswa::factory(5)->kelas($kelas->id)->create();
+            Siswa::create([
+                'kelas_id' => $kelas->id,
+                'no_absen' => fake()->numberBetween(0, 199),
+                'nis' => fake()->numberBetween(0, 999),
+                'nama_lengkap' => fake()->name(),
+                'tgl_lahir' => fake()->date(),
+                'tempat_lahir' => fake()->city(),
+                'alamat' => fake()->address(),
+                'nama_wali' => fake()->name(),
+                'no_tlp_wali' => fake()->phoneNumber()
+            ]);
         }
     }
 }

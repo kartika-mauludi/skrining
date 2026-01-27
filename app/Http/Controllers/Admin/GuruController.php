@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Validator;
 use Exception;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Carbon\Carbon;
 
 class GuruController extends Controller
 {
@@ -19,10 +20,7 @@ class GuruController extends Controller
      */
     public function index()
     {
-        // $data = Guru::with('user')->get();
-        // return response()->json([
-        //     "data" => $data
-        // ]);
+
         return view('admin.guru.index');
 
     }
@@ -203,8 +201,9 @@ class GuruController extends Controller
         ]);
     }
 
-    public function import(Request $request, $universityId)
+    public function import(Request $request)
     {
+       
         $data = $request->input('data');
 
         if (!is_array($data) || empty($data)) {
@@ -216,7 +215,7 @@ class GuruController extends Controller
             $updatedCount = 0;
 
             foreach ($data as $index => $item) {
-                if (!isset($item['nip']) || !isset($item['username']) || !isset($item['nama_lengkap']) || !isset($item['alamat']) || !isset($item['tempat_lahir']) || !isset($item['tanggal_lahir'])|| !isset($item['no_wa'])) {
+                if (!isset($item['nip']) || !isset($item['username']) || !isset($item['nama_lengkap']) || !isset($item['alamat']) || !isset($item['tempat_lahir']) || !isset($item['tgl_lahir'])|| !isset($item['no_wa'])) {
                     echo json_encode(['status' => 400, 'message' => 'Format data tidak valid!']);
                     ob_flush();
                     flush();
@@ -225,12 +224,12 @@ class GuruController extends Controller
 
                 $user = User::updateOrCreate(
                     ['email' => $item['email']],
-                    ['username' => $item['username'], 'role' => 'guru', 'password' => bcrypt($item['nip']) ]
+                    ['name' => $item['username'], 'role' => 'guru', 'password' => bcrypt($item['nip']) ]
                 );
 
                 $record = Guru::updateOrCreate(
-                    ['nip' => $item['nip'], 'nama_lengkap' => $item['nama_lengkap'], 'user_id' => $user->id],
-                    ['email' => $item['email'],'alamat' => $item['alamat'], 'tempat_lahir' => $item['tempat_lahir'], 'tanggal_lahir' => $item['tanggal_lahir'], 'no_tlp' => $item['no_wa']]
+                    ['nip' => $item['nip'],  'user_id' => $user->id],
+                    ['nama_lengkap' => $item['nama_lengkap'], 'email' => $item['email'],'alamat' => $item['alamat'], 'tempat_lahir' => $item['tempat_lahir'], 'tgl_lahir' => Carbon::parse($item['tgl_lahir'])->format('Y-m-d'), 'no_tlp' => $item['no_wa']]
                 );
 
                 if ($record->wasRecentlyCreated) {

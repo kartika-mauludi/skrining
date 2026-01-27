@@ -73,10 +73,18 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link">
+            <a href="{{ url('admin/angket') }}" class="nav-link">
                <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Angket
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ url('admin/index') }}" class="nav-link">
+               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>
+                Tanggapan
               </p>
             </a>
           </li>

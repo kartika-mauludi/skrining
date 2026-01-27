@@ -37,7 +37,7 @@
             </div>
             <div class="modal-footer">
                 <button id="btnUploadDataGuru" class="btn btn-success" disabled>Upload Data</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-secondary" id="btnBatal" data-dismiss="modal">Batal</button>
             </div>
         </div>
     </div>
@@ -56,11 +56,9 @@
             deferRender: true,
             createdRow: function (row, data, dataIndex) {
                 $(row).find('td').eq(0).addClass('fit text-center').css('max-width', '1px !important');
-                $(row).find('td').eq(9).addClass('fit text-center').css('max-width', 'fit-content !important');
+                $(row).find('td').eq(1).addClass('fit text-center').css('max-width', 'fit-content !important');
             }
         });
-
-
 
         $("#excelFileInputGuru").change(function (e) {
             let file = e.target.files[0];
@@ -82,12 +80,15 @@
                         let nip             = row[0] != null ? String(row[0]).trim() : "";
                         let username        = row[1] != null ? String(row[1]).trim() : "";
                         let nama_lengkap    = row[2] != null ? String(row[2]).trim() : "";
-                        let email           = row[3] != null ? row[3].trim() : "";
+                        let email           = row[3] != null ? String(row[3]).trim() : "";
                         let alamat          = row[4] != null ? String(row[4]).trim() : "";
                         let tempat_lahir    = row[5] != null ? String(row[5]).trim() : "";
-                        let tgl_lahir       = row[6] != null ? String(row[6]).trim() : "";
+                        let tgl_lahir       = parseExcelDate(row[6]);
                         let no_wa           = row[7] != null ? String(row[7]).trim() : "";
 
+                         if ( !nip && !username && !nama_lengkap && !email && !alamat && !tempat_lahir && !tgl_lahir && !no_wa) {
+                              return;
+                            }
                         let errorMessage = "";
 
                         if (!nip) errorMessage += "NIP kosong ";
@@ -105,23 +106,18 @@
 
                         if (errorMessage) isValid = false;
                         tableImportGuru.row.add([
-                            $('<td>', {
-                                class: 'fit text-center',
-                                style: 'max-width: 1px !important;',
-                                text: `${index + 1}.`
-                            })[0].outerHTML,
-                            $('<td>', { html: nip })[0].outerHTML,
-                            $('<td>', { html: username})[0].outerHTML,
-                            $('<td>', { html: email})[0].outerHTML,
-                            $('<td>', { html: alamat})[0].outerHTML,
-                            $('<td>', { html: tempat_lahir})[0].outerHTML,
-                            $('<td>', { html: tgl_lahir})[0].outerHTML,
-                            $('<td>', { html: no_wa})[0].outerHTML,
-                            $('<td>', {
-                                class: 'fit text-center',
-                                style: 'max-width: 1px !important;',
-                                html: errorMessage ? `<span class="text-danger">${errorMessage}</span>` : `<span class="text-success">OK</span>`
-                            })[0].outerHTML
+                            `${index + 1}.`,
+                            nip,
+                            username,
+                            nama_lengkap,
+                            email,
+                            alamat,
+                            tempat_lahir,
+                            tgl_lahir,
+                            no_wa,
+                            errorMessage
+                                ? `<span class="text-danger">${errorMessage}</span>`
+                                : `<span class="text-success">OK</span>`
                         ]).draw(false);
 
                     });
@@ -144,11 +140,12 @@
                 let row         = $(this).find("td");
                 let nip         = row.eq(1).text().trim();
                 let username    = row.eq(2).text().trim();
-                let email       = row.eq(3).text().trim();
-                let alamat      = row.eq(4).text().trim();
-                let tempat_lahir= row.eq(5).text().trim();
-                let tgl_lahir   = row.eq(6).text().trim();
-                let no_wa       = row.eq(7).text().trim();
+                let nama_lengkap= row.eq(3).text().trim();
+                let email       = row.eq(4).text().trim();
+                let alamat      = row.eq(5).text().trim();
+                let tempat_lahir= row.eq(6).text().trim();
+                let tgl_lahir   = row.eq(7).text().trim();
+                let no_wa       = row.eq(8).text().trim();
 
 
                 if (!nip || !username || !email || !isValidEmail(email) || !alamat || !tempat_lahir || !tgl_lahir || !no_wa) {
@@ -156,7 +153,7 @@
                     return false;
                 }
 
-                tableData.push({ nip, username });
+                tableData.push({ nip, username, nama_lengkap,email, alamat, tempat_lahir, tgl_lahir, no_wa });
             });
 
             if (!isValid) {
@@ -185,7 +182,7 @@
             }).then(response => {
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
-
+                let tableGuru = $('#tbl-guru').DataTable()
                 function read() {
                     reader.read().then(({ done, value }) => {
                         if (done) {
@@ -193,7 +190,8 @@
                             Swal.fire("Selesai!", `Berhasil mengimport ${insertedCount} dari ${tableData.length} data.`, "success");
                             $("#importGuruModal").modal("hide");
                             tableImportGuru.clear().draw();
-                            websiteTable.ajax.reload();
+                            tableGuru.clear().draw();
+                            tableGuru.ajax.url("{{ route('admin.guru.data') }}").load();
                             return;
                         }
 
@@ -222,6 +220,66 @@
                 Swal.fire("Gagal!", "Terjadi kesalahan saat mengimport data.", "error");
             });
         });
+
+        $("#btnBatal").on("click", function () {
+            resetImportGuru();
+            $("#modalImportGuru").modal("hide");
+        });
+
+        $("#modalImportGuru").on("hidden.bs.modal", function () {
+            resetImportGuru();
+        });
+
+        function resetImportGuru() {
+            // clear datatable
+            tableImportGuru.clear().draw();
+
+            // reset input file
+            $("#excelFileInputGuru").val(null);
+
+            // disable tombol upload
+            $("#btnUploadDataGuru").prop("disabled", true);
+
+            // reset flag validasi
+            isValid = true;
+        }
+
+       function parseExcelDate(value) {
+            if (!value) return "";
+
+            // Excel serial number
+            if (typeof value === "number") {
+                const excelEpoch = new Date(1899, 11, 30);
+                const date = new Date(excelEpoch.getTime() + value * 86400000);
+                return date.toISOString().split("T")[0]; // yyyy-mm-dd
+            }
+
+            // String
+            if (typeof value === "string") {
+                value = value.trim();
+
+                // sudah yyyy-mm-dd
+                if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                    return value;
+                }
+
+                // dd/mm/yyyy atau d/m/yyyy
+                if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(value)) {
+                    const [d, m, y] = value.split("/");
+                    return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+                }
+
+                // dd-mm-yyyy
+                if (/^\d{1,2}-\d{1,2}-\d{4}$/.test(value)) {
+                    const [d, m, y] = value.split("-");
+                    return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
+                }
+            }
+
+            return "";
+        }
+
+
 
         function isValidEmail(email) {
             const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

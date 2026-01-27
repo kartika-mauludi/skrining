@@ -22,11 +22,11 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
       
-        if (Auth::attempt($credentials, $request->remember) ) {
+        if (Auth::attempt($credentials) ) {
             if (Auth::user()->role === 'super_admin') {
                 return redirect('/admin/index');
             }else if (Auth::user()->role === 'guru') {
-                return redirect('/guru/dashboard');
+                return redirect('/guru/index');
             }
             else{
                 return redirect('/login');

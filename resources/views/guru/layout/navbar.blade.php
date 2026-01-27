@@ -42,6 +42,15 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{ route('guru.angket.index') }}" class="nav-link @if(Route::is('guru.angket.*')) active @endif">
+               <i class="nav-icon fas fa-file"></i>
+              <p>
+                Data Angket
+              </p>
+            </a>
+          </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

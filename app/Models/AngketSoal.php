@@ -11,7 +11,6 @@ class AngketSoal extends Model
         'sequence',
         'soal',
         'tipe_soal',
-        'detail_tipe_soal',
         'bobot'
     ];
 

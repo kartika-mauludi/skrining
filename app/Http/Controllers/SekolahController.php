@@ -46,6 +46,11 @@ class SekolahController extends Controller
         return redirect()->route('guru.sekolah.index')->with('message', $message);
     }
 
+    public function show(Sekolah $sekolah)
+    {
+        return response()->json(['data' => $sekolah->load('kelas')]);
+    }
+
     public function edit(Sekolah $sekolah)
     {
         return response()->json([

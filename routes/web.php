@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\MasterUserController;
+use App\Http\Controllers\AngketController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -41,11 +42,16 @@ Route::middleware('role:super_admin')->group(function (){
 Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::get('dashboard', [HomeController::class, 'guru'])->name('guru.index');
     Route::post('sekolah/data', [SekolahController::class, 'index'])->name('guru.sekolah.data');
-    Route::resource('sekolah', SekolahController::class)->except('show')->names('guru.sekolah');
+    Route::resource('sekolah', SekolahController::class)
+    ->names('guru.sekolah');
 
     Route::post('kelas/data', [KelasController::class, 'index'])->name('guru.kelas.data');
     Route::resource('kelas', KelasController::class)
     ->except('show')
     ->parameter('kelas', 'kelas')
     ->names('guru.kelas');
+
+    Route::post('angket/data', [AngketController::class, 'index'])->name('guru.angket.data');
+    Route::resource('angket', AngketController::class)
+    ->names('guru.angket');
 });

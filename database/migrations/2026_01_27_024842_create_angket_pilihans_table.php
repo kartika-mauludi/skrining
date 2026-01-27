@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('angket_soals', function (Blueprint $table) {
+        Schema::create('angket_pilihans', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->id();
-            $table->foreignId('angket_id')->constrained('angkets')->cascadeOnDelete();
-            $table->integer('sequence');
-            $table->text('soal');
-            $table->enum('tipe_soal', ['radio', 'checkbox', 'text']);
-            $table->integer('bobot')->default(1);
+            $table->foreignId('angket_soal_id')->constrained()->cascadeOnDelete();
+            $table->string('label');
+            $table->float('nilai')->default(0);
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('angket_soals');
+        Schema::dropIfExists('angket_pilihans');
     }
 };

@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\SekolahController;
+use App\Http\Controllers\SiswaController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 
@@ -54,4 +55,8 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::post('angket/data', [AngketController::class, 'index'])->name('guru.angket.data');
     Route::resource('angket', AngketController::class)
     ->names('guru.angket');
+
+    Route::post('siswa/data', [SiswaController::class, 'index'])->name('guru.siswa.data');
+    Route::resource('siswa', SiswaController::class)
+    ->names('guru.siswa');
 });

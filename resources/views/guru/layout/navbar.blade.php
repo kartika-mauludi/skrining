@@ -51,6 +51,15 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{ route('guru.siswa.index') }}" class="nav-link @if(Route::is('guru.siswa.index')) active @endif">
+               <i class="nav-icon fas fa-users"></i>
+              <p>
+                Data Siswa
+              </p>
+            </a>
+          </li>
+
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

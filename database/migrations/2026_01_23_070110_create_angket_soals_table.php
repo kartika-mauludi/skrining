@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('sequence');
             $table->text('soal');
             $table->enum('tipe_soal', ['radio', 'checkbox', 'text']);
+            $table->json('detail_tipe_soal')->nullable();
             $table->integer('bobot')->default(1);
             $table->timestamps();
         });

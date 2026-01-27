@@ -15,12 +15,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Data Guru</h1>
+            <h1>Data User</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">Home</a></li>
-              <li class="breadcrumb-item active">Data Guru</li>
+              <li class="breadcrumb-item active">Data User</li>
             </ol>
           </div>
         </div>
@@ -34,33 +34,16 @@
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title"></h3>
-                 <div class="d-flex mb-2 align-items-center justify-content-between flex-wrap gap-1">
-                    <!-- Tombol custom -->
-                     <div>
-                      <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
-                      <button class="btn btn-sm btn-info" data-toggle="modal"data-target="#importGuruModal">Import</button>
-                      <button class="btn btn-danger btn-sm">Hapus All User</button>
-                     </div>
-                    <!-- Tombol DataTables (CSV/PDF/Print) -->
-                    <div id="datatable-buttons" class="ml-2 gap-5"></div>
-                </div>
+                 <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                 
-                <table id="tbl-guru" class="table table-bordered table-striped">
+                <table id="tbl-angket" class="table table-bordered table-striped">
                  <thead>
                   <tr>
                     <th>No</th>
-                    <th>NIP</th>
-                    <th>Username</th>
-                    <th>Nama Lengkap</th>
-                    <th>Email</th>
-                    <th>Alamat</th>
-                    <th>Tempat Lahir</th>
-                    <th>Tanggal Lahir</th>
-                    <th>No Wa</th>
-                    <th class="no-export">Action</th>
+                    <th>Judul Angket</th>
+                    <th>Action</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -68,16 +51,9 @@
                   </tbody>
                   <tfoot>
                   <tr>
-                   <th>No</th>
-                    <th>NIP</th>
-                    <th>Username</th>
-                    <th>Nama Lengkap</th>
-                    <th>Email</th>
-                    <th>Alamat</th>
-                    <th>Tempat Lahir</th>
-                    <th>Tanggal Lahir</th>
-                    <th>No Wa</th>
-                    <th class="no-export">Action</th>
+                    <th>No</th>
+                    <th>Judul Angket</th>
+                    <th>Action</th>
                   </tr>
                   </tfoot>
                 </table>
@@ -90,115 +66,42 @@
 </section>
 </div>
 
- @include('admin.guru.modal')
- @include('admin.guru.modal_import_guru');
+ @include('admin.angket.modal')
 @endsection
 
 @push('script')
 <script>
-  // eye password
-document.getElementById('togglePassword').addEventListener('click', function () {
-    const input = document.getElementById('password');
-    const icon = document.getElementById('toggleIcon');
-
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash'); // ubah ke icon hide
-    } else {
-        input.type = "password";
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye'); // kembali ke icon show
-    }
-});
-
-
   // isi data table
   $(document).ready(function(){
-    var table = $('#tbl-guru').DataTable({
-      dom         : 'Bfrtip',
-      paging: true,
-      info: true,
-      lengthChange: false,
-      autoWidth   : false,
-      responsive  : 'true',
-      buttons     : [{
-            extend: 'csvHtml5',
-            title: 'Data Guru',
-            exportOptions: { columns: ':not(.no-export)' }
-        },
-        // PDF
-        {
-            extend: 'pdfHtml5',
-            title : 'Data Guru',
-            orientation: 'landscape',
-            exportOptions: { columns: ':not(.no-export)' }
-        },
-        // Print
-        {
-            extend: 'print',
-            title : 'Data Guru',
-            exportOptions: { columns: ':not(.no-export)' }
-        }],
+    var table = $('#tbl-angket').DataTable({
+      responsive  : true,
       processing  : true,
       ordering    : true,
       serverSide  : false,
-      ajax        : "{{ route('admin.guru.data') }}",
-      deferRender: true,
+      ajax        : "{{ route('admin.angket.data') }}",
       columns     : [{
         data : null, render:(data,type,row,meta)=>{
           return `<div class='text-center'>${meta.row + 1}.</div>`;
         }
       },{
-        data    : 'nip',
+        data    : 'nama_angket',
         render  : (data) => data ? `${data}` : `-` 
-      },{
-         data: null,
-          render: (data, type, row) => {
-            return row.user?.name ?? '-';
-          }
-      },
-      {
-        data    : 'nama_lengkap',
-        render  : (data) => data ? `${data}` : `-`
-      },{
-        data    : null,
-        render  : function(data, type, row) {
-                  return row.user?.email || row.email || '-';
-                }
-      },{
-        data    : 'alamat',
-        render  : (data) => data ? `${data}` : `-`
-      },{
-        data    : 'tempat_lahir',
-        render  : (data) => data ? `${data}` : `-`
-      },{
-        data    : 'tgl_lahir',
-        render  : (data) => data ? `${data}` : `-`
-      },{
-        data    : 'no_tlp',
-        render  : (data) => data ? `${data}` : `-`
       },
       {
         data: 'id',
         render: function(data, type, row){
-        let resetButton = row.user?.email 
-          ? `<button class="btn btn-sm btn-secondary reset-btn" data-id="${data}">Reset Password</button>` 
-        : '';
           return `
              <div class="btn-group d-flex gap-5">
+                  <button class="btn btn-sm btn-primary edit-btn" data-id="${data}">Detail</button>
                   <button class="btn btn-sm btn-warning edit-btn" data-id="${data}">Edit</button>
                   <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">Hapus</button>
-                  ${resetButton}
-                  </div>
+              </div>
           `;
         }
       }
     ]
     })
-    table.buttons().container().appendTo('#datatable-buttons');
   })
-
 
   // tambah data
 $(document).on('submit','#addDataForm', function(e){
@@ -248,14 +151,15 @@ $(document).on('submit','#addDataForm', function(e){
 
 
 // delete
+
 $(document).on('click','.delete-btn',function(){
-var table = $('#tbl-guru').DataTable();
+var table = $('.table').DataTable();
 var id    = $(this).data('id');
-var url   = "{{ route('guru.destroy',':id') }}".replace(':id',id);
+var url   = "{{ route('angket.destroy',':id') }}".replace(':id',id);
 
   swal.fire({
-    title   :"Hapus User",
-    text    : "Apakah Anda Yakin Untuk Hapus Data Ini ?",
+    title   :"Hapus Angket",
+    text    : "Anda Yakin Untuk Hapus Angket Ini ?",
     icon    : 'warning',
     showCancelButton  : true,
     confirmButtonText : "Hapus",
@@ -289,27 +193,18 @@ var url   = "{{ route('guru.destroy',':id') }}".replace(':id',id);
 });
 
 
-
-
 // edit modal
 
 $('.table').on('click','.edit-btn', function(){
   var id = $(this).data('id');
   showLoading();
-  var url = "{{ route('guru.edit',':id') }}".replace(':id',id);
+  var url = "{{ route('angket.edit',':id') }}".replace(':id',id);
   $.get(url, function(data){
     console.log(data);
     closeLoading();
     $('#editId').val(data.id);
-    $('#editNIP').val(data.nip);
-    $('#editUsername').val(data.user.name);
-    $('#editName').val(data.nama_lengkap);
-    $('#editEmail').val(data.user.email);
-    $('#editAlamat').val(data.alamat);
-    $('#editTempatLahir').val(data.tempat_lahir);
-    $('#editTglLahir').val(data.tgl_lahir);
-    $('#editNoTlp').val(data.no_tlp);
-    var updateUrl = "{{ route('guru.update',':id') }}".replace(':id',data.id);
+    $('#editNamaAngket').val(data.nama_angket);
+    var updateUrl = "{{ route('angket.update',':id') }}".replace(':id',data.id);
     $('#EditDataForm').attr('action',updateUrl);
     $('#editData').modal('show');
   });
@@ -318,7 +213,7 @@ $('.table').on('click','.edit-btn', function(){
 // update
 
 $('#EditDataForm').on('submit',function(e){
-  var table = $('#tbl-guru').DataTable();
+  var table = $('.table').DataTable();
     e.preventDefault();
     showLoading();
   var form = this;

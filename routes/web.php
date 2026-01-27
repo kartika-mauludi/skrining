@@ -4,14 +4,14 @@ use App\Http\Controllers\Admin\AngketSoalController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\MasterUserController;
-use App\Http\Controllers\Siswa\FormAngket;
-use App\Http\Controllers\AngketController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\KelasController;
-use App\Http\Controllers\SekolahController;
+
+
+
+
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 
@@ -38,6 +38,10 @@ Route::middleware('role:super_admin')->group(function (){
     route::get('/admin/guru/data',[GuruController::class,'data'])->name('admin.guru.data');
     route::post('admin/guru/import',[GuruController::class, 'import'])->name('admin.guru.import');
     route::resource('/admin/guru',GuruController::class);
+    route::get('admin/angket/data',[AngketController::class,'data'])->name('admin.angket.data');
+    route::resource('admin/angket',AngketController::class);
+    route::get('admin/angketsoal/data',[AngketSoalController::class, 'data'])->name('admin.angketSoal.data');
+    route::resource('admin/angketsoal',AngketSoalController::class);
 });
 
 // start route guru
@@ -62,3 +66,4 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
 // Siswa
 route::get('/siswa/form_angket',[FormAngket::class, 'index'])->name('siswa.formAngket');
 });
+

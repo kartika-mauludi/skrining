@@ -26,7 +26,7 @@ class LoginController extends Controller
             if (Auth::user()->role === 'super_admin') {
                 return redirect('/admin/index');
             }else if (Auth::user()->role === 'guru') {
-                return redirect('/guru/index');
+                return redirect('/guru/dashboard');
             }
             else{
                 return redirect('/login');

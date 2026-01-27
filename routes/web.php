@@ -9,6 +9,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\AngketController;
+use App\Http\Controllers\Siswa\FormAngket;
+use App\Http\Controllers\SekolahController;
+
 
 
 
@@ -64,7 +67,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
 
 
 
+});
 // Siswa
 route::get('/siswa/form_angket',[FormAngket::class, 'index'])->name('siswa.formAngket');
-});
 

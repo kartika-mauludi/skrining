@@ -158,7 +158,7 @@ $(document).ready(function(){
             updateUrl = updateUrl.replace(':id', data['data']['id']);
 
             if (data['data']['logo']) {
-                $('#preview').attr('src', `/storage/${data['data']['logo']}`).show();
+                $('#preview').attr('src', `/upload/${data['data']['logo']}`).show();
             } else {
                 $('#preview').hide();
             }

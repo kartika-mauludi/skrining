@@ -46,4 +46,41 @@ class SiswaController extends Controller
 
         return redirect()->route('guru.siswa.index')->with('message', $message);
     }
+
+    public function edit(Siswa $siswa)
+    {
+        return response()->json([
+            'data' => $siswa
+        ]);
+    }
+
+    public function update(Request $request, Siswa $siswa)
+    {
+        $input = $request->except('_token');
+
+        try{
+            $siswa->update($input);
+            $message = 'Data siswa berhasil diperbarui';
+        }catch(Exception $x){
+            report($x);
+            $message = $x->getMessage();
+        }
+
+        return redirect()->route('guru.siswa.index')->with('message', $message);
+    }
+
+    public function destroy(Siswa $siswa)
+    {
+        try{
+            $siswa->delete();
+            $message = 'Data siswa berhasil dihapus';
+        }catch(Exception $x){
+            report($x);
+            $message = $x->getMessage();
+        }
+
+        return response()->json([
+            'message' => $message
+        ]);
+    }
 }

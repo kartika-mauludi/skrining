@@ -157,9 +157,15 @@ $(document).ready(function(){
             updateUrl = updateUrl.replace(':id', data['data']['id']);
         
             $('#method').val('PUT')
-            $('#nama_sekolah').val(data['data']['nama_sekolah']);
-            $('#no_tlp').val(data['data']['no_tlp']);
-            $('#alamat_lengkap').val(data['data']['alamat_lengkap']);
+            $('#kelas_id').val(data['data']['kelas_id']).change();
+            $('#nama_lengkap').val(data['data']['nama_wali']);
+            $('#no_absen').val(data['data']['no_absen']);
+            $('#nis').val(data['data']['nis']);
+            $('#tgl_lahir').val(data['data']['tgl_lahir']);
+            $('#tempat_lahir').val(data['data']['tempat_lahir']);
+            $('#alamat').val(data['data']['alamat']);
+            $('#nama_wali').val(data['data']['nama_wali']);
+            $('#no_tlp_wali').val(data['data']['no_tlp_wali']);
 
             $('#dataForm').prop('action', updateUrl);
             $('#dataModal').modal('show');

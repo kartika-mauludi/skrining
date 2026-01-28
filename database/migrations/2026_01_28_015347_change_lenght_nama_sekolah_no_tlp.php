@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jawaban', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('soal_id')->constrained('soals')->cascadeOnDelete();
-            // jawaban untuk isi option piliahn siswa yang ditunjuk dan 
-            $table->string('jawaban');
-            $table->timestamps();
+         Schema::table('sekolahs', function (Blueprint $table) {
+            $table->string('nama_sekolah', 100)->change();
+            $table->string('no_tlp', 30)->change();
         });
     }
 
@@ -25,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jawaban');
+         Schema::table('sekolahs', function (Blueprint $table) {
+            $table->string('nama_sekolah', 20)->change();
+            $table->string('no_tlp', 20)->change();
+        });
     }
 };

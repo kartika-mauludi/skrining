@@ -36,6 +36,7 @@
                         <div class="card-header">
                             <h3 class="card-title"></h3>
                             <button class="btn btn-sm btn-success" id="add"> Tambah </button>
+                            <button class="btn btn-sm btn-info" data-toggle="modal"data-target="#importModal">Import</button>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -68,6 +69,7 @@
 </div>
 
 @include('guru.siswa.modal')
+@include('guru.siswa.modal_import')
 @endsection
 
 @push('script')

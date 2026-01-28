@@ -62,6 +62,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::resource('angket', AngketGuruController::class)
     ->names('guru.angket');
 
+    Route::post('siswa/import', [SiswaController::class, 'import'])->name('guru.siswa.import');
     Route::post('siswa/data', [SiswaController::class, 'index'])->name('guru.siswa.data');
     Route::resource('siswa', SiswaController::class)
     ->names('guru.siswa');

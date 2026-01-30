@@ -8,9 +8,13 @@ class AngketSoal extends Model
 {
     protected $fillable = [
         'angket_id',
+        'sekolah_id',
+        'guru_id',
         'sequence',
         'soal',
         'tipe_soal',
+        'indikasi_siswa',
+        'lokasi_kejadian',
         'bobot'
     ];
 

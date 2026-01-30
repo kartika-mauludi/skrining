@@ -47,7 +47,7 @@ Route::middleware('role:super_admin')->group(function (){
 
 // start route guru
 Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
-    Route::get('dashboard', [HomeController::class, 'guru'])->name('guru.index');
+    Route::get('dashboard', [HomeController::class, 'guru'])->name('guru.dashboard');
     Route::post('sekolah/data', [SekolahController::class, 'index'])->name('guru.sekolah.data');
     Route::resource('sekolah', SekolahController::class)
     ->names('guru.sekolah');

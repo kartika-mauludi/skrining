@@ -3,8 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Angket;
 use Illuminate\Http\Request;
 use App\Models\AngketSoal;
+use Validator;
+use Exception;
+use DB;
 
 class AngketSoalController extends Controller
 {
@@ -13,7 +17,7 @@ class AngketSoalController extends Controller
      */
     public function index()
     {
-        return view('admin.angketSoal.index');
+        
     }
 
     /**
@@ -29,7 +33,38 @@ class AngketSoalController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            foreach ($request->soal as $item) {
+                AngketSoal::create([
+                    'angket_id'        => $request->angket_id,
+                    'sequence'         => $item['sequence'],
+                    'soal'             => $item['pertanyaan'],
+                    'lokasi_kejadian'  => $item['tipe_soal'] === 'keterangan' ? null : ($item['ruang'] ?? null),
+                    'tipe_soal'        => $item['tipe_soal'],
+                    'indikasi_siswa'   => $item['tipe_soal']  === 'keterangan' ? null : ($item['indikator'] ?? null),
+                    'detail_tipe_soal' => $item['opsi'] ?? null,
+                    'bobot'            => 1
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => 200,
+                'message' => 'Data berhasil dimasukkan'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status'  => 422,
+                'message' => 'Data gagal ditambahkan',
+                'error'   => $e->getMessage()
+            ], 422);
+        }
     }
 
     /**
@@ -37,7 +72,8 @@ class AngketSoalController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $angket = Angket::find($id);
+        return view('admin.angketSoal.index',compact('angket'));
     }
 
     /**
@@ -65,7 +101,7 @@ class AngketSoalController extends Controller
     }
 
     public function data(){
-        $data = AngketSoalController::all();
+        $data = AngketSoal::all();
 
         return response()->json([
             'data' => $data

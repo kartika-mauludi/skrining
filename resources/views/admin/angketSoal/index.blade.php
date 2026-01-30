@@ -6,6 +6,14 @@
      .select2 {
         color: #000 !important
     }
+    .sortable-placeholder {
+        border: 2px dashed #ccc;
+        height: 60px;
+        margin-top: 10px;
+    }
+    .drag-handle {
+        cursor: move;
+    }
 </style>
 @endpush
 <!-- Content Wrapper. Contains page content -->
@@ -36,15 +44,20 @@
               <div class="card-header">
                 <h3 class="card-title"></h3>
                  <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
+                 <button class="btn btn-secondary p-1" id="kembali"  data-toggle="modal">Kembali </button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="tbl-angkeSOalt" class="table table-bordered table-striped">
+                <table id="tbl-angketSoal" class="table table-bordered table-striped">
                  <thead>
                   <tr>
                     <th>Urut</th>
                     <th>Soal</th>
                     <th>Tipe Soal</th>
+                    <th>Ruang Lingkup</th>
+                    <!-- <th></th> -->
+                    <th>Sekolah</th>
+                    <th>Owner</th>
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -56,6 +69,10 @@
                     <th>Urut</th>
                     <th>Soal</th>
                     <th>Tipe Soal</th>
+                    <th>Ruang Lingkup</th>
+                    <!-- <th></th> -->
+                    <th>Sekolah</th>
+                    <th>Owner</th>
                     <th>Action</th>
                   </tr>
                   </tfoot>
@@ -69,7 +86,7 @@
 </section>
 </div>
 
- @include('admin.angket.modal')
+ @include('admin.angketSoal.modal')
 @endsection
 
 @push('script')
@@ -92,6 +109,16 @@
       }, {
         data    : 'tipe_soal',
         render  : (data) => data ? `${data}` : `-` 
+      },{
+        data    : 'ruang_lingkup',
+        render  : (data) => data ? `${data}` : `-` 
+      },
+      {
+        data    : 'sekolah_id',
+        render  : (data) => data ? `${data}` : `-` 
+      },{
+        data    : 'guru_id',
+        render  : (data) => data ? `${data}` : `Admin` 
       },
       {
         data: 'id',
@@ -109,7 +136,11 @@
     })
   })
 
-   $(document).on("click", ".jawaban-btn", function () {
+   $(document).on("click", "#kembali", function () {
+    window.location.href = "{{ route('angket.index') }}";
+  });
+
+  $(document).on("click", ".jawaban-btn", function () {
     window.location.href = "edit.html";
   });
 
@@ -131,9 +162,9 @@ $(document).on('submit','#addDataForm', function(e){
     success : function(response){
       closeLoading();
       if(response.status == 200){
-        swal.fire('Berhasil', response.message, 'success');
+        Swal.fire('Berhasil', response.message, 'success');
       }else{
-        swal.fire('Gagal', response.message, 'error');
+        Swal.fire('Gagal', response.message, 'error');
       }
       $(form).closest('.modal').modal('hide');
       form.reset();
@@ -167,7 +198,7 @@ var table = $('.table').DataTable();
 var id    = $(this).data('id');
 var url   = "{{ route('angket.destroy',':id') }}".replace(':id',id);
 
-  swal.fire({
+  Swal.fire({
     title   :"Hapus Angket",
     text    : "Anda Yakin Untuk Hapus Angket Ini ?",
     icon    : 'warning',
@@ -184,16 +215,16 @@ var url   = "{{ route('angket.destroy',':id') }}".replace(':id',id);
         success : function(response){
           closeLoading();
           if(response.status == 200){
-            swal.fire('Berhasil', response.message,'success');
+            Swal.fire('Berhasil', response.message,'success');
           }else{
-            swal.fire('Gagal',response.message,'error')
+            Swal.fire('Gagal',response.message,'error')
           }
           table.ajax.reload();
         },
         error : function(response){
            closeLoading();
           if(response.status == 419){
-          swal.fire('Gagal',response.responseJSON.message,'error')
+          Swal.fire('Gagal',response.responseJSON.message,'error')
           }
          
         }
@@ -239,9 +270,9 @@ $('#EditDataForm').on('submit',function(e){
     success : function(response){
       closeLoading();
       if(response.status == 200){
-        swal.fire('Berhasil',response.message, 'success')
+        Swal.fire('Berhasil',response.message, 'success')
       }else{
-        swal.fire('gagal',response.errorMessage, 'error')
+        Swal.fire('gagal',response.errorMessage, 'error')
       }
        $(form).closest('.modal').modal('hide');
       form.reset();
@@ -258,7 +289,7 @@ $('#EditDataForm').on('submit',function(e){
           errorMessage = response.responseJSON.message;
         }
       }
-      swal.fire({
+      Swal.fire({
         title : 'gagal',
         html  : errorMessage,
         icon  : 'error'
@@ -268,6 +299,241 @@ $('#EditDataForm').on('submit',function(e){
   });
 });
 
+ let soalIndex = 0;
 
+  // ===============================
+    // ADD NEW QUESTION
+    // ===============================
+    $('.addNew').on('click', function () {
+        const parent = $('#soal-container');
+        const idx = soalIndex++;
+
+        let input = `
+        <div class="soal-input border p-2 rounded mt-3" data-index="${idx}">
+            <div class="d-flex align-items-start">
+                <span class="drag-handle mr-2">☰</span>
+                <span role="button" class="text-danger mr-2 rmInput">
+                    <i class="fas fa-trash"></i>
+                </span>
+                <input type="hidden"
+                  name="soal[${idx}][sequence]"
+                  class="sequence-input"
+                  value="${idx + 1}">
+
+                <div class="w-100">
+                    <textarea
+                        name="soal[${idx}][pertanyaan]"
+                        class="form-control form-control-sm mb-2"
+                        placeholder="Pertanyaan"
+                        required></textarea>
+
+                    <div class="d-flex mb-2">
+                      <select
+                            name="soal[${idx}][tipe_soal]"
+                            class="form-control form-control-sm w-25 mr-1 tipe-soal"
+                            required>
+                            <option value="">Tipe Soal</option>
+                            <option value="radio">Pilihan</option>
+                            <option value="range">Range</option>
+                            <option value="text">Text</option>
+                            <option value="keterangan">Keterangan</option>
+                        </select>
+
+                       <select
+                            name="soal[${idx}][ruang]"
+                            class="form-control form-control-sm w-25 mr-1 ruang-soal"
+                            required>
+                            <option value="">Ruang Linkup</option>
+                            <option value="lingkungan kelas">Di dalam kelas</option>
+                            <option value="sosmed">Sosial Media</option>
+                            <option value="game">Game</option>
+                            <option value="lainnya">Lain lain</option>
+                        </select>
+                      
+                         <select
+                            name="soal[${idx}][indikator]"
+                            class="form-control form-control-sm w-25 mr-1 indikator-soal"
+                            required>
+                            <option value="">Indikator</option>
+                            <option value="pelaku">Pelaku</option>
+                            <option value="korban">Korban</option>
+                        </select>
+                    </div>
+
+                    <div class="opsi-container"></div>
+
+                    <button type="button"
+                        class="btn btn-sm btn-outline-primary add-opsi mt-1"
+                        style="display:none;">
+                        + Tambah Opsi
+                    </button>
+
+                    <small class="text-muted nilai-info"></small>
+                </div>
+            </div>
+        </div>
+        `;
+
+        parent.append(input);
+    });
+    // ========================= ====
+    // Drag
+    // =============================== 
+
+    $('#soal-container').sortable({
+      handle: '.drag-handle',
+      placeholder: 'sortable-placeholder',
+      update: function () {
+          updateSoalOrder();
+      }
+    });
+
+    // ================================
+    // update Soal Order
+    // ================================
+   function updateSoalOrder() {
+        $('#soal-container .soal-input').each(function (index) {
+            $(this).attr('data-index', index);
+
+            // update sequence (1,2,3,...)
+            $(this).find('.sequence-input').val(index + 1);
+
+            // soal
+            $(this).find('textarea').attr(
+                'name',
+                `soal[${index}][soal]`
+            );
+
+            $(this).find('.ruang-soal').attr(
+                'name',
+                `soal[${index}][ruang]`
+            );
+
+            $(this).find('.tipe-soal').attr(
+                'name',
+                `soal[${index}][tipe_soal]`
+            );
+
+            $(this).find('select[name*="[indikator]"]').attr(
+                'name',
+                `soal[${index}][indikator]`
+            );
+
+            // opsi
+            $(this).find('.opsi-item').each(function (opsiIndex) {
+                $(this).find('input[name*="[label]"]').attr(
+                    'name',
+                    `soal[${index}][opsi][${opsiIndex}][label]`
+                );
+                $(this).find('input[name*="[nilai]"]').attr(
+                    'name',
+                    `soal[${index}][opsi][${opsiIndex}][nilai]`
+                );
+            });
+        });
+    }
+
+     
+    // ===============================
+    // REMOVE QUESTION
+    // ===============================
+    $(document).on('click', '.rmInput', function () {
+        $(this).closest('.soal-input').remove();
+    });
+
+    // ===============================
+    // CHANGE TYPE
+    // ===============================
+    $(document).on('change', '.tipe-soal', function () {
+        const soal = $(this).closest('.soal-input');
+        const idx = soal.data('index');
+        const tipe = $(this).val();
+        const opsiContainer = soal.find('.opsi-container');
+        const btnAdd = soal.find('.add-opsi');
+        const ruang = soal.find('.ruang-soal');
+        const indikator = soal.find('.indikator-soal');
+
+        opsiContainer.empty();
+        soal.find('.nilai-info').text('');
+
+        if (tipe === 'checkbox') {
+            for (let i = 0; i < 2; i++) {
+                opsiContainer.append(renderOpsi(idx, i));
+            }
+            btnAdd.show();
+            updateNilai(soal);
+        } else {
+            btnAdd.hide();
+        }
+        
+       
+        if (tipe === 'keterangan') {
+            // sembunyikan
+            ruang.closest('select').prop('required', false);
+            indikator.closest('select').prop('required', false);
+
+            ruang.val('').prop('disabled', true).hide();
+            indikator.val('').prop('disabled', true).hide();
+        } else {
+            // tampilkan lagi
+            ruang.prop('disabled', false).show().prop('required', true);
+            indikator.prop('disabled', false).show().prop('required', true);
+        }
+    });
+
+    // ===============================
+    // ADD OPTION
+    // ===============================
+    $(document).on('click', '.add-opsi', function () {
+        const soal = $(this).closest('.soal-input');
+        const idx = soal.data('index');
+        const opsiIndex = soal.find('.opsi-item').length;
+        soal.find('.opsi-container').append(renderOpsi(idx, opsiIndex));
+        updateNilai(soal);
+    });
+
+    // ===============================
+    // REMOVE OPTION
+    // ===============================
+    $(document).on('click', '.remove-opsi', function () {
+        const soal = $(this).closest('.soal-input');
+        if (soal.find('.opsi-item').length <= 2) {
+            alert('Minimal 2 opsi');
+            return;
+        }
+        $(this).closest('.opsi-item').remove();
+        updateNilai(soal);
+    });
+
+    // ===============================
+    // UPDATE SCORE
+    // ===============================
+    $(document).on('input', '.bobot', function () {
+        updateNilai($(this).closest('.soal-input'));
+    });
+
+    // ===============================
+    // FUNCTIONS
+    // ===============================
+    function renderOpsi(idx, opsiIndex) {
+
+        return `
+        <div class="d-flex align-items-center opsi-item mb-1">
+            <input type="text"
+                name="soal[${idx}][opsi][${opsiIndex}][label]"
+                class="form-control form-control-sm mr-1"
+                placeholder="Pilihan"
+                required>
+
+            <input type="hidden"
+                name="soal[${idx}][opsi][${opsiIndex}][nilai]"
+                class="nilai-input">
+
+            <span role="button" class="text-danger remove-opsi">
+                <i class="fas fa-times"></i>
+            </span>
+        </div>
+        `;
+    }
 </script>
 @endpush

@@ -25,7 +25,7 @@
                with font-awesome or any other icon font library -->
         
           <li class="nav-item">
-            <a href="{{ route('guru.index') }}" class="nav-link @if(Route::is('guru.index')) active @endif">
+            <a href="{{ route('guru.dashboard') }}" class="nav-link @if(Route::is('guru.index')) active @endif">
                <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard

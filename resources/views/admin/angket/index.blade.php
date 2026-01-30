@@ -92,7 +92,7 @@
         render: function(data, type, row){
           return `
              <div class="btn-group d-flex gap-5">
-                  <button class="btn btn-sm btn-primary detail-btn" id="detail-btn" data-id="${data}">Detail</button>
+                  <button class="btn btn-sm btn-primary detail-btn" id="detail-btn" data-id="${data}">Soal</button>
                   <button class="btn btn-sm btn-warning edit-btn" data-id="${data}">Edit</button>
                   <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">Hapus</button>
               </div>
@@ -104,7 +104,8 @@
   })
 
    $(document).on("click", "#detail-btn", function () {
-    window.location.href = "{{ route('angketsoal.index') }}";
+    var id    = $(this).data('id');
+    window.location.href = "{{ route('angketsoal.show', ':id') }}".replace(':id',id);
   });
 
   // tambah data

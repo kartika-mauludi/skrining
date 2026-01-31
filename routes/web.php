@@ -42,6 +42,8 @@ Route::middleware('role:super_admin')->group(function (){
     route::get('admin/angket/data',[AngketController::class,'data'])->name('admin.angket.data');
     route::resource('admin/angket',AngketController::class);
     route::get('admin/angketsoal/data',[AngketSoalController::class, 'data'])->name('admin.angketSoal.data');
+    Route::delete('/angket-soal/destroy-all', [AngketSoalController::class, 'destroyAll'])
+    ->name('angketsoal.destroyAll');
     route::resource('admin/angketsoal',AngketSoalController::class);
 });
 
@@ -68,5 +70,5 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
 });
 
 // Siswa
-route::get('/siswa/form_angket',[FormAngket::class, 'index'])->name('siswa.formAngket');
+route::get('/siswa/formAngket',[FormAngket::class, 'index'])->name('siswa.formAngket');
 

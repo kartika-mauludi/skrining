@@ -1,6 +1,6 @@
 <!-- tambah data -->
 
-<div class="modal fade" id="addData" tabindex="-1" role="dialog" aria-labelledby="adddata" aria-hidden="true">
+<div class="modal fade addDataModal" id="addData" tabindex="-1" role="dialog" aria-labelledby="adddata" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -9,7 +9,7 @@
                     <span aria-hidden="true"></span>
                 </button>
             </div>
-            <form action="{{ route('angketsoal.store') }}" method="POST" id="dataForm" enctype="multipart/form-data">
+            <form action="{{ route('angketsoal.store') }}" method="POST" id="addDataForm" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="_method" id="method" value="POST">
 
@@ -25,14 +25,14 @@
 
                     <div id="soal-container" class="mt-3"></div>
                     
-                    <button type="button" class="btn btn-sm btn-primary addNew">
+                    <button type="button" class="btn btn-sm btn-primary addSoal">
                         + Tambah Pertanyaan
                     </button>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>
             </form>
         </div>

@@ -37,10 +37,10 @@ class AngketSoalController extends Controller
 
         try {
             foreach ($request->soal as $item) {
-                AngketSoal::create([
+                AngketSoal::updateOrCreate(['id' => $item['id']],[
                     'angket_id'        => $request->angket_id,
                     'sequence'         => $item['sequence'],
-                    'soal'             => $item['pertanyaan'],
+                    'soal'             => $item['soal'],
                     'lokasi_kejadian'  => $item['tipe_soal'] === 'keterangan' ? null : ($item['ruang'] ?? null),
                     'tipe_soal'        => $item['tipe_soal'],
                     'indikasi_siswa'   => $item['tipe_soal']  === 'keterangan' ? null : ($item['indikator'] ?? null),
@@ -73,7 +73,8 @@ class AngketSoalController extends Controller
     public function show(string $id)
     {
         $angket = Angket::find($id);
-        return view('admin.angketSoal.index',compact('angket'));
+        $soal = AngketSoal::where('angket_id',$id)->orderBy('sequence','asc')->get();
+        return view('admin.angketSoal.index',compact('angket','soal'));
     }
 
     /**
@@ -95,13 +96,43 @@ class AngketSoalController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(AngketSoal $angketsoal)
     {
-        //
+         try {
+        $angketsoal->delete();
+        return response()->json([
+            'status' => 200,
+            'message' => "Berhasil hapus soal"
+        ]);
+        } catch (Exception $e) {
+        return response()->json([
+            'status' => 500,
+            'message' => 'Gagal menghapus soal',
+            'error' => $e->getMessage()
+        ]);
+        }
+    }
+
+    public function destroyAll(Request $request)
+    {
+        try {
+            AngketSoal::where('angket_id', $request->angket_id)->delete();
+
+            return response()->json([
+                'status'  => 200,
+                'message' => 'Semua soal berhasil dihapus'
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'status'  => 500,
+                'message' => 'Gagal menghapus semua soal',
+                'error'   => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function data(){
-        $data = AngketSoal::all();
+        $data = AngketSoal::orderBy('sequence','asc')->get();
 
         return response()->json([
             'data' => $data

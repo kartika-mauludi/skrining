@@ -54,6 +54,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::resource('sekolah', SekolahController::class)
     ->names('guru.sekolah');
 
+    Route::post('kelas/{kelas}/token', [KelasController::class, 'token'])->name('guru.kelas.token');
     Route::post('kelas/data', [KelasController::class, 'index'])->name('guru.kelas.data');
     Route::resource('kelas', KelasController::class)
     ->except('show')

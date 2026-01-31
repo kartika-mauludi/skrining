@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('jawaban', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('soal_id')->constrained('soals')->cascadeOnDelete();
+            $table->foreignId('soal_id')->constrained('angket_soals')->cascadeOnDelete();
             // jawaban untuk isi option piliahn siswa yang ditunjuk dan 
             $table->string('jawaban');
             $table->timestamps();

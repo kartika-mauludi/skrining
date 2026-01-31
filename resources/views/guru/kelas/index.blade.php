@@ -46,6 +46,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Kelas</th>
+                                        <th>Akses Token</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -86,16 +87,22 @@ $(document).ready(function(){
             data    : 'nama_kelas',
             render  : (data) => data ? `${data}` : `-` 
         },{
+            data    : 'akses_token',
+            render  : (data) => data ? `${data}` : `-`
+        },{
         data: 'id',
             render: function(data, type, row){
+                let tokenUrl = "{{ route('guru.kelas.token', ':id') }}";
                 let editUrl = "{{ route('guru.kelas.edit', ':id') }}";
                 let deleteUrl = "{{ route('guru.kelas.destroy', ':id') }}";
 
+                tokenUrl = tokenUrl.replace(':id', data);
                 editUrl = editUrl.replace(':id', data);
                 deleteUrl = deleteUrl.replace(':id', data);
 
                 return `
                     <div class="btn-group">
+                        <button class="btn btn-sm btn-success token-btn" data-url="${tokenUrl}">Regenerate Token</button>
                         <button class="btn btn-sm btn-warning edit-btn" data-url="${editUrl}">Edit</button>
                         <button class="btn btn-sm btn-danger delete-btn" data-url="${deleteUrl}">Hapus</button>
                     </div>
@@ -110,6 +117,47 @@ $(document).ready(function(){
         $('#dataForm').prop('action', storeUrl).trigger('reset');
         $('#method').val('POST')
         $('#dataModal').modal('show');
+    });
+
+    $('#datatable').on('click', '.token-btn', function (){
+        const url = $(this).data('url');
+
+        swal.fire({
+            title: 'Perhatian',
+            text: 'Generate token baru ?',
+            icon: 'warning',
+            showDenyButton: true,
+            confirmButtonText: 'Generate',
+            denyButtonText: 'Batal',
+            customClass: {
+                confirmButton: 'btn btn-warning',
+                denyButton: 'btn btn-secondary',
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': token.attr('content')
+                    },
+                    success: function(response) {
+                        swal.fire({
+                            title:'Berhasil',
+                            text:'Token berhasil diperbarui',
+                            icon:'success',
+                            allowOutsideClick: false
+                        })
+                        .then((result) => {
+                            location.reload();
+                        })
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        swal.fire('Kesalahan sistem',textStatus,'error')
+                    }
+                })
+            }
+        });
     });
 
     $('#datatable').on('click', '.edit-btn', function (){

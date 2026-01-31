@@ -18,10 +18,7 @@ class KelasSeeder extends Seeder
         ->limit(5)->get();
 
         foreach ($sekolahs as $sekolah) {
-            Kelas::create([
-                'sekolah_id' => $sekolah->id,
-                'nama_kelas' => fake()->name(),
-            ]);
+            Kelas::factory(3)->school($sekolah->id)->create();
         }
     }
 }

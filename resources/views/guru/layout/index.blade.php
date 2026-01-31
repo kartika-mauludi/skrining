@@ -135,21 +135,18 @@
  <!-- Sweer alert -->
 <script src="{{ asset('admin/assets-admin/dist/js/sweetalert.min.js') }}"></script>
 
-<!-- iCheck -->
-  <link rel="stylesheet" href='{{ asset("admin/assets-admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css") }}'>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
 
 <!-- DataTables  & Plugins -->
 <script src="https://adminlte.io/themes/v3/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="https://adminlte.io/themes/v3/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="https://adminlte.io/themes/v3/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-
-<!-- Select 2 -->
-<script src="{{ asset('admin/assets-admin/dist/js/select2.min.js') }}"></script>
 <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.html5.min.js"></script>
 
-<!-- dashboard -->
-<script src="{{ asset('admin/assets-admin/dist/js/pages/dashboard.js') }}"></script>
+<!-- Select 2 -->
+<script src="{{ asset('admin/assets-admin/dist/js/select2.min.js') }}"></script>
+
 <script>
      $('.select2').select2();
 </script>

@@ -5,22 +5,52 @@
 <section class="content">
 <div class="container-fluid">
     <div class="row justify-content-center pb-3 pt-3">
-        <div class="col-md-6">
+      <div class="col-md-12">
             <div class="card card-primary">
               <div class="card-header">
                 <h3 class="card-title">Angket</h3>
               </div>
             </div>
         </div>
+      <div class="col-md-7">
+       <div class="row justify-content-center pb-1">
+        <div class="col-md-12">
+            <div class="card card-primary">
+              <form>
+                <div class="card-body">
+                  <div class="form-group">
+                      <label for="absen">No Urut Absen</label>
+                      <select name="" id="" class="form-control form-control-sm w-100 mr-1">
+                        <option value=""></option>
+                      </select>
+                  </div>
+                </div>
+              </form>
+            </div>
+        </div>
+    </div>
+    <div class="row justify-content-center pb-1">
+        <div class="col-md-12">
+            <div class="card card-primary">
+              <form>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="kelas">Kelas</label>
+                    <input type="text" class="form-control" id="text" value>
+                  </div>
+                </div>
+              </form>
+            </div>
+        </div>
     </div>
      <div class="row justify-content-center pb-1">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card card-primary">
               <form>
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">No Urut Absen</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <label for="no_Induk">No Induk</label>
+                    <input type="number" readonly class="form-control" id="no_induk" value="">
                   </div>
                 </div>
               </form>
@@ -28,27 +58,13 @@
         </div>
     </div>
     <div class="row justify-content-center pb-1">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card card-primary">
               <form>
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Kelas</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-                  </div>
-                </div>
-              </form>
-            </div>
-        </div>
-    </div>
-     <div class="row justify-content-center pb-1">
-        <div class="col-md-6">
-            <div class="card card-primary">
-              <form>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">No Induk</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                    <label for="Nama">Nama</label>
+                    <input type="text" class="form-control" id="nama" readonly value="">
                   </div>
                 </div>
               </form>
@@ -56,21 +72,7 @@
         </div>
     </div>
     <div class="row justify-content-center pb-1">
-        <div class="col-md-6">
-            <div class="card card-primary">
-              <form>
-                <div class="card-body">
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Nama</label>
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
-                  </div>
-                </div>
-              </form>
-            </div>
-        </div>
-    </div>
-    <div class="row justify-content-center pb-1">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card card-primary">
               <form>
                 <div class="card-body">
@@ -89,6 +91,33 @@
               </form>
             </div>
         </div>
+    </div>
+      </div>
+      <div class="col-md-4">
+           <div class="card card-primary sticky-siswa">
+            <div class="card-header">
+                <h3 class="card-title">Daftar Siswa</h3>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      @foreach ( $siswas as $siswa )
+                      <tr class="active-siswa">
+                            <td>{{ $siswa->id }}</td>
+                            <td>Ahmad</td>
+                        </tr>
+                      @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
     </div>
 </div>
 

@@ -587,6 +587,18 @@ $(document).on('click', '.edit-btn', function () {
             btnAdd.show();
         }
 
+        if (tipe === 'text') {
+          ruang.val('lingkungan kelas');
+          ruang.find('option').each(function () {
+            if ($(this).val() !== 'lingkungan kelas') {
+                $(this).prop('disabled', true);
+            }
+          });
+             ruang.prop('disabled', false).prop('required', true);
+          } else {
+             ruang.find('option').prop('disabled', false); 
+        }
+
         // ===== KETERANGAN =====
         if (tipe === 'keterangan') {
             ruang.prop('required', false).prop('disabled', true).hide().val('');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class KelasController extends Controller
 {
@@ -29,6 +30,7 @@ class KelasController extends Controller
     public function store(Request $request)
     {
         $input = $request->except('_token');
+        $input['akses_token'] = Str::random(6);
 
         try{
             Kelas::create($input);
@@ -75,6 +77,23 @@ class KelasController extends Controller
         
         return response()->json([
             'message' => $message
+        ]);
+    }
+
+    public function token(Kelas $kelas)
+    {
+        $input['akses_token'] = Str::random(6);
+
+        try{
+            $kelas->update($input);
+            $message = 'Token berhasil diperbarui';
+        }catch(Exception $x){
+            report($x);
+            $message = $x->getMessage();
+        }
+
+        return response()->json([
+            'message' => $kelas
         ]);
     }
 }

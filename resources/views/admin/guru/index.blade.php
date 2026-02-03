@@ -47,7 +47,6 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                 
                 <table id="tbl-guru" class="table table-bordered table-striped">
                  <thead>
                   <tr>
@@ -116,10 +115,13 @@ document.getElementById('togglePassword').addEventListener('click', function () 
   // isi data table
   $(document).ready(function(){
     var table = $('#tbl-guru').DataTable({
-      dom         : 'Bfrtip',
-      paging: true,
-      info: true,
-      lengthChange: false,
+      dom         :   "<'row mb-2'<'col-md-6'l><'col-md-6 text-right'f>>" +
+    "<'row mb-2'<'col-md-12 text-right'B>>" +
+    "<'row'<'col-md-12'tr>>" +
+    "<'row mt-2'<'col-md-5'i><'col-md-7'p>>",
+      paging      : true,
+      info        : true,
+      lengthChange: true,
       autoWidth   : false,
       responsive  : 'true',
       buttons     : [{

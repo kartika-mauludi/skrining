@@ -95,9 +95,9 @@ document.getElementById('togglePassword').addEventListener('click', function () 
   // isi data table
   $(document).ready(function(){
     var table = $('#tbl-user').DataTable({
-      dom         : 'Bfrtip',
+      // dom         : 'Bfrtip',
       responsive    : 'true',
-      buttons     : ['copy', 'csv', 'excel', 'pdf', 'print'],
+      // buttons     : ['copy', 'csv', 'excel', 'pdf', 'print'],
       processing  : true,
       ordering    : true,
       serverSide  : false,

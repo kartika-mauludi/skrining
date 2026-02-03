@@ -44,7 +44,7 @@
 
           <li class="nav-item @if (request()->is(['admin/masteruser','admin/guru','admin/sekolah'])) menu-open @endif">
             <a href="#" class="nav-link @if (request()->is(['admin/masteruser','admin/guru','admin/sekolah'])) active @endif">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
+              <i class="nav-icon fas fa-solid fa-database"></i>
               <p>
                 Master
                 <i class="right fas fa-angle-left"></i>
@@ -74,7 +74,7 @@
 
           <li class="nav-item">
             <a href="{{ url('admin/angket') }}" class="nav-link">
-               <i class="nav-icon fas fa-tachometer-alt"></i>
+               <i class="nav-icon fas fa-regular fa-file"></i>
               <p>
                 Angket
               </p>
@@ -82,7 +82,7 @@
           </li>
           <li class="nav-item">
             <a href="{{ url('admin/index') }}" class="nav-link">
-               <i class="nav-icon fas fa-tachometer-alt"></i>
+               <i class="nav-icon fas fa-sticky-note"></i>
               <p>
                 Tanggapan
               </p>
@@ -91,7 +91,7 @@
 
           <li class="nav-item">
             <a href="{{ url('admin/index') }}" class="nav-link ">
-               <i class="nav-icon fas fa-tachometer-alt"></i>
+               <i class="nav-icon fas fa-solid fa-chart-line"></i>
               <p>
                 Log Aktivitas
               </p>
@@ -100,7 +100,7 @@
 
           <li class="nav-item">
             <a href="{{ url('admin/index') }}" class="nav-link ">
-               <i class="nav-icon fas fa-tachometer-alt"></i>
+               <i class="nav-icon fas fa-cogs"></i>
               <p>
                 Pengaturan
               </p>

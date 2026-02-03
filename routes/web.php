@@ -72,5 +72,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
 });
 
 // Siswa
-route::get('/siswa/formAngket',[FormAngketController::class, 'index'])->name('siswa.formAngket');
+route::post('siswa/formAngket',[FormAngketController::class, 'store'])->name('siswa.formAngket.store');
+route::get('siswa/formAngket',[FormAngketController::class, 'index'])->name('siswa.formAngket');
+route::get('siswa/hasilAngket',[FormAngketController::class,'hasil'])->name('siswa.hasilAngket');
 

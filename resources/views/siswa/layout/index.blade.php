@@ -129,7 +129,9 @@
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
 <!-- dashboard -->
+ @if(Route::is('dashboard'))
  <script src="{{ asset('admin/assets-admin/dist/js/pages/dashboard.js') }}"></script>
+ @endif
 <script>
      $('.select2').select2();
 </script>

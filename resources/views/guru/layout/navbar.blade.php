@@ -25,8 +25,8 @@
                with font-awesome or any other icon font library -->
         
           <li class="nav-item">
-            <a href="{{ route('guru.dashboard') }}" class="nav-link @if(Route::is('guru.index')) active @endif">
-               <i class="nav-icon fas fa-tachometer-alt"></i>
+            <a href="{{ route('guru.dashboard') }}" class="nav-link @if(Route::is('guru.dashboard')) active @endif">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
               </p>
@@ -35,7 +35,7 @@
 
           <li class="nav-item">
             <a href="{{ route('guru.sekolah.index') }}" class="nav-link @if(Route::is('guru.sekolah.index', 'guru.kelas.index')) active @endif">
-               <i class="nav-icon fas fa-building"></i>
+              <i class="nav-icon fas fa-building"></i>
               <p>
                 Data Sekolah
               </p>
@@ -53,9 +53,18 @@
 
           <li class="nav-item">
             <a href="{{ route('guru.siswa.index') }}" class="nav-link @if(Route::is('guru.siswa.index')) active @endif">
-               <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-users"></i>
               <p>
                 Data Siswa
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('guru.report') }}" class="nav-link @if(Route::is('guru.report')) active @endif">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Report
               </p>
             </a>
           </li>

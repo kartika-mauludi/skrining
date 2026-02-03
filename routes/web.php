@@ -69,6 +69,8 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::post('siswa/data', [SiswaController::class, 'index'])->name('guru.siswa.data');
     Route::resource('siswa', SiswaController::class)
     ->names('guru.siswa');
+
+    Route::get('report', fn () => view('guru.report.index'))->name('guru.report');
 });
 
 // Siswa

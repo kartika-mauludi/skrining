@@ -37,11 +37,6 @@
         .text-small {
             font-size: 12px;
         }
-        canvas {
-        -moz-user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        }
     </style>
 </head>
 <body>
@@ -97,20 +92,21 @@
 
         <!-- SKOR -->
         <div class="row mb-3">
-             <div class="col-md-5 text-center">
-                <div class="card">
-                    <div class="card-header border-0">
-                        <div class="d-flex justify-content-between">
-                        <h6 class="card-title">History</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="position-relative mb-4">
-                        <canvas id="history-chart" height="100"></canvas>
-                        </div>
-                    </div>
+              <div class="col-md-5 text-center">
+                     <div class="card">
+              <div class="card-header border-0">
+                <div class="d-flex justify-content-between">
+                  <h6 class="card-title">History</h6>
                 </div>
               </div>
+              <div class="card-body">
+                <div class="position-relative mb-4">
+                  <canvas id="visitors-chart" height="100"></canvas>
+                </div>
+
+              </div>
+            </div>
+                </div>
             <div class="col-md-4">
                 <div class="box">
                     <div class="box-title">Perlakuan Perundungan</div>
@@ -145,13 +141,10 @@
             </div> -->
 
               <div class="col-md-3">
-                <!-- <div class="box text-center" style="background-color: #37F713;">
+                <div class="box text-center" style="background-color: #37F713;">
                     <div class="box-title">Status</div>
-                    <h1 class="fw-bold">Aman</h1> -->
+                    <h1 class="fw-bold">Aman</h1>
                     <!-- <div>Pelaku yang diadukan</div> -->
-                <!-- </div> -->
-                 <div id="canvas-holder" style="width:100%">
-                    <canvas id="chart"></canvas>
                 </div>
             </div>
 
@@ -160,44 +153,13 @@
 
         <!-- DETAIL -->
         <div class="box mb-3">
-            <strong>Kriteria Perundungan :</strong>
+            <strong>Tempat Perundungan :</strong>
             <div class="row mt-2">
                 <div class="col">Sosial Media: <strong>0</strong></div>
                 <div class="col">Game: <strong>0</strong></div>
                 <div class="col text-danger">Kelas: <strong>0</strong></div>
                 <div class="col text-danger">Lain-lain: <strong>0</strong></div>
             </div>
-        </div>
-
-        <div class="row box mb-3">
-             <div class="col-md-6 text-center">
-                <div class="card">
-                    <div class="card-header border-0">
-                        <div class="d-flex justify-content-between">
-                        <h6 class="card-title">Kriteria Perundungan</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="position-relative mb-4">
-                        <canvas id="kriteria-chart" height="100"></canvas>
-                        </div>
-                    </div>
-                </div>
-              </div>
-             <div class="col-md-6 text-center">
-                <div class="card">
-                    <div class="card-header border-0">
-                        <div class="d-flex justify-content-between">
-                        <h6 class="card-title">Kriteria Perundungan Cyber</h6>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="position-relative mb-4">
-                        <canvas id="cyber-chart" height="100"></canvas>
-                        </div>
-                    </div>
-                </div>
-              </div>
         </div>
 <!-- 
         <div class="box mb-3">
@@ -235,8 +197,9 @@
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-  const history = document.getElementById('history-chart').getContext('2d');
-  new Chart(history, {
+  const ctx = document.getElementById('visitors-chart').getContext('2d');
+
+  new Chart(ctx, {
     type: 'line',
     data: {
       labels: ['Tes 1', ' Tes 2', 'Tes 3', 'Tes 4'],
@@ -280,132 +243,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
-function KategoriConfig() {
-  return {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 205, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(201, 203, 207, 0.2)'
-        ],
-        borderColor: [
-          'rgb(255, 99, 132)',
-          'rgb(255, 159, 64)',
-          'rgb(255, 205, 86)',
-          'rgb(75, 192, 192)',
-          'rgb(54, 162, 235)',
-          'rgb(153, 102, 255)',
-          'rgb(201, 203, 207)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-        legend: {
-          display: false
-        },
-      scales: {
-        x: { offset: true },
-        y: { beginAtZero: true }
-      }
-    }
-  };
-}
-
-function CyberConfig() {
-  return {
-    type: 'bar',
-    data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 205, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(201, 203, 207, 0.2)'
-        ],
-        borderColor: [
-          'rgb(255, 99, 132)',
-          'rgb(255, 159, 64)',
-          'rgb(255, 205, 86)',
-          'rgb(75, 192, 192)',
-          'rgb(54, 162, 235)',
-          'rgb(153, 102, 255)',
-          'rgb(201, 203, 207)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-        legend: {
-          display: false
-        },
-      scales: {
-        x: { offset: true },
-        y: { beginAtZero: true }
-      }
-    }
-  };
-}
-const kategori = document.getElementById('kriteria-chart').getContext('2d'); 
-const cyber = document.getElementById('cyber-chart').getContext('2d');
-
-new Chart(kategori, KategoriConfig());
-new Chart(cyber, CyberConfig());
-
 });
-
-
-var config = {
-  type: "gauge",
-  data: {
-    datasets: [
-      {
-        data: [20, 40, 50],
-        minValue: 10,
-        value: 30,
-        backgroundColor: ["#09e63cff", "#d4f544ff", "#cb3600ff"],
-        borderWidth: 1
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    layout: {
-      padding: {
-        bottom: 30
-      }
-    },
-    needle: {
-      radiusPercentage: 2,
-      widthPercentage: 2.2,
-      lengthPercentage: 50,
-      color: "#FF6112"
-    }
-  }
-};
-
-window.onload = function () {
-  var ctx = document.getElementById("chart").getContext("2d");
-  window.myGauge = new Chart(ctx, config);
-};
-
 
 </script>
 

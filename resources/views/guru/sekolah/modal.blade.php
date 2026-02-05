@@ -26,6 +26,14 @@
                         <label for="alamat_lengkap" class="form-label">Alamat</label>
                         <textarea name="alamat_lengkap" id="alamat_lengkap" class="form-control form-control-sm"></textarea>
                     </div>
+                     <div class="form-group">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" name="email" id="email" class="form-control form-control-sm">
+                    </div>
+                     <div class="form-group">
+                        <label for="website" class="form-label">Website</label>
+                        <input name="website" type="url" id="website" class="form-control form-control-sm">
+                    </div>
                     <div class="form-group">
                         <label for="logo" class="form-label">Logo</label>
                         <input type="file" name="logo" id="logo" class="form-control form-control-sm" accept="image/*">

@@ -74,7 +74,7 @@ class FormAngketController extends Controller
             }
         }
             $data['siswa'] = Siswa::find($request->siswa_id);
-            $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah')->where('akses_token',$request->token)->first();
+            $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$request->token)->first();
             $data['jawabans']=Jawaban::where('siswa_id', $request->siswa_id)->get();
        return view('siswa.hasilAngket',$data);
     }
@@ -83,9 +83,8 @@ class FormAngketController extends Controller
         $siswa_id = 2;
         $token ='kJ1P5C' ;
         $data['siswa'] = Siswa::find($siswa_id);
-        $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp')->where('akses_token',$token)->first();
+        $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$token)->first();
         $data['jawabans']=Jawaban::where('siswa_id', $siswa_id)->get();
-        // return $data;
        return view('siswa.hasilAngket',$data);
     }
 }

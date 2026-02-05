@@ -45,6 +45,7 @@ class AngketSoalController extends Controller
                     'tipe_soal'        => $item['tipe_soal'],
                     'indikasi_siswa'   => $item['tipe_soal']  === 'keterangan' ? null : ($item['indikator'] ?? null),
                     'detail_tipe_soal' => $item['opsi'] ?? null,
+                    'indikasi_bully'   => $item['tipe_soal'] === 'keterangan' ? null : ($item['indikasi_bully'] ?? null),
                     'bobot'            => 1
                 ]);
             }

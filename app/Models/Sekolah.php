@@ -14,7 +14,9 @@ class Sekolah extends Model
         'nama_sekolah',
         'no_tlp',
         'alamat_lengkap',
-        'logo'
+        'logo',
+        'website',
+        'email'
     ];
 
     public function guru()

@@ -18,7 +18,7 @@
                 @csrf
             <!-- Email input -->
             <div data-mdb-input-init class="form-outline mb-4">
-                <label class="form-label" for="loginName">Email or username</label>
+                <label class="form-label" for="email">Email or username</label>
                 <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required  oninvalid="this.setCustomValidity('Email Harus di Isi')" oninput="this.setCustomValidity('')" />
                  @error('email')
                     <span class="invalid-feedback" role="alert">
@@ -29,7 +29,7 @@
             <!-- Password input -->
             <label class="form-label"  for="loginPassword">Password</label>
             <div data-mdb-input-init class="form-outline mb-3 input-group">
-                <input type="password" id="password" name="password" class="form-control @error('password')is-invalid @enderror
+                <input type="password" id="password" name="password" required class="form-control @error('password')is-invalid @enderror
               "/>
                  <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                     <i class="fas fa-eye" id="toggleIcon"></i>

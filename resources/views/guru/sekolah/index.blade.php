@@ -46,6 +46,8 @@
                                         <th>Nama Sekolah</th>
                                         <th>No. Telpon</th>
                                         <th>Alamat Lengkap</th>
+                                        <th>Website</th>
+                                        <th>Email</th>
                                         <th>Logo</th>
                                         <th>Jumlah Kelas</th>
                                         <th>Action</th>
@@ -92,6 +94,12 @@ $(document).ready(function(){
             render  : (data) => data ? `${data}` : `-` 
         },{
             data    : 'alamat_lengkap',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'email',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'email',
             render  : (data) => data ? `${data}` : `-` 
         },{
             data    : 'logo',

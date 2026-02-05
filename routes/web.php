@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\AngketSoalController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\GuruController;
 use App\Http\Controllers\Admin\MasterUserController;
+use App\Http\Controllers\Admin\AngketController;
+use App\Http\Controllers\Admin\SekolahController as AdminSekolahController;
+use App\Http\Controllers\Admin\TanggapanController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\Admin\AngketController;
 use App\Http\Controllers\AngketController as AngketGuruController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\Siswa\FormAngketController;
@@ -45,6 +47,13 @@ Route::middleware('role:super_admin')->group(function (){
     Route::delete('/angket-soal/destroy-all', [AngketSoalController::class, 'destroyAll'])
     ->name('angketsoal.destroyAll');
     route::resource('admin/angketsoal',AngketSoalController::class);
+    Route::get('admin/sekolah/data', [AdminSekolahController::class, 'data'])->name('admin.sekolah.data');
+    Route::resource('admin/sekolah', AdminSekolahController::class)
+    ->names('admin.sekolah');
+    Route::get('admin/tanggapan/data',[TanggapanController::class,'data'])->name('admin.tanggapan.data');
+     Route::delete('admin/tanggapan/destroy-all', [TanggapanController::class, 'destroyAll'])
+    ->name('admin.tanggapan.destroyAll');
+    route::resource('admin/tanggapan',TanggapanController::class);
 });
 
 // start route guru

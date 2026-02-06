@@ -163,7 +163,7 @@
                               <span>Identitas</span>
                               @foreach ($siswa as $s)
                                   <div class="node d-flex justify-content-between align-items-center">
-                                    <p class="m-0">{{ $s->nama_lengkap }}</p>
+                                    <p class="m-0 ml-2">{{ "$s->no_absen. $s->nama_lengkap" }}</p>
                                     <p class="m-0 ml-5">{{ $s->jk }}</p>
                                   </div>
                               @endforeach

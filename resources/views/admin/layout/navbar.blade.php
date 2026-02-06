@@ -64,7 +64,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="" class="nav-link">
+                <a href="{{ route('admin.sekolah.index') }}" class="nav-link @if(Route::is('admin.sekolah.index')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Data Sekolah</p>
                 </a>
@@ -73,7 +73,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ url('admin/angket') }}" class="nav-link">
+            <a href="{{ url('admin/angket') }}" class="nav-link @if(Route::is(['angket.index','angketsoal.show'])) active @endif">
                <i class="nav-icon fas fa-regular fa-file"></i>
               <p>
                 Angket
@@ -81,10 +81,19 @@
             </a>
           </li>
           <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link">
+            <a href="{{ url('admin/tanggapan') }}" class="nav-link @if(Route::is('tanggapan.index')) active @endif">
                <i class="nav-icon fas fa-sticky-note"></i>
               <p>
                 Tanggapan
+              </p>
+            </a>
+          </li>
+
+            <li class="nav-item">
+            <a href="{{ url('admin/index') }}" class="nav-link ">
+               <i class="nav-icon fas fa-solid fa-chart-line"></i>
+              <p>
+                Report
               </p>
             </a>
           </li>

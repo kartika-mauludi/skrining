@@ -15,12 +15,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Data User</h1>
+            <h1>Data Tanggapan</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">Home</a></li>
-              <li class="breadcrumb-item active">Data User</li>
+              <li class="breadcrumb-item active">Data Tanggapan</li>
             </ol>
           </div>
         </div>
@@ -35,16 +35,17 @@
               <div class="card-header">
                 <h3 class="card-title"></h3>
                  <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
+                 <button class="btn btn-primary p-1" id="import"  data-toggle="modal" data-target="#import"> Import </button>
+                 <button class="btn btn-danger p-1 deleteAll" id="deleteAll" >Hapus Semua Soal</button>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table id="tbl-user" class="table table-bordered table-striped">
+                <table id="tbl-tanggapan" class="table table-bordered table-striped">
                  <thead>
                   <tr>
                     <th>No</th>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Role</th>
+                    <th>Tanggapan</th>
+                    <th>Status</th>
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -54,9 +55,8 @@
                   <tfoot>
                   <tr>
                     <th>No</th>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Role</th>
+                    <th>Tanggapan</th>
+                    <th>Status</th>
                     <th>Action</th>
                   </tr>
                   </tfoot>
@@ -70,52 +70,29 @@
 </section>
 </div>
 
- @include('admin.masteruser.modal')
+ @include('admin.tanggapan.modal')
 @endsection
 
 @push('script')
 <script>
-  // eye password
-document.getElementById('togglePassword').addEventListener('click', function () {
-    const input = document.getElementById('password');
-    const icon = document.getElementById('toggleIcon');
-
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash'); // ubah ke icon hide
-    } else {
-        input.type = "password";
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye'); // kembali ke icon show
-    }
-});
-
-
   // isi data table
   $(document).ready(function(){
-    var table = $('#tbl-user').DataTable({
-      // dom         : 'Bfrtip',
-      responsive    : 'true',
-      // buttons     : ['copy', 'csv', 'excel', 'pdf', 'print'],
+    var table = $('#tbl-tanggapan').DataTable({
+      responsive  : true,
       processing  : true,
       ordering    : true,
       serverSide  : false,
-      ajax        : "{{ route('admin.masteruser.data') }}",
+      ajax        : "{{ route('admin.tanggapan.data') }}",
       columns     : [{
         data : null, render:(data,type,row,meta)=>{
           return `<div class='text-center'>${meta.row + 1}.</div>`;
         }
       },{
-        data    : 'name',
+        data    : 'feedback_deskripsi',
         render  : (data) => data ? `${data}` : `-` 
       },{
-        data    : 'email',
-        render  : (data) => data ? `${data}` : `-`
-      },
-      {
-        data    : 'role',
-        render  : (data) => data ? `${data}` : `-`
+        data    : 'status',
+        render  : (data) => data ? `${data}` : `-` 
       },
       {
         data: 'id',
@@ -131,6 +108,32 @@ document.getElementById('togglePassword').addEventListener('click', function () 
     ]
     })
   })
+
+  $(document).on('click', '#add', function () {
+    const $form = $('#addDataForm');
+    const $sn   = $('#addTanggapan');
+    $form[0].reset();
+    initSummernote($sn);
+    $sn.summernote('code', '');
+});
+
+function initSummernote($el) {
+  if ($el.next('.note-editor').length) {
+        $el.summernote('destroy');
+    }
+
+  if (!$el.next('.note-editor').length) {
+    $el.summernote({
+      height: 120,
+      toolbar: [
+        ['style', ['bold', 'italic', 'underline']],
+        ['para', ['ul', 'ol']],
+        ['insert', ['link']],
+        ['view', ['codeview']]
+      ]
+    });
+  }
+}
 
   // tambah data
 $(document).on('submit','#addDataForm', function(e){
@@ -184,11 +187,11 @@ $(document).on('submit','#addDataForm', function(e){
 $(document).on('click','.delete-btn',function(){
 var table = $('.table').DataTable();
 var id    = $(this).data('id');
-var url   = "{{ route('masteruser.destroy',':id') }}".replace(':id',id);
+var url   = "{{ route('tanggapan.destroy',':id') }}".replace(':id',id);
 
   swal.fire({
-    title   :"Hapus User",
-    text    : "Anda Yakin Untuk Hapus User Ini ?",
+    title   :"Hapus Tanggapan",
+    text    : "Anda Yakin Untuk Hapus Tanggapan Ini ?",
     icon    : 'warning',
     showCancelButton  : true,
     confirmButtonText : "Hapus",
@@ -223,25 +226,23 @@ var url   = "{{ route('masteruser.destroy',':id') }}".replace(':id',id);
 
 
 // edit modal
-
 $('.table').on('click','.edit-btn', function(){
   var id = $(this).data('id');
+  const $sn = $('#editNamaTanggapan');
   showLoading();
-  var url = "{{ route('masteruser.edit',':id') }}".replace(':id',id);
+  var url = "{{ route('tanggapan.edit',':id') }}".replace(':id',id);
   $.get(url, function(data){
     console.log(data);
     closeLoading();
     $('#editId').val(data.id);
-    $('#editName').val(data.name);
-    $('#editEmail').val(data.email);
-    $('#editRole').val(data.role);
-    var updateUrl = "{{ route('masteruser.update',':id') }}".replace(':id',data.id);
+     initSummernote($sn);
+     $sn.summernote('code', data.feedback_deskripsi ?? '');
+    $('#editStatus').val(data.status);
+    var updateUrl = "{{ route('tanggapan.update',':id') }}".replace(':id',data.id);
     $('#EditDataForm').attr('action',updateUrl);
     $('#editData').modal('show');
-     $('#editData').on('shown.bs.modal', function () {
-        let roles = data.role ?? [];
-        let roleIds = roles.map(role => role.id);
-        $('#editRole').val(roleIds).trigger('change');
+    $('#editData').on('shown.bs.modal', function () {
+         $('#editStatus').val(String(data.status ?? '')).trigger('change');
       });
   });
 });
@@ -293,6 +294,48 @@ $('#EditDataForm').on('submit',function(e){
     
   });
 });
+
+//  =================== delete all =======================
+
+
+$(document).on('click', '#deleteAll', function () {
+    Swal.fire({
+        title: 'Hapus Semua Tanggapan?',
+        text: 'Semua pertanyaan akan dihapus dan tidak bisa dikembalikan!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, hapus semua',
+        cancelButtonText: 'Batal'
+    }).then(result => {
+        if (result.isConfirmed) {
+            showLoading();
+
+            $.ajax({
+                url: "{{ route('admin.tanggapan.destroyAll') }}",
+                type: 'DELETE',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                },
+                success: function (res) {
+                    closeLoading();
+
+                    if (res.status === 200) {
+                        Swal.fire('Berhasil', res.message, 'success');
+                        // reload datatable
+                        $('.table').DataTable().ajax.reload();
+                    } else {
+                        Swal.fire('Gagal', res.message, 'error');
+                    }
+                },
+                error: function () {
+                    closeLoading();
+                    Swal.fire('Error', 'Terjadi kesalahan server', 'error');
+                }
+            });
+        }
+    });
+});
+
 
 
 </script>

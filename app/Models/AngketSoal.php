@@ -15,7 +15,8 @@ class AngketSoal extends Model
         'tipe_soal',
         'indikasi_siswa',
         'lokasi_kejadian',
-        'bobot'
+        'bobot',
+        'indikasi_bully'
     ];
 
     public function angket()

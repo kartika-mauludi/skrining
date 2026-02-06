@@ -325,7 +325,7 @@ function renderSoal(data = null) {
             <div class="w-100">
                 <textarea
                     name="soal[${idx}][soal]"
-                    class="form-control form-control-sm mb-2"
+                    class="form-control form-control-sm mb-2 summernote"
                     placeholder="Pertanyaan"
                     required>${data?.soal ?? ''}</textarea>
 
@@ -333,8 +333,7 @@ function renderSoal(data = null) {
                     <select name="soal[${idx}][tipe_soal]"
                         class="form-control form-control-sm w-25 mr-1 tipe-soal" required>
                         <option value="">Tipe Soal</option>
-                        <option value="radio">Pilihan</option>
-                        <option value="range">Range</option>
+                        <option value="range">Skala</option>
                         <option value="text">Text</option>
                         <option value="keterangan">Keterangan</option>
                     </select>
@@ -354,8 +353,19 @@ function renderSoal(data = null) {
                         <option value="pelaku">Pelaku</option>
                         <option value="korban">Korban</option>
                     </select>
-                </div>
 
+                      <select name="soal[${idx}][indikasi_bully]"
+                        class="form-control form-control-sm w-25 mr-1 indikasi_bully" required>
+                        <option value="">Indikator</option>
+                        <option value="verbal">Verbal</option>
+                        <option value="fisik">Fisik</option>
+                        <option value="sosial">Sosial</option>
+                        <option value="impersonation">Impersonation</option>
+                        <option value="visual_sexual">Visual Sexual</option>
+                        <option value="written_verbal">Written Verbal</option>
+                        <option value="online_exclusion">Online Exclusion</option>
+                    </select>
+                </div>
                 <div class="opsi-container"></div>
 
                 <button type="button"
@@ -370,6 +380,7 @@ function renderSoal(data = null) {
 
      let el = $(html);
     parent.append(el);
+    initSummernote(el.find('.summernote'));
 
     // 🧠 ISI DATA HANYA JIKA EDIT
     if (!data) return;
@@ -380,6 +391,7 @@ function renderSoal(data = null) {
 
     el.find('.lokasi_kejadian').val(data.lokasi_kejadian);
     el.find('.indikasi_siswa').val(data.indikasi_siswa);
+    el.find('.indikasi_bully').val(data.indikasi_bully);
 
     if (
         (data.tipe_soal === 'radio' || data.tipe_soal === 'checkbox') &&
@@ -418,7 +430,7 @@ function renderSoalHTML(data, idx) {
             <div class="w-100">
                 <textarea
                     name="soal[${idx}][soal]"
-                    class="form-control form-control-sm mb-2"
+                    class="form-control form-control-sm mb-2 summernote"
                     placeholder="Pertanyaan"
                     required>${data?.soal ?? ''}</textarea>
 
@@ -426,8 +438,7 @@ function renderSoalHTML(data, idx) {
                     <select name="soal[${idx}][tipe_soal]"
                         class="form-control form-control-sm w-25 mr-1 tipe-soal" required>
                         <option value="">Tipe Soal</option>
-                        <option value="radio">Pilihan</option>
-                        <option value="range">Range</option>
+                        <option value="range">Skala</option>
                         <option value="text">Text</option>
                         <option value="keterangan">Keterangan</option>
                     </select>
@@ -447,6 +458,19 @@ function renderSoalHTML(data, idx) {
                         <option value="pelaku">Pelaku</option>
                         <option value="korban">Korban</option>
                     </select>
+
+                     <select name="soal[${idx}][indikasi_bully]"
+                        class="form-control form-control-sm w-25 mr-1 indikasi_bully" required>
+                        <option value="">Indikator</option>
+                        <option value="verbal">Verbal</option>
+                        <option value="fisik">Fisik</option>
+                        <option value="sosial">Sosial</option>
+                        <option value="impersonation">Impersonation</option>
+                        <option value="visual_sexual">Visual Sexual</option>
+                        <option value="written_verbal">Written Verbal</option>
+                        <option value="online_exclusion">Online Exclusion</option>
+                    </select>
+
                 </div>
 
                 <div class="opsi-container"></div>
@@ -462,6 +486,22 @@ function renderSoalHTML(data, idx) {
     `;
 }
 
+
+function initSummernote($el) {
+  if (!$el.next('.note-editor').length) {
+    $el.summernote({
+      height: 120,
+      toolbar: [
+        ['style', ['bold', 'italic', 'underline']],
+        ['para', ['ul', 'ol']],
+        ['insert', ['link']],
+        ['view', ['codeview']]
+      ]
+    });
+  }
+}
+
+
 function loadSoalForEdit() {
     return $.get("{{ route('admin.angketSoal.data') }}");
 }
@@ -470,22 +510,56 @@ function loadSoalForEdit() {
 
 $(document).on('click', '.edit-btn', function () {
     isEditMode = true;
-    $('#soal-container').empty();
+    const $container = $('#soal-container');
+
+    $container.empty();
     soalIndex = 0;
 
     loadSoalForEdit().done(res => {
-         let html = '';
 
-    res.data.forEach(item => {
-        html += renderSoalHTML(item, soalIndex++);
-    });
-        $('#soal-container').html(html);
+        let html = '';
+        res.data.forEach(item => {
+            html += renderSoalHTML(item, soalIndex++);
+        });
+
+        // 1️⃣ render HTML
+        $container.html(html);
+
+         initSummernote($container.find('.summernote'));
+
+        // 2️⃣ isi data per soal
+        res.data.forEach((item, index) => {
+            const $soal = $container.find('.soal-input').eq(index);
+
+            // set select
+            $soal.find('.tipe-soal').val(item.tipe_soal).trigger('change');
+            $soal.find('.lokasi_kejadian').val(item.lokasi_kejadian);
+            $soal.find('.indikasi_siswa').val(item.indikasi_siswa);
+            $soal.find('.indikasi_bully').val(item.indikasi_bully);
+
+            // render opsi kalau ada
+            if (
+                (item.tipe_soal === 'checkbox') &&
+                Array.isArray(item.opsi)
+            ) {
+                const $opsiContainer = $soal.find('.opsi-container');
+                $opsiContainer.empty();
+
+                item.opsi.forEach((opsi, i) => {
+                    $opsiContainer.append(renderOpsi(index, i, opsi));
+                });
+
+                $soal.find('.add-opsi').show();
+            }
+        });
+
         $('.addSoal').hide();
         $('.rmInput').hide();
-        $('#soal-container').sortable('refresh');
+        $container.sortable('refresh');
         $('#addData').modal('show');
     });
 });
+
 
 
 
@@ -539,6 +613,12 @@ $(document).on('click', '.edit-btn', function () {
                 `soal[${index}][indikator]`
             );
 
+              $(this).find('select[name*="[indikasi_bully]"]').attr(
+                'name',
+                `soal[${index}][indikasi_bully]`
+            );
+
+
             // opsi
             $(this).find('.opsi-item').each(function (opsiIndex) {
                 $(this).find('input[name*="[label]"]').attr(
@@ -558,7 +638,14 @@ $(document).on('click', '.edit-btn', function () {
     // REMOVE QUESTION
     // ===============================
     $(document).on('click', '.rmInput', function () {
-        $(this).closest('.soal-input').remove();
+         let $soal = $(this).closest('.soal-input');
+          let $sn = $soal.find('.summernote');
+
+          if ($sn.next('.note-editor').length) {
+            $sn.summernote('destroy');
+          }
+
+          $soal.remove();
     });
 
     // ===============================
@@ -574,6 +661,7 @@ $(document).on('click', '.edit-btn', function () {
         const btnAdd = soal.find('.add-opsi');
         const ruang = soal.find('.lokasi_kejadian');
         const indikator = soal.find('.indikasi_siswa');
+        const indikator2 = soal.find('.indikasi_bully');
 
         // reset
         opsiContainer.empty();
@@ -591,7 +679,7 @@ $(document).on('click', '.edit-btn', function () {
           ruang.val('lingkungan kelas');
           ruang.find('option').each(function () {
             if ($(this).val() !== 'lingkungan kelas') {
-                $(this).prop('disabled', true);
+                $(this).prop('disabled', true);1
             }
           });
              ruang.prop('disabled', false).prop('required', true);
@@ -603,9 +691,11 @@ $(document).on('click', '.edit-btn', function () {
         if (tipe === 'keterangan') {
             ruang.prop('required', false).prop('disabled', true).hide().val('');
             indikator.prop('required', false).prop('disabled', true).hide().val('');
+            indikator2.prop('required', false).prop('disabled', true).hide().val('');
         } else {
             ruang.prop('disabled', false).show().prop('required', true);
             indikator.prop('disabled', false).show().prop('required', true);
+            indikator2.prop('disabled', false).show().prop('required', true);
         }
     });
 

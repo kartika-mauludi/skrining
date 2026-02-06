@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sekolahs', function (Blueprint $table) {
-            $table->string('email',100)->nullable();
-            $table->string('website',100)->nullable();
+        Schema::table('angket_soals', function (Blueprint $table) {
+            $table->string('indikasi_bully',150);
         });
     }
 
@@ -22,9 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sekolahs', function (Blueprint $table) {
-            $table->dropColumn('email');
-            $table->dropColumn('website');
+        Schema::table('angket_soals', function (Blueprint $table) {
+            //
         });
     }
 };

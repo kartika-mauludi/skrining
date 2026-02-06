@@ -1,296 +1,221 @@
 @extends('admin.layout.index')
 
 @section('content')
-@push('style')
-<style>
-     .select2 {
-        color: #000 !important
-    }
-</style>
-@endpush
-<!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+<div class="content-wrapper">
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>DataTables</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">Home</a></li>
-              <li class="breadcrumb-item active">DataTables</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
-
-<section class="content">
-    <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title"></h3>
-                 <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <table id="tbl-user" class="table table-bordered table-striped">
-                 <thead>
-                  <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-          
-                  </tbody>
-                  <tfoot>
-                  <tr>
-                    <th>No</th>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                    <th>Action</th>
-                  </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <!-- /.card-body -->
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Data Sekolah</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ route('guru.index') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Data Sekolah</li>
+                    </ol>
+                </div>
             </div>
         </div>
-      </div>
-    </div>
-</section>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+                        @if (session('message'))
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                {{ session('message') }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
+
+                        <div class="card-header">
+                            <h3 class="card-title"></h3>
+                            <button class="btn btn-sm btn-success" id="add"> Tambah </button>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="datatable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Sekolah</th>
+                                        <th>No. Telpon</th>
+                                        <th>Alamat Lengkap</th>
+                                        <th>Website</th>
+                                        <th>Email</th>
+                                        <th>Logo</th>
+                                        <th>Jumlah Kelas</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
- @include('admin.masteruser.modal')
+@include('admin.sekolah.modal')
 @endsection
 
 @push('script')
 <script>
-  // eye password
-document.getElementById('togglePassword').addEventListener('click', function () {
-    const input = document.getElementById('password');
-    const icon = document.getElementById('toggleIcon');
+$(document).ready(function(){
+    var token = $('meta[name="csrf-token"]');
 
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash'); // ubah ke icon hide
-    } else {
-        input.type = "password";
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye'); // kembali ke icon show
-    }
-});
-
-
-  // isi data table
-  $(document).ready(function(){
-    var table = $('#tbl-user').DataTable({
-      processing  : true,
-      ordering    : true,
-      serverSide  : false,
-      ajax        : "{{ route('admin.masteruser.data') }}",
-      columns     : [{
-        data : null, render:(data,type,row,meta)=>{
-          return `<div class='text-center'>${meta.row + 1}.</div>`;
-        }
-      },{
-        data    : 'name',
-        render  : (data) => data ? `${data}` : `-` 
-      },{
-        data    : 'email',
-        render  : (data) => data ? `${data}` : `-`
-      },
-      {
-        data    : 'role',
-        render  : (data) => data ? `${data}` : `-`
-      },
-      {
+    var table = $('#datatable').DataTable({
+        processing  : true,
+        serverSide  : false,
+        ajax: "{{ route('admin.sekolah.data') }}",
+        columns: [{
+            data : null, render:(data,type,row,meta)=>{
+                return `<div class='text-center'>${meta.row + 1}.</div>`;
+            }
+        },{
+            data    : 'nama_sekolah',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'no_tlp',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'alamat_lengkap',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'email',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'website',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'logo',
+            render  : function(data, type, row) {
+                if (data) {
+                    return `<img src="/storage/${data}" width="40" height="40"/>`;
+                } else {
+                    return '-';
+                }
+            }
+        },{
+            data    : 'kelas_count',
+            render  : (data) => data? `${data}` : `0`
+        },{
         data: 'id',
-        render: function(data, type, row){
-          return `
-             <div class="btn-group d-flex gap-5">
-                  <button class="btn btn-sm btn-warning edit-btn" data-id="${data}">Edit</button>
-                  <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">Hapus</button>
-              </div>
-          `;
-        }
-      }
-    ]
-    })
-  })
+            render: function(data, type, row){
+                // let kelasUrl = "{{ route('guru.kelas.index') }}?sekolah_id=" + data;
+                let editUrl = "{{ route('admin.sekolah.edit', ':id') }}";
+                let deleteUrl = "{{ route('admin.sekolah.destroy', ':id') }}";
 
-  // tambah data
-$(document).on('submit','#addDataForm', function(e){
-  var table = $('.table').DataTable();
-  e.preventDefault();
-  showLoading();
-  var form = this;
-  var formData = new FormData($(this)[0]);
-  let error = "Terjadi Kesalahan Ketika Menambah Data";
-  
-  $.ajax({
-    url   : $(form).attr('action'),
-    type  : 'POST',
-    data  : formData,
-    processData: false,
-    contentType: false,
-    success : function(response){
-      closeLoading();
-      if(response.status == 200){
-        swal.fire('Berhasil', response.message, 'success');
-      }else{
-        swal.fire('Gagal', response.message, 'error');
-      }
-      $(form).closest('.modal').modal('hide');
-      form.reset();
-      table.ajax.reload();
-    },
-    error : function(response){
-      closeLoading();
-      if(response.status === 400 ||  response.status === 422){
-        let errors = response.responseJSON.errors;
-        errorMessage = Object.values(errors).flat().join('<br>');
-       
-      }
-      else if (response.responseJSON && response.responseJSON.message) {
-                errorMessage = response.responseJSON.message;
-    }
-    Swal.fire({
-        title : 'Gagal tambah data',
-        html  : errorMessage,
-        icon  : 'error' 
+                editUrl = editUrl.replace(':id', data);
+                deleteUrl = deleteUrl.replace(':id', data);
+
+                return `
+                    <div class="btn-group d-flex gap-2">
+                        <button class="btn btn-sm btn-warning edit-btn" data-url="${editUrl}">Edit</button>
+                        <button class="btn btn-sm btn-danger delete-btn" data-url="${deleteUrl}">Hapus</button>
+                    </div>
+                `;
+            }
+        }]
     });
 
-    }
-  });
-});
-
-
-// delete
-
-$(document).on('click','.delete-btn',function(){
-var table = $('.table').DataTable();
-var id    = $(this).data('id');
-var url   = "{{ route('masteruser.destroy',':id') }}".replace(':id',id);
-
-  swal.fire({
-    title   :"Hapus User",
-    text    : "Anda Yakin Untuk Hapus User Ini ?",
-    icon    : 'warning',
-    showCancelButton  : true,
-    confirmButtonText : "Hapus",
-    cancelButtonText  : "Batal",
-  }).then((result)=>{
-    if(result.isConfirmed){
-      showLoading();
-      $.ajax({
-        url   : url,
-        type  : 'DELETE',
-        data  : {_token : '{{ csrf_token() }}'},
-        success : function(response){
-          closeLoading();
-          if(response.status == 200){
-            swal.fire('Berhasil', response.message,'success');
-          }else{
-            swal.fire('Gagal',response.message,'error')
-          }
-          table.ajax.reload();
-        },
-        error : function(response){
-           closeLoading();
-          if(response.status == 419){
-          swal.fire('Gagal',response.responseJSON.message,'error')
-          }
-         
+    $('#logo').on('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                $('#preview').attr('src', e.target.result).show();
+            }
+            reader.readAsDataURL(file);
         }
-      });
-    }
-  });
-});
+    });
 
+    $('#add').on('click', function () {
+        let storeUrl = "{{ route('admin.sekolah.store', ':id') }}";
 
-// edit modal
+        $('#dataForm').prop('action', storeUrl).trigger('reset');
+        $('#method').val('POST')
+        $('#dataModal').modal('show');
+    });
 
-$('.table').on('click','.edit-btn', function(){
-  var id = $(this).data('id');
-  showLoading();
-  var url = "{{ route('masteruser.edit',':id') }}".replace(':id',id);
-  $.get(url, function(data){
-    console.log(data);
-    closeLoading();
-    $('#editId').val(data.id);
-    $('#editName').val(data.name);
-    $('#editEmail').val(data.email);
-    $('#editRole').val(data.role);
-    var updateUrl = "{{ route('masteruser.update',':id') }}".replace(':id',data.id);
-    $('#EditDataForm').attr('action',updateUrl);
-    $('#editData').modal('show');
-     $('#editData').on('shown.bs.modal', function () {
-        let roles = data.roles ?? [];
-        let roleIds = roles.map(role => role.id);
-        $('#editRole').val(roleIds).trigger('change');
-      });
-  });
-});
+    $('#datatable').on('click', '.edit-btn', function (){
+        const url = $(this).data('url');
 
-// update
+        $.get(url, function(data, status) {
+            if (status != 'success') {
+                swal.fire('Kesalahan sistem','Silahkan hubungi administrator','error')
+                return
+            }
 
-$('#EditDataForm').on('submit',function(e){
-  var table = $('.table').DataTable();
-    e.preventDefault();
-    showLoading();
-  var form = this;
-  var formData = new FormData($(this)[0]);
-  $.ajax({
-    url   : $(this).attr('action'),
-    type  : 'POST',
-    data  : formData,
-    async : false,
-    cache : false,
-    contentType : false,
-    processData : false,
-    success : function(response){
-      closeLoading();
-      if(response.status == 200){
-        swal.fire('Berhasil',response.message, 'success')
-      }else{
-        swal.fire('gagal',response.errorMessage, 'error')
-      }
-       $(form).closest('.modal').modal('hide');
-      form.reset();
-      table.ajax.reload();
-    },
-    error : function(respnse){
-      closeLoading();
-      let errorMessage = 'Terjadi kesalahan ketika update data';
-      if(response.responseJSON){
-        if(respnse.responseJSON.errors){
-          errorMessage = object.values(response.responseJSON.errors).flat().join('<br>');
-        }
-        else if(response.responseJSON.message){
-          errorMessage = respnse.responseJSON.message;
-        }
-      }
-      swal.fire({
-        title : 'gagal',
-        html  : errorMessage,
-        icon  : 'error'
-      });
-    }
-    
-  });
-});
+            let updateUrl = "{{ route('admin.sekolah.update', ':id') }}";
+            updateUrl = updateUrl.replace(':id', data['data']['id']);
 
+            if (data['data']['logo']) {
+                $('#preview').attr('src', `/upload/${data['data']['logo']}`).show();
+            } else {
+                $('#preview').hide();
+            }
+        
+            $('#method').val('PUT')
+            $('#nama_sekolah').val(data['data']['nama_sekolah']);
+            $('#no_tlp').val(data['data']['no_tlp']);
+            $('#alamat_lengkap').val(data['data']['alamat_lengkap']);
 
+            $('#dataForm').prop('action', updateUrl);
+            $('#dataModal').modal('show');
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            swal.fire('Kesalahan sistem',textStatus,'error')
+        });
+    });
+
+    $('#datatable').on('click', '.delete-btn', function (){
+        const url = $(this).data('url');
+
+        swal.fire({
+            title: 'Perhatian',
+            text: 'Apakah anda yakin ?',
+            icon: 'warning',
+            showDenyButton: true,
+            confirmButtonText: 'Hapus',
+            denyButtonText: 'Batal',
+            customClass: {
+                confirmButton: 'btn btn-danger',
+                denyButton: 'btn btn-secondary',
+            },
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': token.attr('content')
+                    },
+                    success: function(response) {
+                        swal.fire({
+                            title:'Berhasil',
+                            text:'Data berhasil dihapus',
+                            icon:'success',
+                            allowOutsideClick: false
+                        })
+                        .then((result) => {
+                            location.reload();
+                        })
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        swal.fire('Kesalahan sistem',textStatus,'error')
+                    }
+                })
+            }
+        });
+    });
+})
 </script>
 @endpush

@@ -166,6 +166,7 @@
 
 <script>
      $('.select2').select2();
+     $('.summernote').summernote()
 </script>
 @stack('script')
 

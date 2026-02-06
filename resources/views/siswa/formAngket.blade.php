@@ -23,17 +23,17 @@
 
 </style>
 @endpush
-<section class="content">
+<section class="content flex-grow-1">
   <div class="container-fluid">
     @if(empty($kelas))
-     <div class="row pb-1 justify-content-center px-3 mt-3">
-          <div class="col-md-5">
+     <div class="row justify-content-center vh-100">
+          <div class="col-md-5 h-75 my-auto">
             <div class="card card-primary">
               <div class="card-body">
                 <form action="">
                   <div class="form-group">
                     <label for="token">Masukkan Token untuk tes </label>
-                    <input type="text" class="form-control" name="token" id="token" required value="{{ old('token') }}">
+                    <input type="text" class="form-control border-dark" name="token" id="token" required value="{{ old('token') }}" placeholder="Masukkan Token">
                     <button type="submit" class="btn btn-primary mt-3"> Masuk</button>
                   </div>
                 </form>

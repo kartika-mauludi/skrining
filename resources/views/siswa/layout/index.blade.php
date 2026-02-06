@@ -65,10 +65,6 @@
 
   <!-- footer -->
 
-   <footer class="main-footer">
-    <strong>Skrining 2026</strong>
-  </footer>
-
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->
@@ -76,7 +72,9 @@
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
-
+  <footer class="main-footer mt-auto text-center  @if(empty($kelas)) position-fixed @endif"  @if(empty($kelas)) style="bottom:0; width: 100%;" @endif>
+    <strong>Skrining 2026</strong>
+  </footer>
 <!-- jQuery -->
 <script src="{{ asset('admin/assets-admin/plugins/jquery/jquery.min.js') }}"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -89,6 +87,8 @@
 <script src="{{ asset('admin/assets-admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- ChartJS -->
 <script src="{{ asset('admin/assets-admin/plugins/chart.js/Chart.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.3.0/dist/chartjs-gauge.min.js"></script>
+
 <!-- Sparkline -->
 <script src="{{ asset('admin/assets-admin/plugins/sparklines/sparkline.js') }}"></script>
 <!-- JQVMap -->

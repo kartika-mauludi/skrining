@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('sekolahs', function (Blueprint $table) {
-            $table->string('email',100)->nullable();
-            $table->string('website',100)->nullable();
+        Schema::table('feedback', function (Blueprint $table) {
+            $table->enum('status',['korban','pelaku','netral']);
+            $table->longtext('feedback_deskripsi')->change();
         });
     }
 
@@ -22,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('sekolahs', function (Blueprint $table) {
-            $table->dropColumn('email');
-            $table->dropColumn('website');
+        Schema::table('feedback', function (Blueprint $table) {
+            //
         });
     }
 };

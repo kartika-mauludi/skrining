@@ -13,6 +13,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AngketController as AngketGuruController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Siswa\FormAngketController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SiswaController;
@@ -80,6 +81,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     ->names('guru.siswa');
 
     Route::get('report', fn () => view('guru.report.index'))->name('guru.report');
+    Route::get('report-sosiogram', [ReportController::class, 'sosiogram'])->name('guru.report.sosiogram');
 });
 
 // Siswa

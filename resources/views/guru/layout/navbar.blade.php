@@ -59,7 +59,7 @@
               </p>
             </a>
           </li>
-
+{{-- 
           <li class="nav-item">
             <a href="{{ route('guru.report') }}" class="nav-link @if(Route::is('guru.report')) active @endif">
               <i class="nav-icon fas fa-chart-bar"></i>
@@ -67,6 +67,24 @@
                 Report
               </p>
             </a>
+          </li> --}}
+
+          <li class="nav-item @if(Route::is('guru.report.*')) menu-open @endif">
+            <a href="#" class="nav-link @if(Route::is('guru.report.*')) active @endif">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Report
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('guru.report.sosiogram') }}" class="nav-link @if(Route::is('guru.report.sosiogram')) active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Sosiogram</p>
+                </a>
+              </li>
+            </ul>
           </li>
 
         </ul>

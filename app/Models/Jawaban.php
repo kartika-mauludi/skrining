@@ -13,6 +13,7 @@ class Jawaban extends Model
         'jawaban',
         'alasan',
         'skor',
+        'id_siswa_pelaku'
     ];
 
     protected $table = 'jawaban';
@@ -34,6 +35,11 @@ class Jawaban extends Model
 
     public function siswa()
     {
-        return $this->belongsTo(Siswa::class);
+        return $this->belongsTo(Siswa::class, 'siswa_id');
+    }
+
+    public function siswapelaku()
+    {
+        return $this->belongsTo(Siswa::class, 'id_siswa_pelaku');
     }
 }

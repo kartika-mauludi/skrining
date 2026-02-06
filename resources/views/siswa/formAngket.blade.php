@@ -81,7 +81,7 @@
         </div>
         <!-- siswa_id -->
         <input type="hidden" name="siswa_id" id="siswa_id" value="">
-        <input type="hidden" name="token" id="" value="">
+        <input type="hidden" name="token" id="" value="{{ $token }}">
         <!--  -->
         <div class="row pb-1 align-items-start px-3">
           <div class="col-md-12">

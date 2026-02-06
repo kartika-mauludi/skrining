@@ -36,11 +36,30 @@ class FormAngketController extends Controller
                     ->withInput()
                     ->with('error', 'Token tidak valid');
             }
-            $angket = Angket::when(!$kelas->isEmpty(), function($query) use($kelas) {
-                $query->where('sekolah_id', $kelas->first()->sekolah_id)
-                ->where('kelas_id', $kelas->first()->id);
+            $sekolah_id = $kelas->first()->sekolah_id;
+            $kelas_id = $kelas->first()->id;
+            
+            $angket = Angket::where(function($query) use($sekolah_id, $kelas_id) {
+                // Cari yang sesuai sekolah_id dan kelas_id
+                $query->where('sekolah_id', $sekolah_id)
+                    ->where('kelas_id', $kelas_id);
             })
-            ->latest()->first();
+            ->orWhere(function($query) {
+                // Atau cari yang NULL
+                $query->whereNull('sekolah_id')
+                    ->whereNull('kelas_id');
+            })
+            ->orderByRaw('CASE WHEN sekolah_id = ? AND kelas_id = ? THEN 0 ELSE 1 END', 
+                [$sekolah_id, $kelas_id])
+            ->latest()
+            ->first();
+
+            if (!$angket) {
+                return redirect()
+                    ->back()
+                    ->withInput()
+                    ->with('error', 'Form angket tidak ditemukan');
+            }
 
             $data['siswas'] = Siswa::select([ 'id','kelas_id','no_absen','nis','nama_lengkap', 'jk'])
                 ->whereIn('kelas_id', $kelas->pluck('id'))

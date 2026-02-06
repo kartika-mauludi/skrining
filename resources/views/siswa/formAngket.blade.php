@@ -138,7 +138,7 @@
             <div class="card card-primary">
               <div class="card-body">
                 <div class="form-group">
-                  <label for="range">{{ $loop->iteration }}. {{ $soal->soal }}</label>
+                  <label for="range">{{ $loop->iteration }}. {!! $soal->soal !!}</label>
                   <small class="text-muted d-flex justify-content-between mt-1">
                     <span>Sangat Tidak Setuju</span>
                     <span>Sangat Setuju</span>
@@ -172,7 +172,7 @@
             <div class="card card-primary">
               <div class="card-body">
                 <div class="form-group">
-                  <label for="pilihan">{{ $loop->iteration }}. {{ $soal->soal }}</label>
+                  <label for="pilihan">{{ $loop->iteration }}. {!! $soal->soal !!}</label>
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="jawaban[{{ $soal->id }}]" value="ya">
                     <label class="form-check-label">Ya</label>
@@ -191,7 +191,7 @@
           <div class="col-md-12">
             <div class="card card-primary">
               <div class="card-body">
-                <label for="text">{{ $loop->iteration }}. {{ $soal->soal }}</label>
+                <label for="text">{{ $loop->iteration }}. {!! $soal->soal !!}</label>
                  <div id="jawaban-wrapper-{{ $soal->id }}">
                     <div class="input-group jawaban-item mt-1">
                       <input type="text" class="form-control" id="" data-id="" name="alasan[{{ $soal->id }}][]" placeholder="Alasan">

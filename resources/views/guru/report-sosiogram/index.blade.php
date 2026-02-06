@@ -105,16 +105,42 @@
                   @if ($reports->isEmpty())
                     <h5 class="text-center">Belum ada data angket yang masuk di kelas ini.</h5>
                   @else
-
-
+                    <div class="row">
+                      <div class="col-6 col-sm-3">
+                          <div class="card">
+                            <div class="card-header bg-info">
+                              <h6 class="font-weight-bold text-center">Pelaku Tertinggi</h6>
+                            </div>
+                            <div class="card-body">
+                              <p class="my-3 text-center">{{ $mostReported->siswapelaku->nama_lengkap }}</p>
+                            </div>
+                            <div class="card-footer">
+                              <h6 class="text-muted text-center">Jumlah Aduan: {{ "$mostReported->count Kali" }}</h6>
+                            </div>
+                          </div>
+                          <div class="card">
+                            <div class="card-header bg-info">
+                              <h6 class="font-weight-bold text-center">Tidak Diadukan</h6>
+                            </div>
+                            <div class="card-body">
+                              <ul>
+                                @foreach ($notReporteds as $notReported)
+                                  <li>{{ $notReported->nama_lengkap }}</li>
+                                @endforeach
+                              </ul>
+                            </div>
+                          </div>
+                      </div>
+                      <div class="col-6 col-sm-9">
                         <div class="sosiogram" id="sosiogram">
 
                             <!-- KIRI : Siswa (Pelapor) -->
                             <div class="sosiogram-column">
+                                <span>Korban</span>
                                 @foreach($siswa as $s)
                                     <div class="node pelapor"
                                         id="pelapor-{{ $s->id }}">
-                                        {{ $s->nama_lengkap }}
+                                        {{ $s->no_absen }}
                                     </div>
                                 @endforeach
                             </div>
@@ -124,17 +150,28 @@
 
                             <!-- KANAN : Siswa (Terlapor) -->
                             <div class="sosiogram-column">
+                                <span>Pelaku</span>
                                 @foreach($siswa as $s)
                                     <div class="node terlapor"
                                         id="terlapor-{{ $s->id }}">
-                                        {{ $s->nama_lengkap }}
+                                        {{ $s->no_absen }}
                                     </div>
                                 @endforeach
                             </div>
 
+                            <div class="sosiogram-column">
+                              <span>Identitas</span>
+                              @foreach ($siswa as $s)
+                                  <div class="node d-flex justify-content-between align-items-center">
+                                    <p class="m-0">{{ $s->nama_lengkap }}</p>
+                                    <p class="m-0 ml-5">{{ $s->jk }}</p>
+                                  </div>
+                              @endforeach
+                            </div>
+
                         </div>
-
-
+                      </div>
+                    </div>
                   @endif
                 @else
                   <h5 class="text-center">Silahkan pilih sekolah dan kelas terlebih dahulu</h5>

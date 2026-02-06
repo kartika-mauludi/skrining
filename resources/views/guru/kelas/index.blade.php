@@ -46,7 +46,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Kelas</th>
-                                        <th>Akses Token</th>
+                                        <th>Data Akses</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -87,8 +87,28 @@ $(document).ready(function(){
             data    : 'nama_kelas',
             render  : (data) => data ? `${data}` : `-` 
         },{
-            data    : 'akses_token',
-            render  : (data) => data ? `${data}` : `-`
+            data: 'data_akses',
+            render: function (data) {
+
+                if (!data) return '-';
+
+                let parsed = data;
+
+                // Jika masih string JSON
+                if (typeof data === 'string') {
+                    try {
+                        parsed = JSON.parse(data);
+                    } catch (e) {
+                        return '-';
+                    }
+                }
+
+                if (!Array.isArray(parsed)) return '-';
+
+                return parsed
+                    .map(item => `${item.nama_guru} = ${item.token}`)
+                    .join('<br>');
+            }
         },{
         data: 'id',
             render: function(data, type, row){

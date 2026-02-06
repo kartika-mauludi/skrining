@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guru;
 use App\Models\Kelas;
 use Exception;
 use Illuminate\Http\Request;
@@ -82,18 +83,47 @@ class KelasController extends Controller
 
     public function token(Kelas $kelas)
     {
-        $input['akses_token'] = Str::random(6);
+        $guru = Guru::find(auth()->user()->guru->id);
+        $token  = strtoupper(Str::random(6));
 
-        try{
-            $kelas->update($input);
+        // Ambil data JSON → pastikan array
+        $tokens = $kelas->data_akses ?? [];
+
+        $found = false;
+
+        foreach ($tokens as &$item) {
+            if ($item['guru_id'] == $guru->id) {
+                $item['token'] = $token;
+                $item['nama_guru'] = $guru->nama_lengkap;
+                $found = true;
+                break;
+            }
+        }
+        unset($item); // best practice
+
+        // Jika guru belum ada → tambahkan
+        if (!$found) {
+            $tokens[] = [
+                'guru_id' => $guru->id,
+                'token'   => $token,
+                'nama_guru' => $guru->nama_lengkap
+            ];
+        }
+
+        try {
+            $kelas->update([
+                'data_akses' => $tokens
+            ]);
+
             $message = 'Token berhasil diperbarui';
-        }catch(Exception $x){
-            report($x);
-            $message = $x->getMessage();
+        } catch (Exception $e) {
+            report($e);
+            $message = 'Gagal memperbarui token';
         }
 
         return response()->json([
-            'message' => $kelas
+            'message' => $message,
+            'data'    => $kelas->fresh()
         ]);
     }
 }

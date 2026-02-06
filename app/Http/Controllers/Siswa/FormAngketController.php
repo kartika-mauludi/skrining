@@ -28,7 +28,10 @@ class FormAngketController extends Controller
         ->pluck('siswa_id')
         ->unique();
         if($request->filled('token')){
-            $kelas = Kelas::with('sekolah')->where('akses_token', $request->token)
+            $kelas = Kelas::with('sekolah')
+            ->whereJsonContains('data_akses', [
+                'token' => $request->token
+            ])
             ->get();
             if ($kelas->isEmpty()) {
                 return redirect()

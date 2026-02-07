@@ -35,7 +35,7 @@
               <div class="card-header">
                 <h3 class="card-title"></h3>
                  <button class="btn btn-success p-1" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
-                 <button class="btn btn-primary p-1" id="import"  data-toggle="modal" data-target="#import"> Import </button>
+                 <button class="btn btn-primary p-1" id="import"  data-toggle="modal" data-target="#importModal"> Import </button>
                  <button class="btn btn-danger p-1 deleteAll" id="deleteAll" >Hapus Semua Soal</button>
               </div>
               <!-- /.card-header -->
@@ -71,11 +71,13 @@
 </div>
 
  @include('admin.tanggapan.modal')
+ @include('admin.tanggapan.modal_import')
 @endsection
 
 @push('script')
 <script>
   // isi data table
+  let table
   $(document).ready(function(){
     var table = $('#tbl-tanggapan').DataTable({
       responsive  : true,

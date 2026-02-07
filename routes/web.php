@@ -51,6 +51,7 @@ Route::middleware('role:super_admin')->group(function (){
     Route::resource('admin/sekolah', AdminSekolahController::class)
     ->names('admin.sekolah');
     Route::get('admin/tanggapan/data',[TanggapanController::class,'data'])->name('admin.tanggapan.data');
+    Route::post('admin/tanggapan/import',[TanggapanController::class,'import'])->name('admin.tanggapan.import');
      Route::delete('admin/tanggapan/destroy-all', [TanggapanController::class, 'destroyAll'])
     ->name('admin.tanggapan.destroyAll');
     route::resource('admin/tanggapan',TanggapanController::class);
@@ -84,4 +85,5 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
 route::post('siswa/formAngket',[FormAngketController::class, 'store'])->name('siswa.formAngket.store');
 route::get('siswa/formAngket',[FormAngketController::class, 'index'])->name('siswa.formAngket');
 route::get('siswa/hasilAngket',[FormAngketController::class,'hasil'])->name('siswa.hasilAngket');
+route::get('siswa/hasilAngket2',[FormAngketController::class,'hasil2'])->name('siswa.hasilAngket2');
 

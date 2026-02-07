@@ -8,6 +8,7 @@ use App\Models\Feedback;
 use DB;
 use Exception;
 use Validator;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class TanggapanController extends Controller
 {
@@ -178,6 +179,60 @@ class TanggapanController extends Controller
         return response()->json([
             'data' => $data
         ]);
+    }
+
+    public function import(Request $request)
+    {
+       
+        $data = $request->input('data');
+
+        if (!is_array($data) || empty($data)) {
+            return response()->json(['status' => 400, 'message' => 'Data tidak valid!']);
+        }
+
+        $response = new StreamedResponse(function () use ($data) {
+            $insertedCount = 0;
+            $updatedCount = 0;
+
+            foreach ($data as $index => $item) {
+                if (!isset($item['feedback_deskripsi']) || !isset($item['status'])) {
+                    echo json_encode(['status' => 400, 'message' => 'Format data tidak valid!']);
+                    ob_flush();
+                    flush();
+                    return;
+                }
+
+                $record = Feedback::Create(
+                    ['feedback_deskripsi' => $item['feedback_deskripsi'],  'status' => $item['status']],
+                );
+
+                if ($record->wasRecentlyCreated) {
+                    $insertedCount++;
+                } else {
+                    $updatedCount++;
+                }
+
+                echo json_encode([
+                    'status' => 200,
+                    'message' => 'Mengimport data...',
+                    'progress' => ($index + 1) . '/' . count($data),
+                    'procesed' => $insertedCount + $updatedCount
+                ]) . "\n";
+                ob_flush();
+                flush();
+            }
+
+            echo json_encode([
+                'status' => 200,
+                'message' => 'Import selesai!',
+                'procesed' => $insertedCount + $updatedCount
+            ]) . "\n";
+            ob_flush();
+            flush();
+        });
+
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 
 

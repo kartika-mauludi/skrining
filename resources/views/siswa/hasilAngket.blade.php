@@ -97,7 +97,7 @@
 
         <!-- SKOR -->
         <div class="row mb-3">
-             <div class="col-md-5 text-center">
+             <div class="col-md-8 text-center">
                 <div class="card">
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between">
@@ -111,30 +111,7 @@
                     </div>
                 </div>
               </div>
-            <div class="col-md-4">
-                <div class="box">
-                    <div class="box-title">Perlakuan Perundungan</div>
-                    <table class="table table-bordered text-center mb-0">
-                        <tr>
-                            <th>Sosial Media</th>
-                            <th>Game</th>
-                           
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                        <tr>
-                            <th>Kelas</th>
-                            <th>Lain lain</th>
-                        </tr>
-                        <tr>
-                            <td>0</td>
-                            <td>0</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+           
 
             <!-- <div class="col-md-3">
                 <div class="box text-center">
@@ -144,7 +121,7 @@
                 </div>
             </div> -->
 
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <!-- <div class="box text-center" style="background-color: #37F713;">
                     <div class="box-title">Status</div>
                     <h1 class="fw-bold">Aman</h1> -->
@@ -159,17 +136,7 @@
         </div>
 
         <!-- DETAIL -->
-        <div class="box mb-3">
-            <strong>Kriteria Perundungan :</strong>
-            <div class="row mt-2">
-                <div class="col">Sosial Media: <strong>0</strong></div>
-                <div class="col">Game: <strong>0</strong></div>
-                <div class="col text-danger">Kelas: <strong>0</strong></div>
-                <div class="col text-danger">Lain-lain: <strong>0</strong></div>
-            </div>
-        </div>
-
-        <div class="row box mb-3">
+        <div class="row mb-3">
              <div class="col-md-6 text-center">
                 <div class="card">
                     <div class="card-header border-0">
@@ -199,13 +166,34 @@
                 </div>
               </div>
         </div>
-<!-- 
+
+         <div class="col-md-12 mb-3">
+                <div class="box">
+                    <div class="box-title">Kejadian Perundungan</div>
+                    <table class="table table-bordered text-center mb-0">
+                        <tr>
+                            <th>Sosial Media</th>
+                            <th>Game</th>
+                             <th>Kelas</th>
+                            <th>Lain lain</th>
+                           
+                        </tr>
+                        <tr>
+                            <td>0</td>
+                            <td>0</td>
+                             <td>0</td>
+                            <td>0</td>
+                        </tr>
+                      
+                    </table>
+                </div>
+            </div>
+
         <div class="box mb-3">
             <strong>Teman yang saya adukan:</strong><br>
             Verbal:<br>
             Fisik:<br>
             Sosial:<br>
-            Cyber:
         </div>
 
         <div class="box mb-3">
@@ -213,8 +201,7 @@
             Verbal:<br>
             Fisik:<br>
             Sosial:<br>
-            Cyber:
-        </div> -->
+        </div>
 
         <div class="box">
             <strong>Jika aku mengalami perundungan</strong>
@@ -232,59 +219,114 @@
 @endsection
 
 @push('script')
-<script>
-document.addEventListener("DOMContentLoaded", function () {
 
+<script>
+
+document.addEventListener("DOMContentLoaded", function () { 
+ if (window['chartjs-plugin-annotation']) {
+    Chart.plugins.register(window['chartjs-plugin-annotation']);
+  }
+
+   console.log(Chart.plugins.getAll().map(p => p.id));
+ 
   const history = document.getElementById('history-chart').getContext('2d');
   new Chart(history, {
-    type: 'line',
-    data: {
-      labels: ['Tes 1', ' Tes 2', 'Tes 3', 'Tes 4'],
-      datasets: [
-        {
-          label: 'This Week',
-          data: [100, 120, 170, 165],
-          borderColor: '#007bff',
-          backgroundColor: 'transparent',
-          pointBackgroundColor: '#007bff',
-          pointBorderColor: '#007bff',
-          pointRadius: 4,
-          borderWidth: 3,
-          tension: 0.4
-        }
-      ]
+  type: 'line',
+  data: {
+    labels: ['Visual', 'Verbal', 'Sosial', 'Impersonation', 'Visual Sexual','Written verbal', 'Online Exclusion'],
+    datasets: [{
+      label: 'Tes 1',
+      data: [100, 45, 30, 78, 60,20, 10],
+      borderColor: '#007bff',
+      pointBackgroundColor: '#007bff',
+      pointBorderColor: '#007bff',
+      pointRadius: 3,
+      borderWidth: 2,
+      lineTension: 0.4
+    },{
+      label: 'Tes 2',
+      data: [90, 40, 40, 68, 20, 40, 90],
+      borderColor: '#e01919ff',
+      pointBackgroundColor: '#e01919ff',
+      pointBorderColor: '#e01919ff',
+      pointRadius: 3,
+      borderWidth: 2,
+      lineTension: 0.4
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+
+    legend: {
+      display: false
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-       legend: {
-          display: false, // legend kita bikin manual di bawah chart
-          position: 'bottom'
-        },
-      plugins: {
-       
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: {
-            drawBorder: false
-          }
-        },
-        x: {
-          grid: {
-            display: false
-          }
-        }
-      }
+
+   annotation: {
+    drawTime: 'beforeDatasetsDraw',
+    annotations: [
+    {
+      type: 'box',
+      yScaleID: 'y-axis-0',
+      yMin: 30,
+      yMax: 30,
+      backgroundColor: 'rgba(36, 198, 74, 1)',
+      borderWidth: 0
+    },
+    {
+      type: 'box',
+      yScaleID: 'y-axis-0',
+      yMin: 30,
+      yMax: 70,
+      backgroundColor: 'rgba(214, 242, 90, 1)',
+      borderWidth: 0
+    },
+    {
+      type: 'box',
+      yScaleID: 'y-axis-0',
+      yMin: 70,
+      yMax: 100,
+      backgroundColor: 'rgba(230, 34, 54, 1)',
+      borderWidth: 0
     }
-  });
+  ]
+},
+
+    scales: {
+      yAxes: [{
+        id: 'y-axis-0',
+        ticks: {
+            min: 0,
+            max: 100,
+            padding: 10,
+            callback: function(value) {
+            if (value === 30) return 'Aman';
+            if (value === 70) return 'Hati-hati';
+            if (value === 100) return 'Bahaya';
+            return '';
+            }
+        },
+        afterBuildTicks: function(scale) {
+            scale.ticks = [30, 70, 100];
+        }
+        }],
+      
+      xAxes: [{
+        gridLines: {
+          display: false
+        }
+      }]
+    }
+  },
+
+});
+
 
 function KategoriConfig() {
   return {
     type: 'bar',
     data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
+      labels: ['Verbal', 'Fisik', 'Sosial'],
       datasets: [{
         label: 'My First Dataset',
         data: [65, 59, 80, 81, 56, 55, 40],
@@ -316,7 +358,19 @@ function KategoriConfig() {
         },
       scales: {
         x: { offset: true },
-        y: { beginAtZero: true }
+        y: {
+            beginAtZero: true,
+            min: 0,
+            max: 200,
+            ticks: {
+                stepSize: 50,
+                callback: function(value) {
+                if (value <= 120) return 'Aman';
+                if (value <= 160) return 'Hati-hati';
+                return 'Bahaya';
+                }
+            }
+            }
       }
     }
   };
@@ -326,10 +380,10 @@ function CyberConfig() {
   return {
     type: 'bar',
     data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul'],
+      labels: ['Impersonation', 'Visual Sexual', 'Written Verbal', 'Online Exclusion'],
       datasets: [{
         label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
+        data: [65, 59, 80, 81, 56],
         backgroundColor: [
           'rgba(255, 99, 132, 0.2)',
           'rgba(255, 159, 64, 0.2)',

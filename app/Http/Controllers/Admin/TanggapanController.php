@@ -175,7 +175,9 @@ class TanggapanController extends Controller
     }
 
     public function data(){
-        $data = Feedback::all();
+        $data = Feedback::with('guru:id,nip,nama_lengkap')
+        ->get();
+
         return response()->json([
             'data' => $data
         ]);

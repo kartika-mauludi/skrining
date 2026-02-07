@@ -8,6 +8,12 @@ class Feedback extends Model
 {
     protected $fillable = [
         'feedback_deskripsi',
-        'status'
+        'status',
+        'id_guru'
     ];
+
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'id_guru');    
+    }
 }

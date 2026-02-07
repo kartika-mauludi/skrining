@@ -59,15 +59,15 @@
               </p>
             </a>
           </li>
-{{-- 
+
           <li class="nav-item">
-            <a href="{{ route('guru.report') }}" class="nav-link @if(Route::is('guru.report')) active @endif">
-              <i class="nav-icon fas fa-chart-bar"></i>
+            <a href="{{ route('guru.tanggapan.index') }}" class="nav-link @if(Route::is('guru.tanggapan.*')) active @endif">
+              <i class="nav-icon fas fa-file"></i>
               <p>
-                Report
+                Data Tanggapan
               </p>
             </a>
-          </li> --}}
+          </li>
 
           <li class="nav-item @if(Route::is('guru.report.*')) menu-open @endif">
             <a href="#" class="nav-link @if(Route::is('guru.report.*')) active @endif">

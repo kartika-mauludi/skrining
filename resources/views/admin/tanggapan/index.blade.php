@@ -46,6 +46,7 @@
                     <th>No</th>
                     <th>Tanggapan</th>
                     <th>Status</th>
+                    <th>Pembuat</th>
                     <th>Action</th>
                   </tr>
                   </thead>
@@ -57,6 +58,7 @@
                     <th>No</th>
                     <th>Tanggapan</th>
                     <th>Status</th>
+                    <th>Pembuat</th>
                     <th>Action</th>
                   </tr>
                   </tfoot>
@@ -95,8 +97,10 @@
       },{
         data    : 'status',
         render  : (data) => data ? `${data}` : `-` 
-      },
-      {
+      },{
+        data    : 'guru',
+        render  : (data) => data ? `${data.nama_lengkap}` : `Admin` 
+      },{
         data: 'id',
         render: function(data, type, row){
           return `

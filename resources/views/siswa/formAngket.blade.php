@@ -81,7 +81,9 @@
         </div>
         <!-- siswa_id -->
         <input type="hidden" name="siswa_id" id="siswa_id" value="">
-        <input type="hidden" name="token" id="" value="">
+        <input type="hidden" name="angket" id="" value="{{ $angket->id }}">
+        <input type="hidden" name="token" id="" value="{{ $token }}">
+
         <!--  -->
         <div class="row pb-1 align-items-start px-3">
           <div class="col-md-12">
@@ -139,12 +141,8 @@
               <div class="card-body">
                 <div class="form-group">
                   <label for="range">{{ $loop->iteration }}. {{ $soal->soal }}</label>
-                  <small class="text-muted d-flex justify-content-between mt-1">
-                    <span>Sangat Tidak Setuju</span>
-                    <span>Sangat Setuju</span>
-                  </small>
                   <div class="d-flex justify-content-between px-2 ">
-                    @for ($i = 1; $i <= 5; $i++)
+                    @for ($i = 0; $i <= 3; $i++)
                       <div class="text-center mx-5 mt-3">
                         <input
                           type="radio"
@@ -156,30 +154,10 @@
                         <label
                           class="form-check-label d-block"
                           for="soal-{{ $soal->id }}-{{ $i }}">
-                          {{ $i }}
+                       @php $a = ['tidak pernah','jarang','sering','selalu']@endphp {{ $a[$i] }}
                         </label>
                       </div>
                     @endfor
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        @elseif($soal->tipe_soal === 'pilihan')
-        <div class="row pb-1 align-items-start px-3">
-          <div class="col-md-12">
-            <div class="card card-primary">
-              <div class="card-body">
-                <div class="form-group">
-                  <label for="pilihan">{{ $loop->iteration }}. {{ $soal->soal }}</label>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="jawaban[{{ $soal->id }}]" value="ya">
-                    <label class="form-check-label">Ya</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="radio" name="jawaban[{{ $soal->id }}]" value="tidak">
-                    <label class="form-check-label">Tidak</label>
                   </div>
                 </div>
               </div>
@@ -191,7 +169,7 @@
           <div class="col-md-12">
             <div class="card card-primary">
               <div class="card-body">
-                <label for="text">{{ $loop->iteration }}. {{ $soal->soal }}</label>
+                <label for="text">{{ $loop->iteration }}.{!! $soal->soal !!}</label>
                  <div id="jawaban-wrapper-{{ $soal->id }}">
                     <div class="input-group jawaban-item mt-1">
                       <input type="text" class="form-control" id="" data-id="" name="alasan[{{ $soal->id }}][]" placeholder="Alasan">
@@ -221,7 +199,7 @@
           <div class="col-md-12">
             <div class="card card-primary">
               <div class="card-body">
-                <label for="text">{{ $loop->iteration }}{{ $soal->soal }}</label>
+                <label for="text">{!!  $soal->soal !!}</label>
               </div>
             </div>
           </div>

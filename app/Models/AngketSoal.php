@@ -23,4 +23,25 @@ class AngketSoal extends Model
     {
         return $this->belongsTo(Angket::class);
     }
+
+     public static function cleanSummernote(?string $html): ?string
+    {
+        if (!$html) {
+            return null;
+        }
+
+        $html = trim($html);
+
+        // dianggap kosong
+        if (in_array($html, ['', '<p><br></p>', '<p></p>'])) {
+            return null;
+        }
+
+        // hapus <p> pembungkus tunggal saja
+        if (preg_match('/^<p>(.*?)<\/p>$/s', $html)) {
+            $html = preg_replace('/^<p>(.*?)<\/p>$/s', '$1', $html);
+        }
+
+        return $html;
+    }
 }

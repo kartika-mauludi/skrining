@@ -36,4 +36,8 @@ class Jawaban extends Model
     {
         return $this->belongsTo(Siswa::class);
     }
+
+    public function soal(){
+        return $this->belongsTo(AngketSoal::class);
+    }
 }

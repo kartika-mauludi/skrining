@@ -47,7 +47,6 @@
                 </div>
                 <div class="ml-auto">
                  <button class="btn btn-success p-1 addNew" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
-                 <button class="btn btn-success p-1 addNew" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
                  <button class="btn btn-sm btn-warning edit-btn" data-toggle="modal"  data-target=".addDataModal">Edit</button>
                  <button class="btn btn-sm btn-danger deleteAll" id="deleteAll" >Hapus Semua Soal</button>
                 </div>
@@ -61,7 +60,8 @@
                     <th>Soal</th>
                     <th>Tipe Soal</th>
                     <th>Ruang Lingkup</th>
-                    <!-- <th></th> -->
+                    <th>Indikator</th>
+                    <th>Indikasi Bully</th>
                     <th>Sekolah</th>
                     <th>Owner</th>
                     <th>Action</th>
@@ -72,11 +72,12 @@
                   </tbody>
                   <tfoot>
                   <tr>
-                    <th>Urut</th>
+                   <th>Urut</th>
                     <th>Soal</th>
                     <th>Tipe Soal</th>
                     <th>Ruang Lingkup</th>
-                    <!-- <th></th> -->
+                    <th>Indikator</th>
+                    <th>Indikasi Bully</th>
                     <th>Sekolah</th>
                     <th>Owner</th>
                     <th>Action</th>
@@ -117,6 +118,12 @@
         render  : (data) => data ? `${data}` : `-` 
       },{
         data    : 'lokasi_kejadian',
+        render  : (data) => data ? `${data}` : `-` 
+      },{
+        data    : 'indikasi_siswa',
+        render  : (data) => data ? `${data}` : `-` 
+      },{
+        data    : 'indikasi_bully',
         render  : (data) => data ? `${data}` : `-` 
       },
       {
@@ -678,15 +685,24 @@ $(document).on('click', '.edit-btn', function () {
 
         if (tipe === 'text') {
           ruang.val('lingkungan kelas');
+          indikator.val('pelaku');
+          
           ruang.find('option').each(function () {
             if ($(this).val() !== 'lingkungan kelas') {
-                $(this).prop('disabled', true);1
+              $(this).prop('disabled', true);1
             }
           });
+           indikator.find('option').each(function(){
+            if ($(this).val() !== 'pelaku') {
+                  $(this).prop('disabled', true);1
+              }
+          });
              ruang.prop('disabled', false).prop('required', true);
+             indikator.prop('disabled', false).prop('required', true);
           } else {
              ruang.find('option').prop('disabled', false); 
-        }
+             indikator.find('option').prop('disabled', false); 
+         }
 
         // ===== KETERANGAN =====
         if (tipe === 'keterangan') {

@@ -9,6 +9,7 @@ use App\Models\AngketSoal;
 use Validator;
 use Exception;
 use DB;
+use App\Helpers\TextHelper;
 
 class AngketSoalController extends Controller
 {
@@ -33,6 +34,7 @@ class AngketSoalController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request;
         DB::beginTransaction();
 
         try {
@@ -40,13 +42,13 @@ class AngketSoalController extends Controller
                 AngketSoal::updateOrCreate(['id' => $item['id']],[
                     'angket_id'        => $request->angket_id,
                     'sequence'         => $item['sequence'],
-                    'soal'             => $item['soal'],
+                    'soal'             => TextHelper::cleanSummernote($item['soal'] ?? null),
                     'lokasi_kejadian'  => $item['tipe_soal'] === 'keterangan' ? null : ($item['ruang'] ?? null),
                     'tipe_soal'        => $item['tipe_soal'],
                     'indikasi_siswa'   => $item['tipe_soal']  === 'keterangan' ? null : ($item['indikator'] ?? null),
                     'detail_tipe_soal' => $item['opsi'] ?? null,
-                    'indikasi_bully'   => $item['tipe_soal'] === 'keterangan' ? null : ($item['indikasi_bully'] ?? null),
-                    'bobot'            => 1
+                    'indikasi_bully'   => $item['tipe_soal'] === 'keterangan' ? "-" : ($item['indikasi_bully'] ?? '-'),
+                    'bobot'            => 3
                 ]);
             }
 

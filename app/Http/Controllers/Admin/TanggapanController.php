@@ -9,6 +9,7 @@ use DB;
 use Exception;
 use Validator;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use App\Helpers\TextHelper;
 
 class TanggapanController extends Controller
 {
@@ -55,7 +56,7 @@ class TanggapanController extends Controller
 
         try {
             Feedback::create([
-                'feedback_deskripsi' => $validate['feedback_deskripsi'],
+                'feedback_deskripsi' => TextHelper::cleanSummernote($validate['feedback_deskripsi']),
                 'status'             => $validate['status'],
             ]);
 
@@ -121,7 +122,7 @@ class TanggapanController extends Controller
 
          $validatedData = $input->validated();
          $result = $tanggapan->update([
-                'feedback_deskripsi'  => $validatedData['feedback_deskripsi'],
+                'feedback_deskripsi'  => TextHelper::cleanSummernote($validatedData['feedback_deskripsi']),
                 'status'             => $validatedData['status'],
               
          ]);

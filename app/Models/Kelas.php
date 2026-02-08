@@ -12,9 +12,14 @@ class Kelas extends Model
     protected $fillable = [
         'sekolah_id',
         'nama_kelas',
-        'akses_token'
+        'akses_token',
+        'data_akses'
     ];
 
+    protected $casts = [
+        'data_akses' => 'array',
+    ];
+    
     public function sekolah()
     {
         return $this->belongsTo(Sekolah::class);

@@ -35,4 +35,8 @@ class Guru extends Model
         });
     }
 
+    public function tanggapan()
+    {
+        return $this->hasMany(Feedback::class);
+    }
 }

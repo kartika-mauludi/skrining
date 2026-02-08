@@ -25,8 +25,8 @@
                with font-awesome or any other icon font library -->
         
           <li class="nav-item">
-            <a href="{{ route('guru.dashboard') }}" class="nav-link @if(Route::is('guru.index')) active @endif">
-               <i class="nav-icon fas fa-tachometer-alt"></i>
+            <a href="{{ route('guru.dashboard') }}" class="nav-link @if(Route::is('guru.dashboard')) active @endif">
+              <i class="nav-icon fas fa-tachometer-alt"></i>
               <p>
                 Dashboard
               </p>
@@ -35,7 +35,7 @@
 
           <li class="nav-item">
             <a href="{{ route('guru.sekolah.index') }}" class="nav-link @if(Route::is('guru.sekolah.index', 'guru.kelas.index')) active @endif">
-               <i class="nav-icon fas fa-building"></i>
+              <i class="nav-icon fas fa-building"></i>
               <p>
                 Data Sekolah
               </p>
@@ -53,11 +53,38 @@
 
           <li class="nav-item">
             <a href="{{ route('guru.siswa.index') }}" class="nav-link @if(Route::is('guru.siswa.index')) active @endif">
-               <i class="nav-icon fas fa-users"></i>
+              <i class="nav-icon fas fa-users"></i>
               <p>
                 Data Siswa
               </p>
             </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('guru.tanggapan.index') }}" class="nav-link @if(Route::is('guru.tanggapan.*')) active @endif">
+              <i class="nav-icon fas fa-file"></i>
+              <p>
+                Data Tanggapan
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item @if(Route::is('guru.report.*')) menu-open @endif">
+            <a href="#" class="nav-link @if(Route::is('guru.report.*')) active @endif">
+              <i class="nav-icon fas fa-chart-bar"></i>
+              <p>
+                Report
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{{ route('guru.report.sosiogram') }}" class="nav-link @if(Route::is('guru.report.sosiogram')) active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Sosiogram</p>
+                </a>
+              </li>
+            </ul>
           </li>
 
         </ul>

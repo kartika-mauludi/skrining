@@ -12,7 +12,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AngketController as AngketGuruController;
+use App\Http\Controllers\Guru\FeedbackController;
 use App\Http\Controllers\KelasController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Siswa\FormAngketController;
 use App\Http\Controllers\SekolahController;
 use App\Http\Controllers\SiswaController;
@@ -75,10 +77,20 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::resource('angket', AngketGuruController::class)
     ->names('guru.angket');
 
+    Route::post('tanggapan/import', [FeedbackController::class, 'import'])->name('guru.tanggapan.import');
+    Route::post('tanggapan/data', [FeedbackController::class, 'index'])->name('guru.tanggapan.data');
+    Route::resource('tanggapan', FeedbackController::class)
+    ->except('show')
+    ->parameter('tanggapan', 'feedback')
+    ->names('guru.tanggapan');
+
     Route::post('siswa/import', [SiswaController::class, 'import'])->name('guru.siswa.import');
     Route::post('siswa/data', [SiswaController::class, 'index'])->name('guru.siswa.data');
     Route::resource('siswa', SiswaController::class)
     ->names('guru.siswa');
+
+    Route::get('report', fn () => view('guru.report.index'))->name('guru.report');
+    Route::get('report-sosiogram', [ReportController::class, 'sosiogram'])->name('guru.report.sosiogram');
 });
 
 // Siswa

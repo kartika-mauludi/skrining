@@ -6,13 +6,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Data Kelas</h1>
+                    <h1>Data Tanggapan</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="{{ route('guru.dashboard') }}">Dashboard</a></li>
-                        <li class="breadcrumb-item">Data Sekolah</li>
-                        <li class="breadcrumb-item active">Data Kelas</li>
+                        <li class="breadcrumb-item active">Data Tanggapan</li>
                     </ol>
                 </div>
             </div>
@@ -37,7 +36,7 @@
                         <div class="card-header">
                             <h3 class="card-title"></h3>
                             <button class="btn btn-sm btn-success" id="add"> Tambah </button>
-                            <a href="{{ route('guru.sekolah.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                            <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#importModal"> Import </button>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -45,8 +44,9 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Kelas</th>
-                                        <th>Data Akses</th>
+                                        <th>Tanggapan</th>
+                                        <th>Status</th>
+                                        <th>Pembuat</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -61,7 +61,8 @@
     </section>
 </div>
 
-@include('guru.kelas.modal')
+@include('guru.tanggapan.modal')
+@include('guru.tanggapan.modal_import')
 @endsection
 
 @push('script')
@@ -73,7 +74,7 @@ $(document).ready(function(){
         processing  : true,
         serverSide  : false,
         ajax: {
-            url: "{{ route('guru.kelas.data') }}?sekolah_id=" + @json($sekolah_id),
+            url: "{{ route('guru.tanggapan.data') }}",
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': token.attr('content')
@@ -84,101 +85,64 @@ $(document).ready(function(){
                 return `<div class='text-center'>${meta.row + 1}.</div>`;
             }
         },{
-            data    : 'nama_kelas',
+            data    : 'feedback_deskripsi',
             render  : (data) => data ? `${data}` : `-` 
         },{
-            data: 'data_akses',
-            render: function (data) {
-
-                if (!data) return '-';
-
-                let parsed = data;
-
-                // Jika masih string JSON
-                if (typeof data === 'string') {
-                    try {
-                        parsed = JSON.parse(data);
-                    } catch (e) {
-                        return '-';
-                    }
-                }
-
-                if (!Array.isArray(parsed)) return '-';
-
-                return parsed
-                    .map(item => `${item.nama_guru} = ${item.token}`)
-                    .join('<br>');
-            }
+            data    : 'status',
+            render  : (data) => data? `${data}` : `0`
         },{
-        data: 'id',
+            data    : 'guru',
+            render  : (data) => data ? `${data.nama_lengkap}` : `Admin` 
+        },{
+            data: 'id',
             render: function(data, type, row){
-                let tokenUrl = "{{ route('guru.kelas.token', ':id') }}";
-                let editUrl = "{{ route('guru.kelas.edit', ':id') }}";
-                let deleteUrl = "{{ route('guru.kelas.destroy', ':id') }}";
+                let editUrl = "{{ route('guru.tanggapan.edit', ':id') }}";
+                let deleteUrl = "{{ route('guru.tanggapan.destroy', ':id') }}";
 
-                tokenUrl = tokenUrl.replace(':id', data);
                 editUrl = editUrl.replace(':id', data);
                 deleteUrl = deleteUrl.replace(':id', data);
 
-                return `
-                    <div class="btn-group">
-                        <button class="btn btn-sm btn-success token-btn" data-url="${tokenUrl}">Regenerate Token</button>
+                console.log(row.id_guru);
+                
+
+                return row.id_guru != null ? `
+                    <div class="btn-group d-flex gap-2">
                         <button class="btn btn-sm btn-warning edit-btn" data-url="${editUrl}">Edit</button>
                         <button class="btn btn-sm btn-danger delete-btn" data-url="${deleteUrl}">Hapus</button>
                     </div>
-                `;
+                ` : `-`;
             }
         }]
     });
 
     $('#add').on('click', function () {
-        let storeUrl = "{{ route('guru.kelas.store') }}";
+        let storeUrl = "{{ route('guru.tanggapan.store') }}";
+        const $sn   = $('#addTanggapan');
+        initSummernote($sn);
+        $sn.summernote('code', '');
 
         $('#dataForm').prop('action', storeUrl).trigger('reset');
         $('#method').val('POST')
         $('#dataModal').modal('show');
     });
 
-    $('#datatable').on('click', '.token-btn', function (){
-        const url = $(this).data('url');
-
-        swal.fire({
-            title: 'Perhatian',
-            text: 'Generate token baru ?',
-            icon: 'warning',
-            showDenyButton: true,
-            confirmButtonText: 'Generate',
-            denyButtonText: 'Batal',
-            customClass: {
-                confirmButton: 'btn btn-warning',
-                denyButton: 'btn btn-secondary',
-            },
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': token.attr('content')
-                    },
-                    success: function(response) {
-                        swal.fire({
-                            title:'Berhasil',
-                            text:'Token berhasil diperbarui',
-                            icon:'success',
-                            allowOutsideClick: false
-                        })
-                        .then((result) => {
-                            location.reload();
-                        })
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        swal.fire('Kesalahan sistem',textStatus,'error')
-                    }
-                })
+    function initSummernote($el) {
+        if ($el.next('.note-editor').length) {
+                $el.summernote('destroy');
             }
-        });
-    });
+
+        if (!$el.next('.note-editor').length) {
+            $el.summernote({
+            height: 120,
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline']],
+                ['para', ['ul', 'ol']],
+                ['insert', ['link']],
+                ['view', ['codeview']]
+            ]
+            });
+        }
+    }
 
     $('#datatable').on('click', '.edit-btn', function (){
         const url = $(this).data('url');
@@ -189,11 +153,16 @@ $(document).ready(function(){
                 return
             }
 
-            let updateUrl = "{{ route('guru.kelas.update', ':id') }}";
+            let updateUrl = "{{ route('guru.tanggapan.update', ':id') }}";
             updateUrl = updateUrl.replace(':id', data['data']['id']);
         
+            
             $('#method').val('PUT')
-            $('#nama_kelas').val(data['data']['nama_kelas']);
+            $('#status').val(data['data']['status']).change();
+
+            const $sn   = $('#addTanggapan');
+            initSummernote($sn);
+            $sn.summernote('code', data['data']['feedback_deskripsi'] ?? '');
 
             $('#dataForm').prop('action', updateUrl);
             $('#dataModal').modal('show');

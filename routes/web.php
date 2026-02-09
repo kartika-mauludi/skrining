@@ -97,5 +97,6 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
 route::post('siswa/formAngket',[FormAngketController::class, 'store'])->name('siswa.formAngket.store');
 route::get('siswa/formAngket',[FormAngketController::class, 'index'])->name('siswa.formAngket');
 route::get('siswa/hasilAngket',[FormAngketController::class,'hasil'])->name('siswa.hasilAngket');
+route::get('siswa/hasilAngket1',[FormAngketController::class,'hasil1'])->name('siswa.hasilAngket1');
 route::get('siswa/hasilAngket2',[FormAngketController::class,'hasil2'])->name('siswa.hasilAngket2');
 

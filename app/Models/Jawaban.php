@@ -43,7 +43,9 @@ class Jawaban extends Model
         return $this->belongsTo(Siswa::class, 'id_siswa_pelaku');
     }
 
-    public function soal(){
-        return $this->belongsTo(AngketSoal::class);
+    public function angket_soals(){
+        return $this->belongsTo(AngketSoal::class,'soal_id');
     }
+
+   
 }

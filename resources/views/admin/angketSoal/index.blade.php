@@ -693,7 +693,7 @@ $(document).on('click', '.edit-btn', function () {
             }
           });
            indikator.find('option').each(function(){
-            if ($(this).val() !== 'pelaku') {
+            if ($(this).val() !== 'korban') {
                   $(this).prop('disabled', true);1
               }
           });

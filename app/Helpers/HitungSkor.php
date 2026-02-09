@@ -25,7 +25,7 @@ class HitungSkor
                     }
                 });
             })
-        ->whereBetween('created_at', [$startWeek, $endWeek])
+        ->whereBetween('jawaban.created_at', [$startWeek, $endWeek])
         ->join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
         ->select('angket_soals.indikasi_siswa', DB::raw('COUNT(jawaban.id) as total'))
         ->groupBy('angket_soals.indikasi_siswa')
@@ -33,18 +33,18 @@ class HitungSkor
 
         $sumJawabanKorban = Jawaban::where('siswa_id',$siswaId)
         ->whereHas('angket_soals', fn ($q) => $q->where('indikasi_siswa','korban'))
-        ->whereBetween('created_at', [$startWeek, $endWeek])
+        ->whereBetween('jawaban.created_at', [$startWeek, $endWeek])
         ->sum('jawaban');
 
          $sumJawabanPelaku = Jawaban::where('siswa_id',$siswaId)
         ->whereHas('angket_soals', fn ($q) => $q->where('indikasi_siswa','pelaku'))
-        ->whereBetween('created_at', [$startWeek, $endWeek])
+        ->whereBetween('jawaban.created_at', [$startWeek, $endWeek])
         ->sum('jawaban');
         
         // menghitung semua jawaban 
         $countKorban = Jawaban::where('siswa_id',$siswaId)
         ->whereNotNull('id_siswa_pelaku')
-        ->whereBetween('created_at', [$startWeek, $endWeek])
+        ->whereBetween('jawaban.created_at', [$startWeek, $endWeek])
         ->count('jawaban');
 
         $totalSiswa = Siswa::where('kelas_id', $kelasId)->count();
@@ -87,6 +87,18 @@ class HitungSkor
         HasilScore::updateOrCreate(
             ['siswa_id' => $siswaId],
             [
+                'angket_id' => $angketId,
+                'skor_korban' => round($skor['korban'],2),
+                'skor_pelaku' => round($skor['pelaku'],2),
+            ]
+        );
+    }
+
+        public static function createSkor($siswaId, $angketId, $kelasId, $guruId = null): void
+    {
+        $skor = self::hitung($siswaId, $angketId, $kelasId, $guruId);
+        HasilScore::Create(
+[   'siswa_id' => $siswaId,
                 'angket_id' => $angketId,
                 'skor_korban' => round($skor['korban'],2),
                 'skor_pelaku' => round($skor['pelaku'],2),

@@ -84,7 +84,10 @@ class FormAngketController extends Controller
 
     public function store(Request $request){
         // return $request;
-        $cek = jawaban::where('siswa_id',$request->siswa_id)->whereDate('created_at',today())->exists();
+        $startWeek = Carbon::now()->startOfWeek(); // Senin
+        $endWeek   = Carbon::now()->endOfWeek();   // Minggu
+
+        $cek = jawaban::where('siswa_id',$request->siswa_id)->whereBetween('created_at', [$startWeek, $endWeek])->exists();
         if($cek){
             return response()->json([
                 'status' => 'error',
@@ -134,22 +137,22 @@ class FormAngketController extends Controller
         $soal = AngketSoal::select('guru_id')
         ->find(array_key_first($request->jawaban));
 
-      HitungSkor::updateSkor(
+      HitungSkor::createSkor(
     $request->siswa_id,
     $request->angket,
-    $kelas-> $kelas->id,
+    $kelas->id,
     $soal->guru_id ?? null
         );
 
         if($pelakuIds){
             foreach (array_unique($pelakuIds) as $pelakuId) {
-            $punyaJawaban = Jawaban::where('siswa_id', $pelakuId)->exists();
-            $pernahDitunjuk = Jawaban::where('id_siswa_pelaku', $pelakuId)->exists();
+            $punyaJawaban = Jawaban::where('siswa_id', $pelakuId)->whereBetween('created_at', [$startWeek, $endWeek])->exists();
+            $pernahDitunjuk = Jawaban::where('id_siswa_pelaku', $pelakuId)->whereBetween('created_at', [$startWeek, $endWeek])->exists();
                 if ( $punyaJawaban &&  $pernahDitunjuk) {
                     HitungSkor::updateSkor(
                         $pelakuId,
                         $request->angket,
-                        $kelas -> $kelas->id,
+                        $kelas->id,
                         $soal->guru_id ?? null
                     );
                 }
@@ -196,7 +199,7 @@ class FormAngketController extends Controller
         $token = $request->token ?? 'kJ1P5C' ;
         $data['siswa'] = Siswa::find($siswa_id);
         $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$token)->first();
-        $data['jawabans']=Jawaban::where('siswa_id', $siswa_id)->get();
+        $data['jawabans']= Jawaban::where('siswa_id', $siswa_id)->get();
        return view('siswa.hasilAngketKorban',$data);
     }
 
@@ -205,7 +208,7 @@ class FormAngketController extends Controller
         $token ='kJ1P5C' ;
         $data['siswa'] = Siswa::find($siswa_id);
         $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$token)->first();
-        $data['jawabans']=Jawaban::where('siswa_id', $siswa_id)->get();
+        $data['jawabans']= Jawaban::where('siswa_id', $siswa_id)->get();
        return view('siswa.hasilAngketPelaku',$data);
     }
 }

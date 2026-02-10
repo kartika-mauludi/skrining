@@ -97,8 +97,11 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::resource('siswa', SiswaController::class)
     ->names('guru.siswa');
 
-    Route::get('report', fn () => view('guru.report.index'))->name('guru.report');
+    Route::get('report', [ReportController::class, 'index'])->name('guru.report');
     Route::get('report-sosiogram', [ReportController::class, 'sosiogram'])->name('guru.report.sosiogram');
+    Route::get('report-matriks', [ReportController::class, 'matriks'])->name('guru.report.matriks');
+    Route::get('report-korban/{siswa}', [ReportController::class, 'korban'])->name('guru.report.korban');
+    Route::get('report-pelaku/{siswa}', [ReportController::class, 'pelaku'])->name('guru.report.pelaku');
 });
 
 // Siswa

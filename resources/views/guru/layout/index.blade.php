@@ -109,7 +109,9 @@
 <!-- Bootstrap 4 -->
 <script src="{{ asset('admin/assets-admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <!-- ChartJS -->
-<script src="{{ asset('admin/assets-admin/plugins/chart.js/Chart.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4"></script>
+<script src="https://unpkg.com/chartjs-plugin-annotation@0.5.7/dist/chartjs-plugin-annotation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-gauge@0.3.0/dist/chartjs-gauge.min.js"></script>
 <!-- Sparkline -->
 <script src="{{ asset('admin/assets-admin/plugins/sparklines/sparkline.js') }}"></script>
 <!-- JQVMap -->

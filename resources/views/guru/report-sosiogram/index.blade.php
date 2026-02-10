@@ -120,6 +120,22 @@
                           </div>
                           <div class="card">
                             <div class="card-header bg-info">
+                              <h6 class="font-weight-bold text-center">Saling Melaporkan</h6>
+                            </div>
+                            <div class="card-body">
+                              <ul>
+                                  @foreach ($mutualReporteds as $pair)
+                                    <li>
+                                        {{ $pair['siswa_a']->nama_lengkap }}
+                                        ↔
+                                        {{ $pair['siswa_b']->nama_lengkap }}
+                                    </li>
+                                  @endforeach
+                              </ul>
+                            </div>
+                          </div>
+                          <div class="card">
+                            <div class="card-header bg-info">
                               <h6 class="font-weight-bold text-center">Tidak Diadukan</h6>
                             </div>
                             <div class="card-body">

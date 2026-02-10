@@ -1,301 +1,214 @@
-@extends('admin.layout.index')
+@extends('guru.layout.index')
 
 @section('content')
-@push('style')
-<style>
-     .select2 {
-        color: #000 !important
-    }
-    .sortable-placeholder {
-        border: 2px dashed #ccc;
-        height: 60px;
-        margin-top: 10px;
-    }
-    .drag-handle {
-        cursor: move;
-    }
-</style>
-@endpush
-<!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+<div class="content-wrapper">
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Data Soal</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">Home</a></li>
-              <li class="breadcrumb-item"><a href="{{ route('angket.index') }}">Angket</a></li>
-              <li class="breadcrumb-item active">Data Soal</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
-
-<section class="content">
-    <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header d-flex justify-content-between">
-                <div>
-                 <button class="btn btn-secondary p-1" id="kembali"  data-toggle="modal">Kembali </button>
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Data Soal</h1>
                 </div>
-                <div class="ml-auto">
-                 <button class="btn btn-success p-1 addNew" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
-                 <button class="btn btn-sm btn-warning edit-btn" data-toggle="modal"  data-target=".addDataModal">Edit</button>
-                 <button class="btn btn-sm btn-danger deleteAll" id="deleteAll" >Hapus Semua Soal</button>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ route('guru.dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('guru.angket.index') }}">Data Angket</a></li>
+                        <li class="breadcrumb-item active">Data Soal</li>
+                    </ol>
                 </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <table id="tbl-angketSoal" class="table table-bordered table-striped">
-                 <thead>
-                  <tr>
-                    <th>Urut</th>
-                    <th>Soal</th>
-                    <th>Tipe Soal</th>
-                    <th>Ruang Lingkup</th>
-                    <th>Indikator</th>
-                    <th>Indikasi Bully</th>
-                    <th>Sekolah</th>
-                    <th>Owner</th>
-                    <th>Action</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-          
-                  </tbody>
-                  <tfoot>
-                  <tr>
-                   <th>Urut</th>
-                    <th>Soal</th>
-                    <th>Tipe Soal</th>
-                    <th>Ruang Lingkup</th>
-                    <th>Indikator</th>
-                    <th>Indikasi Bully</th>
-                    <th>Sekolah</th>
-                    <th>Owner</th>
-                    <th>Action</th>
-                  </tr>
-                  </tfoot>
-                </table>
-              </div>
-              <!-- /.card-body -->
             </div>
         </div>
-      </div>
-    </div>
-</section>
+    </section>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+                        @if (session('message'))
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                {{ session('message') }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
+
+                        <div class="card-header d-flex justify-content-between">
+                            <div>
+                                <a href="{{ route('guru.angket.index') }}" class="btn btn-sm btn-secondary p-1">Kembali</a>
+                            </div>
+                            <div class="ml-auto">
+                                <button class="btn btn-sm btn-success p-1 addNew" id="add">Tambah</button>
+                                <button class="btn btn-sm btn-warning edit-btn">Edit</button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table id="datatable" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Urut</th>
+                                        <th>Soal</th>
+                                        <th>Tipe Soal</th>
+                                        <th>Ruang Lingkup</th>
+                                        <th>Indikator</th>
+                                        <th>Indikasi Bully</th>
+                                        <th>Sekolah</th>
+                                        <th>Owner</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
 
- @include('admin.angketSoal.modal')
+@include('guru.soal.modal')
 @endsection
 
 @push('script')
 <script>
-  // isi data table
-  $(document).ready(function(){
-    var table = $('#tbl-angketSoal').DataTable({
-      responsive  : true,
-      processing  : true,
-      ordering    : true,
-      serverSide  : false,
-      ajax        : "{{ route('admin.angketSoal.data') }}",
-      columns     : [{
-        data    : 'sequence',
-        render  : (data) => data ? `${data}` : `-` 
-      },
-      {
-        data    : 'soal',
-        render  : (data) => data ? `${data}` : `-` 
-      }, {
-        data    : 'tipe_soal',
-        render  : (data) => data ? `${data}` : `-` 
-      },{
-        data    : 'lokasi_kejadian',
-        render  : (data) => data ? `${data}` : `-` 
-      },{
-        data    : 'indikasi_siswa',
-        render  : (data) => data ? `${data}` : `-` 
-      },{
-        data    : 'indikasi_bully',
-        render  : (data) => data ? `${data}` : `-` 
-      },
-      {
-        data    : 'sekolah_id',
-        render  : (data) => data ? `${data}` : `-` 
-      },{
-        data    : 'guru',
-        render  : (data) => data ? `${data.nama_lengkap}` : `Admin` 
-      },
-      {
-        data: 'id',
-        render: function(data, type, row){
-          return `
-             <div class="btn-group d-flex gap-5">
-                  <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">Hapus</button>
-              </div>
-          `;
-        }
-      }
-    ]
-    })
-  })
+    $(document).ready(function(){
+        var token = $('meta[name="csrf-token"]');
 
-   $(document).on("click", "#kembali", function () {
-    window.location.href = "{{ route('angket.index') }}";
-  });
+        var table = $('#datatable').DataTable({
+            processing  : true,
+            serverSide  : false,
+            ajax: {
+                url: "{{ route('guru.soal.data') }}?angket_id=" + @json($angket->id),
+                type: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': token.attr('content')
+                }
+            },
+            columns     : [{
+                data    : 'sequence',
+                render  : (data) => data ? `${data}` : `-` 
+            },{
+                data    : 'soal',
+                render  : (data) => data ? `${data}` : `-` 
+            }, {
+                data    : 'tipe_soal',
+                render  : (data) => data ? `${data}` : `-` 
+            },{
+                data    : 'lokasi_kejadian',
+                render  : (data) => data ? `${data}` : `-` 
+            },{
+                data    : 'indikasi_siswa',
+                render  : (data) => data ? `${data}` : `-` 
+            },{
+                data    : 'indikasi_bully',
+                render  : (data) => data ? `${data}` : `-` 
+            },{
+                data    : 'sekolah_id',
+                render  : (data) => data ? `${data}` : `-` 
+            },{
+                data    : 'guru',
+                render  : (data) => data ? `${data.nama_lengkap}` : `Admin` 
+            },{
+                data: 'id',
+                render: function(data, type, row){
+                    return row.guru_id == @json($guruId) ? `
+                        <div class="btn-group d-flex gap-5">
+                            <button class="btn btn-sm btn-danger delete-btn" data-id="${data}">Hapus</button>
+                        </div>
+                    ` : `-`;
+                }
+            }]
+        });
 
-  $(document).on("click", ".jawaban-btn", function () {
-    window.location.href = "edit.html";
-  });
-
-  // tambah data
-$(document).on('submit','#addDataForm', function(e){
-  var table = $('.table').DataTable();
-  e.preventDefault();
-  showLoading();
-  var form = this;
-  var formData = new FormData($(this)[0]);
-  let error = "Terjadi Kesalahan Ketika Menambah Data";
-  
-  $.ajax({
-    url   : $(form).attr('action'),
-    type  : 'POST',
-    data  : formData,
-    processData: false,
-    contentType: false,
-    success : function(response){
-      closeLoading();
-      if(response.status == 200){
-        Swal.fire('Berhasil', response.message, 'success');
-      }else{
-        Swal.fire('Gagal', response.message, 'error');
-      }
-      $(form).closest('.modal').modal('hide');
-      form.reset();
-      table.ajax.reload();
-    },
-    error : function(response){
-      closeLoading();
-      if(response.status === 400 ||  response.status === 422){
-        let errors = response.responseJSON.errors;
-        errorMessage = Object.values(errors).flat().join('<br>');
-       
-      }
-      else if (response.responseJSON && response.responseJSON.message) {
-                errorMessage = response.responseJSON.message;
-    }
-    Swal.fire({
-        title : 'Gagal tambah data',
-        html  : errorMessage,
-        icon  : 'error' 
-    });
-
-    }
-  });
-});
-
-
-// delete
-
-$(document).on('click','.delete-btn',function(){
-var table = $('.table').DataTable();
-var id    = $(this).data('id');
-var url   = "{{ route('angketsoal.destroy',':id') }}".replace(':id',id);
-
-  Swal.fire({
-    title   :"Hapus Soal",
-    text    : "Anda Yakin Untuk Hapus Soal Ini ?",
-    icon    : 'warning',
-    showCancelButton  : true,
-    confirmButtonText : "Hapus",
-    cancelButtonText  : "Batal",
-  }).then((result)=>{
-    if(result.isConfirmed){
-      showLoading();
-      $.ajax({
-        url   : url,
-        type  : 'DELETE',
-        data  : {_token : '{{ csrf_token() }}'},
-        success : function(response){
-          closeLoading();
-          if(response.status == 200){
-            Swal.fire('Berhasil', response.message,'success');
-          }else{
-            Swal.fire('Gagal',response.message,'error')
-          }
-          table.ajax.reload();
-        },
-        error : function(response){
-           closeLoading();
-          if(response.status == 419){
-          Swal.fire('Gagal',response.responseJSON.message,'error')
-          }
-         
-        }
-      });
-    }
-  });
-});
-
-
-$(document).on('click', '#deleteAll', function () {
-    Swal.fire({
-        title: 'Hapus Semua Soal?',
-        text: 'Semua pertanyaan akan dihapus dan tidak bisa dikembalikan!',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: 'Ya, hapus semua',
-        cancelButtonText: 'Batal'
-    }).then(result => {
-        if (result.isConfirmed) {
+        $(document).on('submit','#addDataForm', function(e){
+            e.preventDefault();
             showLoading();
-
+            var form = this;
+            var formData = new FormData($(this)[0]);
+            let error = "Terjadi Kesalahan Ketika Menambah Data";
+            
             $.ajax({
-                url: "{{ route('angketsoal.destroyAll') }}",
-                type: 'DELETE',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    angket_id: '{{ $angket->id }}'
-                },
-                success: function (res) {
-                    closeLoading();
-
-                    if (res.status === 200) {
-                        Swal.fire('Berhasil', res.message, 'success');
-
-                        // reload datatable
-                        $('.table').DataTable().ajax.reload();
-
-                        // bersihkan modal juga
-                        $('#soal-container').empty();
-                    } else {
-                        Swal.fire('Gagal', res.message, 'error');
+                url   : $(form).attr('action'),
+                type  : 'POST',
+                data  : formData,
+                processData: false,
+                contentType: false,
+                success : function(response){
+                closeLoading();
+                    if(response.status == 200){
+                        Swal.fire('Berhasil', response.message, 'success');
+                    }else{
+                        Swal.fire('Gagal', response.message, 'error');
                     }
+                    $(form).closest('.modal').modal('hide');
+                    form.reset();
+                    table.ajax.reload();
                 },
-                error: function () {
+                error : function(response){
                     closeLoading();
-                    Swal.fire('Error', 'Terjadi kesalahan server', 'error');
+                    if(response.status === 400 ||  response.status === 422){
+                        let errors = response.responseJSON.errors;
+                        errorMessage = Object.values(errors).flat().join('<br>');
+                    
+                    }
+                    else if (response.responseJSON && response.responseJSON.message) {
+                        errorMessage = response.responseJSON.message;
+                    }
+
+                    Swal.fire({
+                        title : 'Gagal tambah data',
+                        html  : errorMessage,
+                        icon  : 'error' 
+                    });
                 }
             });
-        }
+        });
+        
+        $('#datatable').on('click','.delete-btn',function(){
+            var id    = $(this).data('id');
+            var url   = "{{ route('guru.soal.destroy',':id') }}".replace(':id',id);
+
+            Swal.fire({
+                title   :"Hapus Soal",
+                text    : "Anda Yakin Untuk Hapus Soal Ini ?",
+                icon    : 'warning',
+                showCancelButton  : true,
+                confirmButtonText : "Hapus",
+                cancelButtonText  : "Batal",
+            }).then((result)=>{
+                if(result.isConfirmed){
+                    showLoading();
+                    $.ajax({
+                        url   : url,
+                        type  : 'DELETE',
+                        data  : {_token : '{{ csrf_token() }}'},
+                        success : function(response){
+                            closeLoading();
+                            if(response.status == 200){
+                                Swal.fire('Berhasil', response.message,'success');
+                            }else{
+                                Swal.fire('Gagal',response.message,'error')
+                            }
+                            table.ajax.reload();
+                        },
+                        error : function(response){
+                            closeLoading();
+                            if(response.status == 419){
+                                Swal.fire('Gagal',response.responseJSON.message,'error')
+                            }
+                        }
+                    });
+                }
+            });
+        });
     });
-});
-
-
-// ============================
-//  tambah/edit
-// ============================
 
 let isEditMode = false;
 
- const soalData = @json($soal); 
     let soalIndex = 0;
     $(document).ready(function () {
      $('.addNew').on('click', function () {
@@ -386,7 +299,7 @@ function renderSoal(data = null) {
     </div>
     `;
 
-     let el = $(html);
+    let el = $(html);
     parent.append(el);
     initSummernote(el.find('.summernote'));
 
@@ -421,7 +334,6 @@ function renderSoal(data = null) {
     }
     
 }
-
 
 function renderSoalHTML(data, idx) {
     return `
@@ -494,7 +406,6 @@ function renderSoalHTML(data, idx) {
     `;
 }
 
-
 function initSummernote($el) {
   if (!$el.next('.note-editor').length) {
     $el.summernote({
@@ -509,12 +420,9 @@ function initSummernote($el) {
   }
 }
 
-
 function loadSoalForEdit() {
-    return $.get("{{ route('admin.angketSoal.data') }}");
+    return $.get("{{ route('guru.soal.edit') }}?angket_id=" + @json($angket->id));
 }
-
-
 
 $(document).on('click', '.edit-btn', function () {
     isEditMode = true;
@@ -533,7 +441,7 @@ $(document).on('click', '.edit-btn', function () {
         // 1️⃣ render HTML
         $container.html(html);
 
-         initSummernote($container.find('.summernote'));
+        initSummernote($container.find('.summernote'));
 
         // 2️⃣ isi data per soal
         res.data.forEach((item, index) => {
@@ -586,17 +494,17 @@ $(document).on('click', '.edit-btn', function () {
     // ================================
     // update Soal Order
     // ================================
-   function updateSoalOrder() {
+    function updateSoalOrder() {
         $('#soal-container .soal-input').each(function (index) {
             $(this).attr('data-index', index);
 
-             // ✅ sequence (VALUE + NAME)
+            // ✅ sequence (VALUE + NAME)
             $(this).find('.sequence-input')
                 .val(index + 1)
                 .attr('name', `soal[${index}][sequence]`);
 
-             // ✅ id juga HARUS ikut rename
-             $(this).find('input[name*="[id]"]')
+            // ✅ id juga HARUS ikut rename
+            $(this).find('input[name*="[id]"]')
                 .attr('name', `soal[${index}][id]`);
             // update sequence (1,2,3,...)
 
@@ -621,7 +529,7 @@ $(document).on('click', '.edit-btn', function () {
                 `soal[${index}][indikator]`
             );
 
-              $(this).find('select[name*="[indikasi_bully]"]').attr(
+            $(this).find('select[name*="[indikasi_bully]"]').attr(
                 'name',
                 `soal[${index}][indikasi_bully]`
             );
@@ -640,8 +548,6 @@ $(document).on('click', '.edit-btn', function () {
             });
         });
     }
-
-     
     // ===============================
     // REMOVE QUESTION
     // ===============================
@@ -715,9 +621,6 @@ $(document).on('click', '.edit-btn', function () {
             indikator2.prop('disabled', false).show().prop('required', true);
         }
     });
-
-
-
 
     // ===============================
     // ADD OPTION

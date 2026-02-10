@@ -11,13 +11,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\AngketController as AngketGuruController;
+use App\Http\Controllers\Guru\AngketController as AngketGuruController;
+use App\Http\Controllers\Guru\AngketSoalController as GuruAngketSoalController;
 use App\Http\Controllers\Guru\FeedbackController;
-use App\Http\Controllers\KelasController;
-use App\Http\Controllers\ReportController;
+use App\Http\Controllers\Guru\KelasController;
+use App\Http\Controllers\Guru\ReportController;
 use App\Http\Controllers\Siswa\FormAngketController;
-use App\Http\Controllers\SekolahController;
-use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\Guru\SekolahController;
+use App\Http\Controllers\Guru\SiswaController;
 
 
 Route::get('/', function () {
@@ -74,8 +75,15 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     ->names('guru.kelas');
 
     Route::post('angket/data', [AngketGuruController::class, 'index'])->name('guru.angket.data');
-    Route::resource('angket', AngketGuruController::class)
-    ->names('guru.angket');
+    Route::get('angket', [AngketGuruController::class, 'index'])
+    ->name('guru.angket.index');
+
+    Route::post('angket-soal/data', [GuruAngketSoalController::class, 'index'])->name('guru.soal.data');
+    Route::get('angket-soal/edit-soal', [GuruAngketSoalController::class, 'edit'])->name('guru.soal.edit');
+    Route::resource('angket-soal', GuruAngketSoalController::class)
+    ->except('show', 'edit')
+    ->parameter('angket-soal', 'angketSoal')
+    ->names('guru.soal');
 
     Route::post('tanggapan/import', [FeedbackController::class, 'import'])->name('guru.tanggapan.import');
     Route::post('tanggapan/data', [FeedbackController::class, 'index'])->name('guru.tanggapan.data');

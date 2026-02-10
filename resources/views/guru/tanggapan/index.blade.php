@@ -102,9 +102,6 @@ $(document).ready(function(){
                 editUrl = editUrl.replace(':id', data);
                 deleteUrl = deleteUrl.replace(':id', data);
 
-                console.log(row.id_guru);
-                
-
                 return row.id_guru != null ? `
                     <div class="btn-group d-flex gap-2">
                         <button class="btn btn-sm btn-warning edit-btn" data-url="${editUrl}">Edit</button>

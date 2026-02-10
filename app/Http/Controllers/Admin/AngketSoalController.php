@@ -135,7 +135,8 @@ class AngketSoalController extends Controller
     }
 
     public function data(){
-        $data = AngketSoal::orderBy('sequence','asc')->get();
+        $data = AngketSoal::with('guru:id,nip,nama_lengkap')
+        ->orderBy('sequence','asc')->get();
 
         return response()->json([
             'data' => $data

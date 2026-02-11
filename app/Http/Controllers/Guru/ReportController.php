@@ -118,8 +118,10 @@ class ReportController extends Controller
         ->avg('skor_korban');
         $feedbacks  = Feedback::select('id', 'feedback_deskripsi')
         ->whereIn('status', ['korban', 'netral'])
-        ->where('id_guru', auth()->user()->guru->id)
-        ->orWhere('id_guru', null)
+        ->where(function($query) {
+            $query->where('id_guru', auth()->user()->guru->id)
+                ->orWhere('id_guru', null);
+        })
         ->get();
 
         $locationCount = [];
@@ -174,9 +176,13 @@ class ReportController extends Controller
         ->avg('skor_pelaku');
         $feedbacks  = Feedback::select('id', 'feedback_deskripsi')
         ->whereIn('status', ['pelaku', 'netral'])
-        ->where('id_guru', auth()->user()->guru->id)
-        ->orWhere('id_guru', null)
+        ->where(function($query) {
+            $query->where('id_guru', auth()->user()->guru->id)
+                ->orWhere('id_guru', null);
+        })
         ->get();
+        $countAsPelaku = Jawaban::where('id_siswa_pelaku', $siswa->id)
+        ->count();
 
         $indikator = array_merge($this::$indikatorBully, $this::$indikatorCiberBully);
 
@@ -191,6 +197,23 @@ class ReportController extends Controller
             $locationCount[$lokasi] = $jawaban;    
         }
 
+        $reportReasons = [];
+
+        foreach ($this::$indikatorBully as $bully) {
+            $jawaban = Jawaban::with('angket_soals', 'siswa')
+            ->whereRelation('angket_soals', 'indikasi_bully', $bully)
+            ->where('id_siswa_pelaku', $siswa->id)
+            ->get()
+            ->map(function ($model) {
+                return [
+                    'korban' => optional($model->siswa)->nama_lengkap,
+                    'alasan' => $model->alasan
+                ];
+            });
+
+            $reportReasons[$bully] = $jawaban;
+        }
+
         $data['kelas'] = $siswa->kelas;
         $data['siswa'] = $siswa;
         $data['gaugeMeter'] = $gaugeMeter ?? 0;
@@ -200,6 +223,8 @@ class ReportController extends Controller
         $data['skorKorban'] = 0;
         $data['skorKorbanCyber'] = 0;
         $data['locationCount'] = $locationCount;
+        $data['reportReasons'] = $reportReasons;
+        $data['countAsPelaku'] = $countAsPelaku;
 
         return view('guru.report.pelaku', $data);
     }

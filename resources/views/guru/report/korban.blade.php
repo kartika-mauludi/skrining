@@ -207,7 +207,7 @@
                                 <strong>Jika aku mengalami perundungan</strong>
                                 <ol class="mt-2">
                                     @foreach ($feedbacks as $feedback)
-                                        <li>{{ $feedback->feedback_deskripsi }}</li>
+                                        <li>{!! $feedback->feedback_deskripsi !!}</li>
                                     @endforeach
                                 </ol>
                             </div>

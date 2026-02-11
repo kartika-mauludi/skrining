@@ -195,39 +195,43 @@
 
                                     <div class="col-md-4">
                                     <div class="box text-center">
-                                        <div class="box-title">Σ</div>
-                                        <h1 class="fw-bold">0</h1>
-                                        <div>Pelaku yang diadukan</div>
+                                        <div class="box-title bg-danger py-1">
+                                            <h1>Σ</h1>
+                                        </div>
+                                        <h1 class="fw-bold mt-3 mb-3">{{ $countAsPelaku }}</h1>
+                                        <h5>Aduan Sebagai Pelaku</h5>
                                     </div>
                                 </div>
                                   <div class="col-md-4">
                                     <div class="box text-center">
-                                        <div class="box-title">Σ</div>
-                                        <h1 class="fw-bold">0</h1>
-                                        <div>Pelaku yang diadukan</div>
+                                        <div class="box-title bg-danger py-1">
+                                            <h1>Σ</h1>
+                                        </div>
+                                        <h1 class="fw-bold mt-3 mb-3">0</h1>
+                                        <h5>Kecenderungan Sikap</h5>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="box mb-3">
-                                <strong>Teman yang mengadukan:</strong><br>
-                                Verbal:<br>
-                                Fisik:<br>
-                                Sosial:<br>
+                                <strong>Teman yang mengadukan saya:</strong><br>
+                                Verbal: <span class="text-muted">{{ $reportReasons['verbal']->pluck('korban')->implode(', ') }}</span><br>
+                                Fisik:  <span class="text-muted">{{ $reportReasons['fisik']->pluck('korban')->implode(', ') }}</span><br>
+                                Sosial: <span class="text-muted">{{ $reportReasons['sosial']->pluck('korban')->implode(', ') }}</span><br>
                             </div>
 
                             <div class="box mb-3">
-                                <strong>Alasan teman yang mengadukan:</strong><br>
-                                Verbal:<br>
-                                Fisik:<br>
-                                Sosial:<br>
+                                <strong>Alasan teman mengadukan:</strong><br>
+                                Verbal: <span class="text-muted">{{ $reportReasons['verbal']->pluck('alasan')->implode(', ') }}</span><br>
+                                Fisik:  <span class="text-muted">{{ $reportReasons['fisik']->pluck('alasan')->implode(', ') }}</span><br>
+                                Sosial: <span class="text-muted">{{ $reportReasons['sosial']->pluck('alasan')->implode(', ') }}</span><br>
                             </div>
 
                             <div class="box">
                                 <strong>Jika aku mengalami perundungan</strong>
                                 <ol class="mt-2">
                                     @foreach ($feedbacks as $feedback)
-                                        <li>{{ $feedback->feedback_deskripsi }}</li>
+                                        <li>{!! $feedback->feedback_deskripsi !!}</li>
                                     @endforeach
                                 </ol>
                             </div>

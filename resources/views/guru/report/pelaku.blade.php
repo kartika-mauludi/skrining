@@ -122,33 +122,17 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="position-relative mb-4">
-                                            <canvas id="history-chart" height="100"></canvas>
+                                            <canvas id="history-chart"></canvas>
                                             </div>
                                         </div>
                                     </div>
-                                  </div>
-                              
-
-                                <!-- <div class="col-md-3">
-                                    <div class="box text-center">
-                                        <div class="box-title">Σ</div>
-                                        <h1 class="fw-bold">0</h1>
-                                        <div>Pelaku yang diadukan</div>
-                                    </div>
-                                </div> -->
-
-                                  <div class="col-md-4">
-                                    <!-- <div class="box text-center" style="background-color: #37F713;">
-                                        <div class="box-title">Status</div>
-                                        <h1 class="fw-bold">Aman</h1> -->
-                                        <!-- <div>Pelaku yang diadukan</div> -->
-                                    <!-- </div> -->
-                                    <div id="canvas-holder" style="width:100%">
-                                        <canvas id="chart"></canvas>
-                                    </div>
                                 </div>
 
-                              
+                                <div class="col-md-4">
+                                    <div id="canvas-holder" style="width:100%">
+                                        <canvas id="gauge-chart"></canvas>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- DETAIL -->
@@ -194,16 +178,16 @@
                                               
                                             </tr>
                                             <tr>
-                                                <td>0</td>
-                                                <td>0</td>
+                                                <td>{{ $locationCount['sosmed'] }}</td>
+                                                <td>{{ $locationCount['game'] }}</td>
                                             </tr>
                                             <tr>
                                                 <th>Kelas</th>
                                                 <th>Lain lain</th>
                                             </tr>
                                             <tr>
-                                                <td>0</td>
-                                                <td>0</td>
+                                                <td>{{ $locationCount['lingkungan kelas'] }}</td>
+                                                <td>{{ $locationCount['lainnya'] }}</td>
                                             </tr>
                                         </table>
                                     </div>
@@ -242,10 +226,9 @@
                             <div class="box">
                                 <strong>Jika aku mengalami perundungan</strong>
                                 <ol class="mt-2">
-                                    <li>Tetaplah bersikap tenang, misalnya dengan ambil nafas dalam-dalam selama 1 menit kemudian hembuskan keluar.</li>
-                                    <li>Sembunyikan kemarahan atau kesedihanmu di depan perundung.</li>
-                                    <li>Berdiri tegak, angkat kepalamu, pandang pelaku dengan tegas, hadapi pelaku dengan tenang atau tinggalkan perundung.</li>
-                                    <li>Tanyakan permasalahan atau tolak permintaan pelaku dengan sopan.</li>
+                                    @foreach ($feedbacks as $feedback)
+                                        <li>{{ $feedback->feedback_deskripsi }}</li>
+                                    @endforeach
                                 </ol>
                             </div>
 
@@ -264,245 +247,213 @@
 <script>
 
 document.addEventListener("DOMContentLoaded", function () { 
- if (window['chartjs-plugin-annotation']) {
-    Chart.plugins.register(window['chartjs-plugin-annotation']);
-  }
+    const history = document.getElementById('history-chart').getContext('2d');
+    const kategori = document.getElementById('kriteria-chart').getContext('2d'); 
+    const cyber = document.getElementById('cyber-chart').getContext('2d');
+    const gaugeChart = document.getElementById("gauge-chart").getContext("2d");
 
-   console.log(Chart.plugins.getAll().map(p => p.id));
-
-
- 
-  const history = document.getElementById('history-chart').getContext('2d');
-  new Chart(history, {
-  type: 'line',
-  data: {
-    labels: ['Visual', 'Verbal', 'Sosial', 'Impersonation', 'Visual Sexual','Written verbal', 'Online Exclusion'],
-    datasets: [{
-      label: 'Tes 1',
-      data: [100, 45, 30, 78, 60,20, 10],
-      borderColor: '#007bff',
-      pointBackgroundColor: '#007bff',
-      pointBorderColor: '#007bff',
-      pointRadius: 3,
-      borderWidth: 2,
-      lineTension: 0.4
-    },{
-      label: 'Tes 2',
-      data: [90, 40, 40, 68, 20, 40, 90],
-      borderColor: '#e01919ff',
-      pointBackgroundColor: '#e01919ff',
-      pointBorderColor: '#e01919ff',
-      pointRadius: 3,
-      borderWidth: 2,
-      lineTension: 0.4
-    }]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    legend: {
-      display: false
-    },
-
-   annotation: {
-    drawTime: 'beforeDatasetsDraw',
-    annotations: [
-    {
-      type: 'box',
-      yScaleID: 'y-axis-0',
-      yMin: 30,
-      yMax: 30,
-      backgroundColor: 'rgba(36, 198, 74, 1)',
-      borderWidth: 0
-    },
-    {
-      type: 'box',
-      yScaleID: 'y-axis-0',
-      yMin: 30,
-      yMax: 70,
-      backgroundColor: 'rgba(214, 242, 90, 1)',
-      borderWidth: 0
-    },
-    {
-      type: 'box',
-      yScaleID: 'y-axis-0',
-      yMin: 70,
-      yMax: 100,
-      backgroundColor: 'rgba(230, 34, 54, 1)',
-      borderWidth: 0
-    }
-  ]
-},
-
-    scales: {
-      yAxes: [{
-        id: 'y-axis-0',
-        ticks: {
-            min: 0,
-            max: 100,
-            padding: 10,
-            callback: function(value) {
-            if (value === 30) return 'Aman';
-            if (value === 70) return 'Hati-hati';
-            if (value === 100) return 'Bahaya';
-            return '';
+    const chartData = @json($skorKorbanAll);
+    const chartData1 = @json($skorKorban);
+    const chartData2 = @json($skorKorbanCyber);
+    
+    const colors = [
+        '#3b82f6', // biru
+        '#8b5cf6', // ungu
+        '#ec4899'  // pink
+    ];
+    
+    new Chart(history, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: chartData.datasets.map((ds, index) => ({
+                label: ds.label,
+                data: ds.data,
+                borderColor: colors[index % colors.length],
+                backgroundColor: colors[index % colors.length] + '33', // transparan
+                pointBackgroundColor: colors[index % colors.length],
+                borderWidth: 2,
+                tension: 0.5,
+                fill: false
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            legend: {
+                display: false
+            },
+            annotation: {
+                drawTime: 'beforeDatasetsDraw',
+                annotations: [
+                {
+                    type: 'box',
+                    yScaleID: 'y-axis-0',
+                    yMin: 0,
+                    yMax: 20,
+                    backgroundColor: 'rgba(36, 198, 74, 0.2)',
+                    borderWidth: 0
+                },
+                {
+                    type: 'box',
+                    yScaleID: 'y-axis-0',
+                    yMin: 20,
+                    yMax: 50,
+                    backgroundColor: 'rgba(214, 242, 90, 0.2)',
+                    borderWidth: 0
+                },
+                {
+                    type: 'box',
+                    yScaleID: 'y-axis-0',
+                    yMin: 50,
+                    yMax: 100,
+                    backgroundColor: 'rgba(230, 34, 54, 0.2)',
+                    borderWidth: 0
+                }]
+            },
+            scales: {
+                yAxes: [{
+                    id: 'y-axis-0',
+                    ticks: {
+                        min: 0,
+                        max: 100,
+                        padding: 10,
+                        callback: function(value) {
+                            if (value === 20) return 'Aman';
+                            if (value === 50) return 'Hati-hati';
+                            if (value === 100) return 'Bahaya';
+                            return '';
+                        }
+                    },
+                    afterBuildTicks: function(scale) {
+                        scale.ticks = [20, 50, 100];
+                    }
+                    }],
+                xAxes: [{
+                    gridLines: {
+                        display: false
+                    }
+                }]
             }
         },
-        afterBuildTicks: function(scale) {
-            scale.ticks = [30, 70, 100];
-        }
-        }],
-      
-      xAxes: [{
-        gridLines: {
-          display: false
-        }
-      }]
-    }
-  },
+    });
 
-});
-
-
-function KategoriConfig() {
-  return {
-    type: 'bar',
-    data: {
-      labels: ['Verbal', 'Fisik', 'Sosial'],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56, 55, 40],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 205, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(201, 203, 207, 0.2)'
-        ],
-        borderColor: [
-          'rgb(255, 99, 132)',
-          'rgb(255, 159, 64)',
-          'rgb(255, 205, 86)',
-          'rgb(75, 192, 192)',
-          'rgb(54, 162, 235)',
-          'rgb(153, 102, 255)',
-          'rgb(201, 203, 207)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-        legend: {
-          display: false
+    new Chart(kategori, {
+        type: 'bar',
+        data: {
+            labels: chartData1.labels,
+            datasets: chartData1.datasets.map((ds, index) => ({
+                label: ds.label,
+                data: ds.data,
+                backgroundColor: colors[index % colors.length] + '33', // transparan
+                borderColor: colors[index % colors.length],
+                borderWidth: 1
+            }))
         },
-      scales: {
-        x: { offset: true },
-        y: {
-            beginAtZero: true,
-            min: 0,
-            max: 200,
-            ticks: {
-                stepSize: 50,
-                callback: function(value) {
-                if (value <= 120) return 'Aman';
-                if (value <= 160) return 'Hati-hati';
-                return 'Bahaya';
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            scales: {
+                x: { offset: true },
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    new Chart(cyber, {
+        type: 'bar',
+        data: {
+            labels: chartData2.labels,
+            datasets: chartData2.datasets.map((ds, index) => ({
+                label: ds.label,
+                data: ds.data,
+                backgroundColor: colors[index % colors.length] + '33', // transparan
+                borderColor: colors[index % colors.length],
+                borderWidth: 1
+            }))
+        },
+        options: {
+            responsive: true,
+            legend: {
+                display: false
+            },
+            scales: {
+                x: { offset: true },
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    new Chart(gaugeChart, {
+        type: "gauge",
+        data: {
+            labels: ["Aman", "Hati Hati", "Bahaya"],
+            datasets: [
+            {
+                data: [20, 50, 100],
+                minValue: 0,
+                maxValue: 100,
+                value: @json($gaugeMeter),
+                backgroundColor: ["#09e63cff", "#d4f544ff", "#cb3600ff"],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            layout: {
+                padding: {
+                    bottom: 35
+                }
+            },
+            needle: {
+                radiusPercentage: 2,
+                widthPercentage: 2.2,
+                lengthPercentage: 50,
+                color: "#FF6112"
+            },
+            valueLabel: {
+                display: true,
+                formatter: (value) => {
+                    return Math.round(value);
+                },
+                color: 'rgba(255, 255, 255, 1)',
+                backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                borderRadius: 5,
+                padding: {
+                    top: 10,
+                    bottom: 10,
+                    left: 12,
+                    right: 12
+                }
+            },
+            plugins: {
+                datalabels: {
+                    display: true,
+                    formatter:  function (value, context) {
+                        return context.chart.data.labels[context.dataIndex];
+                    },
+                    color: function (context) {
+                        return context.dataset.backgroundColor;
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    borderRadius: 5,
+                    padding: {
+                        top: 3,
+                        bottom: 3,
+                        left: 5,
+                        right: 5
+                    },
+                    font: {
+                        size: 12,
+                        weight: 600
+                    }
                 }
             }
-            }
-      }
-    }
-  };
-}
-
-function CyberConfig() {
-  return {
-    type: 'bar',
-    data: {
-      labels: ['Impersonation', 'Visual Sexual', 'Written Verbal', 'Online Exclusion'],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [65, 59, 80, 81, 56],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-          'rgba(255, 205, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(201, 203, 207, 0.2)'
-        ],
-        borderColor: [
-          'rgb(255, 99, 132)',
-          'rgb(255, 159, 64)',
-          'rgb(255, 205, 86)',
-          'rgb(75, 192, 192)',
-          'rgb(54, 162, 235)',
-          'rgb(153, 102, 255)',
-          'rgb(201, 203, 207)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-        legend: {
-          display: false
-        },
-      scales: {
-        x: { offset: true },
-        y: { beginAtZero: true }
-      }
-    }
-  };
-}
-const kategori = document.getElementById('kriteria-chart').getContext('2d'); 
-const cyber = document.getElementById('cyber-chart').getContext('2d');
-
-new Chart(kategori, KategoriConfig());
-new Chart(cyber, CyberConfig());
-
+        }
+    });
 });
-
-
-var config = {
-  type: "gauge",
-  data: {
-    datasets: [
-      {
-        data: [20, 40, 50],
-        minValue: 10,
-        value: 30,
-        backgroundColor: ["#09e63cff", "#d4f544ff", "#cb3600ff"],
-        borderWidth: 1
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    layout: {
-      padding: {
-        bottom: 30
-      }
-    },
-    needle: {
-      radiusPercentage: 2,
-      widthPercentage: 2.2,
-      lengthPercentage: 50,
-      color: "#FF6112"
-    }
-  }
-};
-
-window.onload = function () {
-  var ctx = document.getElementById("chart").getContext("2d");
-  window.myGauge = new Chart(ctx, config);
-};
-
 
 </script>
 

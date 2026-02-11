@@ -170,8 +170,36 @@ class ReportController extends Controller
 
     public function pelaku(Siswa $siswa)
     {
+        $gaugeMeter = HasilScore::where('siswa_id', $siswa->id)
+        ->avg('skor_pelaku');
+        $feedbacks  = Feedback::select('id', 'feedback_deskripsi')
+        ->whereIn('status', ['pelaku', 'netral'])
+        ->where('id_guru', auth()->user()->guru->id)
+        ->orWhere('id_guru', null)
+        ->get();
+
+        $indikator = array_merge($this::$indikatorBully, $this::$indikatorCiberBully);
+
+        $locationCount = [];
+
+        foreach ($this::$lokasiKejadian as $lokasi) {
+            $jawaban = Jawaban::withCount('angket_soals')
+            ->whereRelation('angket_soals', 'lokasi_kejadian', $lokasi)
+            ->where('id_siswa_pelaku', $siswa->id)
+            ->count();
+
+            $locationCount[$lokasi] = $jawaban;    
+        }
+
         $data['kelas'] = $siswa->kelas;
         $data['siswa'] = $siswa;
+        $data['gaugeMeter'] = $gaugeMeter ?? 0;
+        $data['feedbacks'] = $feedbacks;
+        $data['indikator'] = $indikator;
+        $data['skorKorbanAll'] = 0;
+        $data['skorKorban'] = 0;
+        $data['skorKorbanCyber'] = 0;
+        $data['locationCount'] = $locationCount;
 
         return view('guru.report.pelaku', $data);
     }

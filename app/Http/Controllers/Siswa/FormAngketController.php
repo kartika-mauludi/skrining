@@ -95,7 +95,10 @@ class FormAngketController extends Controller
             ]);
         }
         $pelakuIds = [];
-        $kelas = Kelas::select('id', 'nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$request->token)->first();
+        $kelas = Kelas::select('id', 'nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->whereJsonContains('data_akses', [
+            'token' => $request->token
+        ])->first();
+
         foreach ($request->jawaban as $soal_id => $jawaban) {
             if (is_array($jawaban)) {
                 foreach ($jawaban as $index => $value) {
@@ -125,23 +128,23 @@ class FormAngketController extends Controller
             } 
             // kalau jawaban single (radio / pilihan)
             else {
-                    Jawaban::create([
-                        'siswa_id' => $request->siswa_id,
-                        'soal_id'  => $soal_id,
-                        'jawaban'  => $jawaban,
-                        'alasan'   => $request->alasan[$soal_id] ?? '-',
-                    ]);
+                Jawaban::create([
+                    'siswa_id' => $request->siswa_id,
+                    'soal_id'  => $soal_id,
+                    'jawaban'  => $jawaban,
+                    'alasan'   => $request->alasan[$soal_id] ?? '-',
+                ]);
             }
         }
 
         $soal = AngketSoal::select('guru_id')
         ->find(array_key_first($request->jawaban));
 
-      HitungSkor::createSkor(
-    $request->siswa_id,
-    $request->angket,
-    $kelas->id,
-    $soal->guru_id ?? null
+        HitungSkor::createSkor(
+            $request->siswa_id,
+            $request->angket,
+            $kelas->id,
+            $soal->guru_id ?? null
         );
 
         if($pelakuIds){
@@ -172,8 +175,7 @@ class FormAngketController extends Controller
         ->pluck('angket_soals.indikasi_siswa');
 
         $data['siswa'] = Siswa::find($request->siswa_id);
-        $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')
-        ->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$request->token)->first();
+        $data['kelas'] = $kelas;
         $data['jawabans']=Jawaban::where('siswa_id', $request->siswa_id)->get();
         $data['feedbacks']= Feedback::all();
 

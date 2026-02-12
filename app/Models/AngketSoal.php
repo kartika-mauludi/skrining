@@ -24,7 +24,7 @@ class AngketSoal extends Model
         return $this->belongsTo(Angket::class);
     }
 
-     public static function cleanSummernote(?string $html): ?string
+    public static function cleanSummernote(?string $html): ?string
     {
         if (!$html) {
             return null;
@@ -43,5 +43,10 @@ class AngketSoal extends Model
         }
 
         return $html;
+    }
+
+    public function guru()
+    {
+        return $this->belongsTo(Guru::class, 'guru_id');
     }
 }

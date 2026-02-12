@@ -43,7 +43,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ route('guru.angket.index') }}" class="nav-link @if(Route::is('guru.angket.*')) active @endif">
+            <a href="{{ route('guru.angket.index') }}" class="nav-link @if(Route::is('guru.angket.*', 'guru.soal.*')) active @endif">
                <i class="nav-icon fas fa-file"></i>
               <p>
                 Data Angket
@@ -69,7 +69,7 @@
             </a>
           </li>
 
-          <li class="nav-item @if(Route::is('guru.report.*')) menu-open @endif">
+          <li class="nav-item @if(Route::is('guru.report', 'guru.report.*')) menu-open @endif">
             <a href="#" class="nav-link @if(Route::is('guru.report.*')) active @endif">
               <i class="nav-icon fas fa-chart-bar"></i>
               <p>
@@ -79,9 +79,21 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
+                <a href="{{ route('guru.report') }}" class="nav-link @if(Route::is('guru.report', 'guru.report.korban', 'guru.report.pelaku')) active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Siswa</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('guru.report.sosiogram') }}" class="nav-link @if(Route::is('guru.report.sosiogram')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sosiogram</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{{ route('guru.report.matriks') }}" class="nav-link @if(Route::is('guru.report.matriks')) active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Matriks</p>
                 </a>
               </li>
             </ul>

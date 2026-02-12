@@ -72,7 +72,7 @@ class HitungSkor
         $skorPelaku =($jumlahSoalPelaku + $jumlahJadiPelaku) > 0
                     ? (($sumJawabanPelaku + $jumlahJadiPelaku *3)/(($jumlahSoalPelaku + $jumlahJadiPelaku) * 3 )) * 100 : 0;
         $skorKorban = ($jumlahSoalKorban + $jumlahjadiKorban) > 0
-                    ? (($sumJawabanKorban)/($jumlahSoalKorban*3)) * 100 : 0;
+                    ? (($sumJawabanKorban)/(($jumlahSoalKorban*3) ?: 1)) * 100 : 0;
         
         return [
             'pelaku' => $skorPelaku,
@@ -94,17 +94,197 @@ class HitungSkor
         );
     }
 
-        public static function createSkor($siswaId, $angketId, $kelasId, $guruId = null): void
+    public static function createSkor($siswaId, $angketId, $kelasId, $guruId = null): void
     {
         $skor = self::hitung($siswaId, $angketId, $kelasId, $guruId);
         HasilScore::Create(
-[   'siswa_id' => $siswaId,
+            [   'siswa_id' => $siswaId,
                 'angket_id' => $angketId,
                 'skor_korban' => round($skor['korban'],2),
                 'skor_pelaku' => round($skor['pelaku'],2),
             ]
         );
     }
+
+    public static function hitungKorbanPerIndikator(int $siswaId, array $indikator): array
+    {
+        $data = Jawaban::query()
+            ->join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
+            ->where('jawaban.siswa_id', $siswaId)
+            ->where('angket_soals.indikasi_siswa', 'korban')
+            ->selectRaw("
+                YEAR(jawaban.created_at) as year,
+                WEEK(jawaban.created_at, 1) as week,
+                angket_soals.indikasi_bully,
+                COUNT(jawaban.id) as total_soal,
+                SUM(jawaban.jawaban) as total_skor
+            ")
+            ->groupBy('year', 'week', 'angket_soals.indikasi_bully')
+            ->orderBy('year')
+            ->orderBy('week')
+            ->get();
+
+        $weeks = [];
+        $temp = [];
+
+        foreach ($data as $row) {
+
+            $weekLabel = $row->year . '-W' . str_pad($row->week, 2, '0', STR_PAD_LEFT);
+            $weeks[$weekLabel] = $weekLabel;
+
+            $maxSkor = $row->total_soal * 3;
+
+            $persen = $maxSkor > 0
+                ? ($row->total_skor / $maxSkor) * 100
+                : 0;
+
+            $temp[$weekLabel][$row->indikasi_bully] = round($persen);
+        }
+        
+        $datasets = [];
+
+        foreach ($weeks as $week) {
+
+            $rowData = [];
+
+            foreach ($indikator as $ind) {
+                $rowData[] = $temp[$week][$ind] ?? 0;
+            }
+
+            $datasets[] = [
+                'label' => $week,
+                'data'  => $rowData
+            ];
+        }
+
+        return [
+            'labels'   => str_replace('_', ' ', $indikator),
+            'datasets' => $datasets
+        ];
+    }
+
+    public static function hitungPelakuPerIndikator(int $siswaId, array $indikator): array
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | 1️⃣ Ambil SELF ASSESSMENT (Soal Pelaku)
+        |--------------------------------------------------------------------------
+        */
+        $soal = Jawaban::query()
+            ->join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
+            ->where('jawaban.siswa_id', $siswaId)
+            ->where('angket_soals.indikasi_siswa', 'pelaku')
+            ->selectRaw("
+                YEAR(jawaban.created_at) as year,
+                WEEK(jawaban.created_at, 1) as week,
+                angket_soals.indikasi_bully,
+                COUNT(*) as total_soal,
+                SUM(jawaban.jawaban) as total_skor
+            ")
+            ->groupBy('year', 'week', 'angket_soals.indikasi_bully')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 2️⃣ Ambil Aduan dari Siswa Lain
+        |--------------------------------------------------------------------------
+        */
+        $aduan = Jawaban::query()
+            ->join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
+            ->where('jawaban.id_siswa_pelaku', $siswaId)
+            ->selectRaw("
+                YEAR(jawaban.created_at) as year,
+                WEEK(jawaban.created_at, 1) as week,
+                angket_soals.indikasi_bully,
+                COUNT(*) as total_aduan
+            ")
+            ->groupBy('year', 'week', 'angket_soals.indikasi_bully')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 3️⃣ Normalisasi jadi 1 Struktur Data
+        |--------------------------------------------------------------------------
+        */
+
+        $result = [];
+
+        // ==== PROSES SOAL ====
+        foreach ($soal as $row) {
+
+            $week = $row->year . '-W' . str_pad($row->week, 2, '0', STR_PAD_LEFT);
+
+            $maxSkor = $row->total_soal * 3;
+
+            $persenSoal = $maxSkor > 0
+                ? ($row->total_skor / $maxSkor) * 100
+                : 0;
+
+            $result[$week][$row->indikasi_bully]['soal'] = $persenSoal;
+        }
+
+        // ==== PROSES ADUAN ====
+        foreach ($aduan as $row) {
+
+            $week = $row->year . '-W' . str_pad($row->week, 2, '0', STR_PAD_LEFT);
+
+            // contoh: 1 aduan = 20%
+            $persenAduan = min($row->total_aduan * 20, 100);
+
+            $result[$week][$row->indikasi_bully]['aduan'] = $persenAduan;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4️⃣ Build Dataset ChartJS
+        |--------------------------------------------------------------------------
+        */
+
+        ksort($result);
+
+        $datasets = [];
+
+        foreach ($result as $week => $indikatorData) {
+
+            $rowData = [];
+
+            foreach ($indikator as $ind) {
+
+                $skorSoal  = $indikatorData[$ind]['soal']  ?? 0;
+                $skorAduan = $indikatorData[$ind]['aduan'] ?? 0;
+
+                if ($skorSoal > 0 && $skorAduan > 0) {
+                    $final = ($skorSoal + $skorAduan) / 2;
+                } elseif ($skorSoal > 0) {
+                    $final = $skorSoal;
+                } else {
+                    $final = $skorAduan;
+                }
+
+                $rowData[] = round($final);
+            }
+
+            $datasets[] = [
+                'label' => $week,
+                'data'  => $rowData
+            ];
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 5️⃣ Return Final Structure
+        |--------------------------------------------------------------------------
+        */
+        return [
+            'labels'   => array_map(fn($i) => str_replace('_', ' ', $i), $indikator),
+            'datasets' => $datasets
+        ];
+    }
+
 }
 
 

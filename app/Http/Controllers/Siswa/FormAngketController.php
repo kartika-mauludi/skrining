@@ -167,9 +167,9 @@ class FormAngketController extends Controller
         ->distinct()
         ->pluck('angket_soals.indikasi_siswa');
 
-        $data['siswa'] = Siswa::find($request->siswa_id);
-        $data['kelas'] = $kelas;
-        $data['jawabans']=Jawaban::where('siswa_id', $request->siswa_id)->get();
+        $data['siswa'] = Siswa::select('nis','nama_lengkap','jk')->find($request->siswa_id);
+        $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')
+        ->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$request->token)->first();
         $data['feedbacks']= Feedback::all();
 
        return view('siswa.hasilAngket',$data);

@@ -214,17 +214,29 @@ class ReportController extends Controller
             $reportReasons[$bully] = $jawaban;
         }
 
+        $skorAll = HitungSkor::hitungPelakuPerIndikator($siswa->id, $indikator);
+
+        $allValues = collect($skorAll['datasets'])
+        ->pluck('data')
+        ->flatten()
+        ->filter(fn($v) => $v > 0);
+
+        $countSikap = HasilScore::where('siswa_id', $siswa->id)
+        ->whereColumn('skor_korban', '<', 'skor_pelaku')
+        ->count();
+
         $data['kelas'] = $siswa->kelas;
         $data['siswa'] = $siswa;
-        $data['gaugeMeter'] = $gaugeMeter ?? 0;
+        $data['gaugeMeter'] = $gaugeMeter ?? $allValues->count() > 0 ? $allValues->avg() : 0;
         $data['feedbacks'] = $feedbacks;
         $data['indikator'] = $indikator;
-        $data['skorKorbanAll'] = 0;
-        $data['skorKorban'] = 0;
-        $data['skorKorbanCyber'] = 0;
+        $data['skorKorbanAll'] = $skorAll;
+        $data['skorKorban'] = HitungSkor::hitungPelakuPerIndikator($siswa->id, $this::$indikatorBully);
+        $data['skorKorbanCyber'] = HitungSkor::hitungPelakuPerIndikator($siswa->id, $this::$indikatorCiberBully);
         $data['locationCount'] = $locationCount;
         $data['reportReasons'] = $reportReasons;
         $data['countAsPelaku'] = $countAsPelaku;
+        $data['countSikap']    = $countSikap;
 
         return view('guru.report.pelaku', $data);
     }

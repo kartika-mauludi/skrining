@@ -162,6 +162,129 @@ class HitungSkor
             'datasets' => $datasets
         ];
     }
+
+    public static function hitungPelakuPerIndikator(int $siswaId, array $indikator): array
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | 1️⃣ Ambil SELF ASSESSMENT (Soal Pelaku)
+        |--------------------------------------------------------------------------
+        */
+        $soal = Jawaban::query()
+            ->join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
+            ->where('jawaban.siswa_id', $siswaId)
+            ->where('angket_soals.indikasi_siswa', 'pelaku')
+            ->selectRaw("
+                YEAR(jawaban.created_at) as year,
+                WEEK(jawaban.created_at, 1) as week,
+                angket_soals.indikasi_bully,
+                COUNT(*) as total_soal,
+                SUM(jawaban.jawaban) as total_skor
+            ")
+            ->groupBy('year', 'week', 'angket_soals.indikasi_bully')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 2️⃣ Ambil Aduan dari Siswa Lain
+        |--------------------------------------------------------------------------
+        */
+        $aduan = Jawaban::query()
+            ->join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
+            ->where('jawaban.id_siswa_pelaku', $siswaId)
+            ->selectRaw("
+                YEAR(jawaban.created_at) as year,
+                WEEK(jawaban.created_at, 1) as week,
+                angket_soals.indikasi_bully,
+                COUNT(*) as total_aduan
+            ")
+            ->groupBy('year', 'week', 'angket_soals.indikasi_bully')
+            ->get();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 3️⃣ Normalisasi jadi 1 Struktur Data
+        |--------------------------------------------------------------------------
+        */
+
+        $result = [];
+
+        // ==== PROSES SOAL ====
+        foreach ($soal as $row) {
+
+            $week = $row->year . '-W' . str_pad($row->week, 2, '0', STR_PAD_LEFT);
+
+            $maxSkor = $row->total_soal * 3;
+
+            $persenSoal = $maxSkor > 0
+                ? ($row->total_skor / $maxSkor) * 100
+                : 0;
+
+            $result[$week][$row->indikasi_bully]['soal'] = $persenSoal;
+        }
+
+        // ==== PROSES ADUAN ====
+        foreach ($aduan as $row) {
+
+            $week = $row->year . '-W' . str_pad($row->week, 2, '0', STR_PAD_LEFT);
+
+            // contoh: 1 aduan = 20%
+            $persenAduan = min($row->total_aduan * 20, 100);
+
+            $result[$week][$row->indikasi_bully]['aduan'] = $persenAduan;
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4️⃣ Build Dataset ChartJS
+        |--------------------------------------------------------------------------
+        */
+
+        ksort($result);
+
+        $datasets = [];
+
+        foreach ($result as $week => $indikatorData) {
+
+            $rowData = [];
+
+            foreach ($indikator as $ind) {
+
+                $skorSoal  = $indikatorData[$ind]['soal']  ?? 0;
+                $skorAduan = $indikatorData[$ind]['aduan'] ?? 0;
+
+                if ($skorSoal > 0 && $skorAduan > 0) {
+                    $final = ($skorSoal + $skorAduan) / 2;
+                } elseif ($skorSoal > 0) {
+                    $final = $skorSoal;
+                } else {
+                    $final = $skorAduan;
+                }
+
+                $rowData[] = round($final);
+            }
+
+            $datasets[] = [
+                'label' => $week,
+                'data'  => $rowData
+            ];
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 5️⃣ Return Final Structure
+        |--------------------------------------------------------------------------
+        */
+        return [
+            'labels'   => array_map(fn($i) => str_replace('_', ' ', $i), $indikator),
+            'datasets' => $datasets
+        ];
+    }
+
 }
 
 

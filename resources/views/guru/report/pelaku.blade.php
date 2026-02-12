@@ -207,7 +207,7 @@
                                         <div class="box-title bg-danger py-1">
                                             <h1>Σ</h1>
                                         </div>
-                                        <h1 class="fw-bold mt-3 mb-3">0</h1>
+                                        <h1 class="fw-bold mt-3 mb-3">{{ $countSikap }}</h1>
                                         <h5>Kecenderungan Sikap</h5>
                                     </div>
                                 </div>
@@ -228,7 +228,7 @@
                             </div>
 
                             <div class="box">
-                                <strong>Jika aku mengalami perundungan</strong>
+                                <strong>Jika aku melakukan perundungan</strong>
                                 <ol class="mt-2">
                                     @foreach ($feedbacks as $feedback)
                                         <li>{!! $feedback->feedback_deskripsi !!}</li>

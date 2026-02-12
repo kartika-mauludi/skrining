@@ -61,6 +61,17 @@
                     <div class="card">
                       <div class="card-header">
                         <a href="{{ route('guru.report') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                        <button type="button" id="btnExport" class="btn btn-sm btn-primary">Cetak</button>
+
+                        <form action="{{ route('guru.report.korban.print', $siswa->id) }}" id="formPrint" method="post"  target="_blank">
+                            @csrf
+
+                            <input type="hidden" name="history_image" id="history_image">
+                            <input type="hidden" name="kategori_image" id="kategori_image">
+                            <input type="hidden" name="cyber_image" id="cyber_image">
+                            <input type="hidden" name="gauge_image" id="gauge_image">
+                        </form>
+
                       </div>
                       <div class="card-body">
                         <div class="sheet">
@@ -433,6 +444,60 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
     });
+
+    function generateHighResChart(type, data, options, width = 1400, height = 700) {
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = width;
+        tempCanvas.height = height;
+
+        const ctx = tempCanvas.getContext('2d');
+
+        const tempChart = new Chart(ctx, {
+            type: type,
+            data: data,
+            options: Object.assign({}, options, {
+                responsive: false,
+                animation: false,
+                devicePixelRatio: 2
+            })
+        });
+
+        const image = tempChart.toBase64Image('image/png', 1.0);
+        tempChart.destroy();
+
+        return image;
+    }
+
+    $('#btnExport').on('click', function () {
+
+        const charts = Object.values(Chart.instances);
+
+        // 🔹 Naikkan resolusi sementara
+        charts.forEach(function(chart) {
+            chart.options.devicePixelRatio = 2;
+            chart.update();
+        });
+
+        // 🔹 Ambil gambar setelah render ulang
+        setTimeout(function() {
+
+            $('#history_image').val(Chart.instances[0].toBase64Image());
+            $('#kategori_image').val(Chart.instances[1].toBase64Image());
+            $('#cyber_image').val(Chart.instances[2].toBase64Image());
+            $('#gauge_image').val(Chart.instances[3].toBase64Image());
+
+            // 🔹 Kembalikan ke normal supaya web tetap ringan
+            charts.forEach(function(chart) {
+                chart.options.devicePixelRatio = 1;
+                chart.update();
+            });
+
+            $('#formPrint').trigger('submit');
+
+        }, 300); // beri waktu render ulang
+    });
+
+
 });
 
 </script>

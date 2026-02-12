@@ -18,9 +18,9 @@
                 @csrf
             <!-- Email input -->
             <div data-mdb-input-init class="form-outline mb-4">
-                <label class="form-label" for="email">Email or username</label>
-                <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required  oninvalid="this.setCustomValidity('Email Harus di Isi')" oninput="this.setCustomValidity('')" />
-                 @error('email')
+                <label class="form-label" for="email">Email or username or NIP</label>
+                <input type="text" id="login" name="login" class="form-control @error('login') is-invalid @enderror" value="{{ old('login') }}" required  oninvalid="this.setCustomValidity('Username / Email / NIP Harus di Isi')" oninput="this.setCustomValidity('')" placeholder="Isi email atau NIP" />
+                 @error('login')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
                     </span>
@@ -30,7 +30,7 @@
             <label class="form-label"  for="loginPassword">Password</label>
             <div data-mdb-input-init class="form-outline mb-3 input-group">
                 <input type="password" id="password" name="password" required class="form-control @error('password')is-invalid @enderror
-              "/>
+              " placeholder="*******"/>
                  <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                     <i class="fas fa-eye" id="toggleIcon"></i>
                 </button>
@@ -53,7 +53,7 @@
 
                 <div class="col-md-6 d-flex justify-content-center">
                 <!-- Simple link -->
-                <a href="#!">Forgot password?</a>
+                <a href="{{ route('forgot-password') }}">Forgot password?</a>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@
             </div>
             <!-- Register buttons -->
             <div class="text-center">
-                <p>Not a member? <a href="#!">Register</a></p>
+                <p>Not a member? <a href="{{ route('register') }}">Register</a></p>
             </div>
             </form>
         </div>

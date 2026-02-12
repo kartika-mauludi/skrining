@@ -75,24 +75,27 @@
   <script src="assets-landing/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
   <script src="assets-landing/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="assets-landing/vendor/swiper/swiper-bundle.min.js"></script>
-  
+
 
   <!-- Main JS File -->
   <script src="assets-landing/js/main.js"></script>
 
 <script>
-document.getElementById('togglePassword').addEventListener('click', function () {
-    const input = document.getElementById('password');
-    const icon = document.getElementById('toggleIcon');
+document.querySelectorAll('.togglePassword').forEach(button => {
+    button.addEventListener('click', function () {
 
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash'); // ubah ke icon hide
-    } else {
-        input.type = "password";
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye'); // kembali ke icon show
-    }
+        const input = this.parentElement.querySelector('.password');
+        const icon  = this.querySelector('.toggleIcon');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
 });
 </script>

@@ -57,6 +57,16 @@
      
     </div>
     <form action="{{ route('siswa.formAngket.store') }}" method="POST" id="formAngket">
+      @if(session('error'))
+        <script src="{{ asset('admin/assets-admin/dist/js/sweetalert.min.js') }}"></script>
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: "{{ session('error') }}"
+            });
+        </script>
+      @endif
     <div class="row p-3">
       <div class="col-lg-8 col-md-7 col-sm-12 order-1">
         <div class="row py-1 align-items-start px-3">
@@ -173,7 +183,7 @@
                  <div id="jawaban-wrapper-{{ $soal->id }}">
                     <div class="input-group jawaban-item mt-1">
                       <input type="text" class="form-control" id="" data-id="" name="alasan[{{ $soal->id }}][]" placeholder="Alasan">
-                        <select name="jawaban[{{ $soal->id }}][]" id="" class="mr-1">
+                        <select name="jawaban[{{ $soal->id }}][]" id="" class="mr-1 select-pelaku">
                           <option value="">Pilih No Absen</option> 
                           <option value="tidak_ada">Tidak ada</option>
                             @foreach ($siswas as $siswa)
@@ -269,6 +279,7 @@
         restoreJawaban(no_absen);
       // isi form
       isiFormSiswa(no_absen);
+       filterNoAbsenAktif(no_absen);
       setTimeout(() => sedangGantiSiswa = false, 100);
   });
 
@@ -276,6 +287,20 @@
     if (sedangGantiSiswa) return;
     simpanJawaban();
 });
+
+function filterNoAbsenAktif(noAbsenAktif) {
+    $('.select-pelaku option').each(function () {
+        const val = $(this).val();
+
+        // reset dulu
+        $(this).prop('disabled', false).show();
+
+        // sembunyikan no_absen aktif
+        if (val && val == noAbsenAktif) {
+            $(this).prop('disabled', true).hide();
+        }
+    });
+}
 
 
 function isiFormSiswa(no_absen) {
@@ -337,50 +362,5 @@ $(document).on('click', '.btn-remove', function () {
     }
 });
 
-
-
-// simpan jawaban 
-  $(document).on('submit','#addDataForm', function(e){
-    e.preventDefault();
-    showLoading();
-    var form = this;
-    var formData = new FormData($(this)[0]);
-    let error = "Terjadi Kesalahan Ketika Menambah Data";
-    
-    $.ajax({
-      url   : $(form).attr('action'),
-      type  : 'POST',
-      data  : formData,
-      processData: false,
-      contentType: false,
-      success : function(response){
-        closeLoading();
-        if(response.status == 200){
-          swal.fire('Berhasil', response.message, 'success');
-        }else{
-          swal.fire('Gagal', response.message, 'error');
-        }
-        $(form).closest('.modal').modal('hide');
-        form.reset();
-      },
-      error : function(response){
-        closeLoading();
-        if(response.status === 400 ||  response.status === 422){
-          let errors = response.responseJSON.errors;
-          errorMessage = Object.values(errors).flat().join('<br>');
-        
-        }
-        else if (response.responseJSON && response.responseJSON.message) {
-                  errorMessage = response.responseJSON.message;
-      }
-      Swal.fire({
-          title : 'Gagal tambah data',
-          html  : errorMessage,
-          icon  : 'error' 
-      });
-
-      }
-    });
-  });
 </script>
 @endpush

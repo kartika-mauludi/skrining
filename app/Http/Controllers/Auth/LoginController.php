@@ -6,39 +6,76 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use App\Models\Guru;
+use App\Models\User;
+use App\Models\LoginLog;
 
 class LoginController extends Controller
 {
     public function login(Request $request){
   
         $this->validate($request, [
-            'email' => 'required|email|exists:users',
+            'login' => 'required',
             'password' => 'required',
         ],[
-            'email.required' => 'email tidak boleh kosong',
-            "email.exists" => "Akun tidak ditemukan",
+            'login.required' => 'username /email/ NIP tidak boleh kosong',
             'password.required' => 'password tidak boleh kosong' 
         ]);
 
-        $credentials = $request->only('email', 'password');
-      
-        if (Auth::attempt($credentials) ) {
-            if (Auth::user()->role === 'super_admin') {
-                return redirect('/admin/index');
-            }else if (Auth::user()->role === 'guru') {
-                return redirect('/guru/dashboard');
-            }
-            else{
-                return redirect('/login');
-            }
-        }    
+        $login = $request->login;
+        $password = $request->password;
+
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            $user = User::where('email', $login)->first();
+        }
         
-        else{
-            return redirect()->route('login')
-            ->withErrors([
-                'password' => 'password tidak sesuai',
+        else {
+        $user = User::where('name', $login)->first();
+
+        // 3️⃣ Kalau bukan username → cek NIP guru
+        if (!$user) {
+            $guru = Guru::where('nip', $login)->first();
+            $user = $guru?->user; // relasi guru -> user
+        }
+    }
+
+         if (!$user) {
+            return back()->withErrors([
+                'login' => 'Akun tidak ditemukan'
             ]);
         }
+      
+        if (Auth::attempt([
+            'email' => $user->email,
+            'password' => $password
+        ])) {
+
+            LoginLog::create([
+                'user_id'    => Auth::id(),
+                'email'      => $request->login,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'status'     => 'success',
+            ]);
+
+             $request->session()->regenerate();
+              return match ($user->role) {
+                'super_admin' => redirect('/admin/index'),
+                'guru'        => redirect('/guru/dashboard'),
+                default       => redirect('/login'),
+              };
+        }   
+        
+        LoginLog::create([
+            'email'      => $request->login,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'status'     => 'failed',
+        ]);
+        
+        return back()->withErrors([
+            'password' => 'Password tidak sesuai'
+        ]);
     }
 
     public function logout(Request $request){

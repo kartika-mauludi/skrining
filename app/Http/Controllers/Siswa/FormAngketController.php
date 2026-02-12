@@ -88,12 +88,11 @@ class FormAngketController extends Controller
         $endWeek   = Carbon::now()->endOfWeek();   // Minggu
 
         $cek = jawaban::where('siswa_id',$request->siswa_id)->whereBetween('created_at', [$startWeek, $endWeek])->exists();
-        if($cek){
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Siswa sudah mengisi angket, silahkan isi minggu depan lagi' 
-            ]);
-        }
+        if ($cek) {
+                return redirect()->back()->with('error', 
+                    'Siswa sudah mengisi angket, silahkan isi minggu depan lagi'
+                );
+            }
         $pelakuIds = [];
         $kelas = Kelas::select('id', 'nama_kelas','sekolah_id')->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$request->token)->first();
         foreach ($request->jawaban as $soal_id => $jawaban) {
@@ -160,21 +159,14 @@ class FormAngketController extends Controller
 
         }
 
-        // $status = Jawaban::whereHas('soal');
-
-    //     return HitungSkor::hitung($request->siswa_id,
-    // $request->angket,
-    // $soal->guru_id ?? null);
-
         $data['status'] = Jawaban::join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
         ->where('jawaban.siswa_id', $request->siswa_id)
         ->distinct()
         ->pluck('angket_soals.indikasi_siswa');
 
-        $data['siswa'] = Siswa::find($request->siswa_id);
+        $data['siswa'] = Siswa::select('nis','nama_lengkap','jk')->find($request->siswa_id);
         $data['kelas'] = Kelas::select('nama_kelas','sekolah_id')
         ->with('sekolah:id,nama_sekolah,alamat_lengkap,no_tlp,website,email')->where('akses_token',$request->token)->first();
-        $data['jawabans']=Jawaban::where('siswa_id', $request->siswa_id)->get();
         $data['feedbacks']= Feedback::all();
 
        return view('siswa.hasilAngket',$data);

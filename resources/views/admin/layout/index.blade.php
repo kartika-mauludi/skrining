@@ -59,20 +59,15 @@
     <ul class="navbar-nav ml-auto">
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          {{ auth::user()->name }}
-        </a>
-        <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-          <a href="#" class="dropdown-item dropdown-header">Profil</a>
-          <div class="dropdown-divider"></div>
-           <a href="{{ route('logout') }}" class="dropdown-item dropdown-footer"
+        <a href="{{ route('logout') }}" class="dropdown-item dropdown-footer"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
+                                                 Log Out <i class="fas fa-sign-out-alt"></i>
+
             </a>
             <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
                                         @csrf
                                     </form>
-        </div>
+      
       </li>
     </ul>
   </nav>

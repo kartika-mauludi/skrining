@@ -10,6 +10,7 @@ use Validator;
 use Exception;
 use DB;
 use App\Helpers\TextHelper;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AngketSoalController extends Controller
 {
@@ -59,7 +60,7 @@ class AngketSoalController extends Controller
                 'message' => 'Data berhasil dimasukkan'
             ]);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
 
             return response()->json([
@@ -140,5 +141,66 @@ class AngketSoalController extends Controller
         return response()->json([
             'data' => $data
         ]);
+    }
+
+    public function import(Request $request)
+    {
+        $data = $request->input('data');
+        
+       if (!is_array($data) || empty($data)) {
+            return response()->stream(function () {
+                echo json_encode([
+                    'status' => 400,
+                    'message' => 'Data tidak valid!'
+                ]) . "\n";
+            }, 400, ['Content-Type' => 'application/json']);
+        }
+
+
+        $response = new StreamedResponse(function () use ($data) {
+            $insertedCount = 0;
+            $updatedCount = 0;
+
+        $maxSequence = AngketSoal::max('sequence') ?? 0;
+            foreach ($data as $index => $item) {
+                 $maxSequence++;
+                if (!isset($item['soal']) || !isset($item['tipe_soal']) || !isset($item['ruang_lingkup']) || !isset($item['indikator']) || !isset($item['indikasi'])) {
+                    echo json_encode(['status' => 400, 'message' => 'Format data tidak valid!']);
+                    ob_flush();
+                    flush();
+                    return;
+                }
+
+                $record = AngketSoal::Create(
+                    ['angket_id' => $item['angketId'], 'soal' => $item['soal'],'sequence'=> $maxSequence , 'tipe_soal' => $item['tipe_soal'], 'lokasi_kejadian' => $item['ruang_lingkup'], 'indikasi_siswa' => $item['indikator'], 'indikasi_bully' => $item['indikasi']],
+                );
+
+                if ($record->wasRecentlyCreated) {
+                    $insertedCount++;
+                } else {
+                    $updatedCount++;
+                }
+
+                echo json_encode([
+                    'status' => 200,
+                    'message' => 'Mengimport data...',
+                    'progress' => ($index + 1) . '/' . count($data),
+                    'procesed' => $insertedCount + $updatedCount
+                ]) . "\n";
+                ob_flush();
+                flush();
+            }
+
+            echo json_encode([
+                'status' => 200,
+                'message' => 'Import selesai!',
+                'procesed' => $insertedCount + $updatedCount
+            ]) . "\n";
+            ob_flush();
+            flush();
+        });
+
+        $response->headers->set('Content-Type', 'application/json');
+        return $response;
     }
 }

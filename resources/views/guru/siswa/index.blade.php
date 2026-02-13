@@ -262,7 +262,7 @@ $(document).ready(function(){
                     let nama_wali       = row[6] != null ? String(row[6]).trim() : "";
                     let no_tlp_wali     = row[7] != null ? String(row[7]).trim() : "";
 
-                        if ( !nis && !nama_lengkap && !tempat_lahir && !tgl_lahir && !alamat && !nama_wali && !no_tlp_wali) {
+                        if ( !nis && !nama_lengkap && !no_absen) {
                             return;
                         }
                     let errorMessage = "";
@@ -270,11 +270,6 @@ $(document).ready(function(){
                     if (!nis) errorMessage += "NIP kosong ";
                     if (!no_absen) errorMessage += "No Absen kosong ";
                     if (!nama_lengkap) errorMessage += "Nama Siswa kosong ";
-                    if (!tempat_lahir) errorMessage += "Tempat Lahir kosong ";
-                    if (!tgl_lahir) errorMessage += "Tanggal Lahir kosong ";
-                    if (!alamat) errorMessage += "Alamat kosong ";
-                    if (!nama_wali) errorMessage += "Nama Wali kosong ";
-                    if (!no_tlp_wali) errorMessage += "No. Telpon Wali kosong ";
 
                     if (errorMessage) isValid = false;
                     tableImportGuru.row.add([
@@ -324,9 +319,9 @@ $(document).ready(function(){
                 no_tlp_wali: row.eq(8).text().trim(),
             };
 
-            if (Object.values(data).some(v => !v)) {
+            if (!data.nis || !data.no_absen || !data.nama_lengkap) {
                 isValid = false;
-                return false;
+                return false; // break loop
             }
 
             tableData.push(data);

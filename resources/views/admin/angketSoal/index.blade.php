@@ -47,6 +47,7 @@
                 </div>
                 <div class="ml-auto">
                  <button class="btn btn-success p-1 addNew" id="add"  data-toggle="modal" data-target="#addData"> Tambah </button>
+                 <button class="btn btn-primary p-1" id="import"  data-toggle="modal" data-target="#importModal"> Import </button>
                  <button class="btn btn-sm btn-warning edit-btn" data-toggle="modal"  data-target=".addDataModal">Edit</button>
                  <button class="btn btn-sm btn-danger deleteAll" id="deleteAll" >Hapus Semua Soal</button>
                 </div>
@@ -94,6 +95,7 @@
 </div>
 
  @include('admin.angketSoal.modal')
+ @include('admin.angketSoal.modal_import')
 @endsection
 
 @push('script')
@@ -364,7 +366,7 @@ function renderSoal(data = null) {
 
                       <select name="soal[${idx}][indikasi_bully]"
                         class="form-control form-control-sm w-25 mr-1 indikasi_bully" required>
-                        <option value="">Indikator</option>
+                        <option value="">Indikasi</option>
                         <option value="verbal">Verbal</option>
                         <option value="fisik">Fisik</option>
                         <option value="sosial">Sosial</option>

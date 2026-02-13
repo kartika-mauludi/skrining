@@ -111,22 +111,7 @@
                     </div>
                 </div>
               </div>
-           
-
-            <!-- <div class="col-md-3">
-                <div class="box text-center">
-                    <div class="box-title">Σ</div>
-                    <h1 class="fw-bold">0</h1>
-                    <div>Pelaku yang diadukan</div>
-                </div>
-            </div> -->
-
               <div class="col-md-4">
-                <!-- <div class="box text-center" style="background-color: #37F713;">
-                    <div class="box-title">Status</div>
-                    <h1 class="fw-bold">Aman</h1> -->
-                    <!-- <div>Pelaku yang diadukan</div> -->
-                <!-- </div> -->
                  <div id="canvas-holder" style="width:100%">
                     <canvas id="chart"></canvas>
                 </div>

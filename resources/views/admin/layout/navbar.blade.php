@@ -11,7 +11,7 @@
      <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 p-2 mb-3 d-flex justify-content-center">
         <div class="info p-0">
-          <a href="#" class="d-block m-0">Alexander Light</a>
+          <a href="#" class="d-block m-0">{{ auth::user()->name }}</a>
         </div>
       </div>
 
@@ -99,7 +99,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link ">
+            <a href="{{ route('admin.log-login') }}" class="nav-link @if(Route::is('admin.log-login')) active @endif">
                <i class="nav-icon fas fa-solid fa-chart-line"></i>
               <p>
                 Log Aktivitas
@@ -108,7 +108,7 @@
           </li>
 
           <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link ">
+            <a href="{{ url('admin/pengaturan') }}" class="nav-link  @if(Route::is('admin.profil')) active @endif">
                <i class="nav-icon fas fa-cogs"></i>
               <p>
                 Pengaturan

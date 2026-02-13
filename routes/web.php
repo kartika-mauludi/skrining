@@ -7,9 +7,11 @@ use App\Http\Controllers\Admin\MasterUserController;
 use App\Http\Controllers\Admin\AngketController;
 use App\Http\Controllers\Admin\SekolahController as AdminSekolahController;
 use App\Http\Controllers\Admin\TanggapanController;
+use App\Http\Controllers\Admin\LogLoginController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Guru\AngketController as AngketGuruController;
 use App\Http\Controllers\Guru\AngketSoalController as GuruAngketSoalController;
@@ -19,6 +21,7 @@ use App\Http\Controllers\Guru\ReportController;
 use App\Http\Controllers\Siswa\FormAngketController;
 use App\Http\Controllers\Guru\SekolahController;
 use App\Http\Controllers\Guru\SiswaController;
+
 
 
 Route::get('/', function () {
@@ -32,32 +35,53 @@ Route::get('/register', function(){
     return view('Auth.register');
 });
 Route::POST('/login', [LoginController::class, 'login'])->name('login');
-Route::POST('/register', [RegisterController::class, 'register']);
+Route::POST('/register', [RegisterController::class, 'register'])->name('register');
 Route::post('/logout', [LoginController::class,'logout'])->name('logout');
 
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showForm'])->name('forgot-password');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('forgot-password');
+
+Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password-reset-update');
 
 // start route super admin
 Route::middleware('role:super_admin')->group(function (){
     route::get('/admin/index', [DashboardController::class, 'index'])->name('admin.index');
+    route::get('admin/pengaturan',[DashboardController::class,'profil'])->name('admin.profil');
+    route::POST('admin/pemgaturan',[DashboardController::class,'pengaturan'])->name('admin.pengaturan');
     route::get("admin/masteruser/data",[MasterUserController::class,'data'])->name('admin.masteruser.data');
     route::resource('admin/masteruser',MasterUserController::class);
+    
     route::get('/admin/guru/data',[GuruController::class,'data'])->name('admin.guru.data');
     route::post('admin/guru/import',[GuruController::class, 'import'])->name('admin.guru.import');
     route::resource('/admin/guru',GuruController::class);
+    
     route::get('admin/angket/data',[AngketController::class,'data'])->name('admin.angket.data');
     route::resource('admin/angket',AngketController::class);
+    
     route::get('admin/angketsoal/data',[AngketSoalController::class, 'data'])->name('admin.angketSoal.data');
+    Route::post('admin/angketsoal/import',[AngketSoalController::class,'import'])->name('admin.angketSoal.import');
     Route::delete('/angket-soal/destroy-all', [AngketSoalController::class, 'destroyAll'])
     ->name('angketsoal.destroyAll');
     route::resource('admin/angketsoal',AngketSoalController::class);
+    
     Route::get('admin/sekolah/data', [AdminSekolahController::class, 'data'])->name('admin.sekolah.data');
     Route::resource('admin/sekolah', AdminSekolahController::class)
     ->names('admin.sekolah');
+   
     Route::get('admin/tanggapan/data',[TanggapanController::class,'data'])->name('admin.tanggapan.data');
     Route::post('admin/tanggapan/import',[TanggapanController::class,'import'])->name('admin.tanggapan.import');
      Route::delete('admin/tanggapan/destroy-all', [TanggapanController::class, 'destroyAll'])
     ->name('admin.tanggapan.destroyAll');
     route::resource('admin/tanggapan',TanggapanController::class);
+
+    Route::get('/admin/log-login', [LogLoginController::class, 'index'])
+    ->name('admin.log-login');
+
+     Route::get('/admin/log-login', [LogLoginController::class, 'index'])
+    ->name('admin.log-login');
+
+
 });
 
 // start route guru

@@ -111,11 +111,6 @@ class SiswaController extends Controller
                         $item['nis'],
                         $item['no_absen'],
                         $item['nama_lengkap'],
-                        $item['tempat_lahir'],
-                        $item['tgl_lahir'],
-                        $item['alamat'],
-                        $item['nama_wali'],
-                        $item['no_tlp_wali']
                     )) {
                         throw new \Exception("Format data tidak valid di index {$index}");
                     }

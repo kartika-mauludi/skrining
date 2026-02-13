@@ -12,7 +12,7 @@
                         <input type="file" id="fileImport" class="form-control" accept=".xls, .xlsx">
                     </div>
                     <div class="col">
-                        <a href="" class="btn btn-sm btn-info">Template</a>
+                        <a href="{{ asset('admin/file/template_siswa.xlsx') }}" class="btn btn-sm btn-info">Template</a>
                     </div>
                 </div>
                 <div class="table-responsive mh-65vh">

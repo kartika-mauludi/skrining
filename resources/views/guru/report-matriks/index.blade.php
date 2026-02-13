@@ -92,7 +92,9 @@
                   </style>
 
                   @if ($reports->isEmpty())
-                    <h5 class="text-center">Belum ada data angket yang masuk di kelas ini.</h5>
+                    <div class="alert alert-warning fade show text-center" role="alert">
+                        Belum ada data angket yang masuk di kelas ini.
+                    </div>
                   @else
                     @php
                         $matrix = [];
@@ -132,7 +134,9 @@
                     </table>
                   @endif
                 @else
-                  <h5 class="text-center">Silahkan pilih sekolah dan kelas terlebih dahulu</h5>
+                  <div class="alert alert-light fade show text-center" role="alert">
+                      Silahkan pilih sekolah dan kelas terlebih dahulu.
+                  </div>
                 @endisset
               </div>
             </div>

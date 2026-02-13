@@ -103,47 +103,57 @@
                   </style>
 
                   @if ($reports->isEmpty())
-                    <h5 class="text-center">Belum ada data angket yang masuk di kelas ini.</h5>
+                    <div class="alert alert-warning fade show text-center" role="alert">
+                        Belum ada data angket yang masuk di kelas ini.
+                    </div>
                   @else
                     <div class="row">
                       <div class="col-6 col-sm-3">
                           <div class="card">
-                            <div class="card-header bg-info">
-                              <h6 class="font-weight-bold text-center">Pelaku Tertinggi</h6>
+                            <div class="card-header bg-info p-2">
+                              <h6 class="font-weight-bold text-center mb-0">Pelaku Tertinggi</h6>
                             </div>
                             <div class="card-body">
                               <p class="my-3 text-center">{{ $mostReported->siswapelaku->nama_lengkap }}</p>
                             </div>
-                            <div class="card-footer">
-                              <h6 class="text-muted text-center">Jumlah Aduan: {{ "$mostReported->count Kali" }}</h6>
+                            <div class="card-footer p-2">
+                              <h6 class="text-muted text-center mb-0">Jumlah Aduan: {{ "$mostReported->count Kali" }}</h6>
                             </div>
                           </div>
                           <div class="card">
-                            <div class="card-header bg-info">
-                              <h6 class="font-weight-bold text-center">Saling Melaporkan</h6>
+                            <div class="card-header bg-info p-2">
+                              <h6 class="font-weight-bold text-center mb-0">Saling Melaporkan</h6>
                             </div>
                             <div class="card-body">
-                              <ul>
-                                  @foreach ($mutualReporteds as $pair)
-                                    <li>
-                                        {{ $pair['siswa_a']->nama_lengkap }}
-                                        ↔
-                                        {{ $pair['siswa_b']->nama_lengkap }}
-                                    </li>
-                                  @endforeach
-                              </ul>
+                              <p class="text-center text-muted">
+                                @forelse ($mutualReporteds as $pair)
+                                  {{ $pair['siswa_a']->nama_lengkap }}
+                                  ↔
+                                  {{ $pair['siswa_b']->nama_lengkap. "; " }}
+                                @empty
+                                  Tidak Ada
+                                @endforelse
+                              </p>
+                            </div>
+                            <div class="card-footer p-2">
+                              <h6 class="text-muted text-center mb-0">{{ count($mutualReporteds). " Pasangan" }}</h6>
                             </div>
                           </div>
                           <div class="card">
-                            <div class="card-header bg-info">
-                              <h6 class="font-weight-bold text-center">Tidak Diadukan</h6>
+                            <div class="card-header bg-info p-2">
+                              <h6 class="font-weight-bold text-center mb-0">Tidak Diadukan</h6>
                             </div>
                             <div class="card-body">
-                              <ul>
-                                @foreach ($notReporteds as $notReported)
-                                  <li>{{ $notReported->nama_lengkap }}</li>
-                                @endforeach
-                              </ul>
+                              <p class="text-center text-muted">
+                                @forelse ($notReporteds as $notReported)
+                                  {{ "$notReported->nama_lengkap; " }}
+                                @empty
+                                  Tidak Ada
+                                @endforelse
+                              </p>
+                            </div>
+                            <div class="card-footer p-2">
+                              <h6 class="text-muted text-center mb-0">{{ count($notReporteds). " Peserta" }}</h6>
                             </div>
                           </div>
                       </div>
@@ -176,10 +186,13 @@
                             </div>
 
                             <div class="sosiogram-column">
-                              <span>Identitas</span>
+                              <div class="node d-flex justify-content-between align-items-center">
+                                <p class="m-0 ml-2">No. - Nama Siswa</p>
+                                <p class="m-0 ml-5">Jenis Kelamin</p>
+                              </div>
                               @foreach ($siswa as $s)
                                   <div class="node d-flex justify-content-between align-items-center">
-                                    <p class="m-0 ml-2">{{ "$s->no_absen. $s->nama_lengkap" }}</p>
+                                    <p class="m-0 ml-2">{{ "$s->no_absen. - $s->nama_lengkap" }}</p>
                                     <p class="m-0 ml-5">{{ $s->jk }}</p>
                                   </div>
                               @endforeach
@@ -187,10 +200,27 @@
 
                         </div>
                       </div>
+                      <div class="col-12">
+                        <table class="table table-sm table-bordered">
+                          <tr>
+                            <th rowspan="2" class="text-nowrap align-middle px-3">
+                              Sosiogram NoBull <br>
+                              Keterangan/ Informasi: 
+                            </th>
+                            <td><strong>Pelaku Tertinggi</strong>: Paling banyak menerima aduan dari peserta lain sesuai kriteria.</td>
+                            <td rowspan="2" class=" align-middle"><strong>Tidak Diadukan</strong>: Peserta yang tidak diadukan sama sekali oleh peserta lain sebagai pelaku.</td>
+                          </tr>
+                          <tr>
+                            <td><strong>Saling Mengadukan</strong>: Pasangan peserta yang saling mengadukan satu sama lainnya.</td>
+                          </tr>
+                        </table>
+                      </div>
                     </div>
                   @endif
                 @else
-                  <h5 class="text-center">Silahkan pilih sekolah dan kelas terlebih dahulu</h5>
+                  <div class="alert alert-light fade show text-center" role="alert">
+                      Silahkan pilih sekolah dan kelas terlebih dahulu.
+                  </div>
                 @endisset
               </div>
             </div>

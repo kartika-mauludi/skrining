@@ -90,7 +90,7 @@
           </li>
 
             <li class="nav-item">
-            <a href="{{ url('admin/index') }}" class="nav-link ">
+            <a href="{{ url('admin/report') }}" class="nav-link @if(Route::is('admin.report')) active @endif">
                <i class="nav-icon fas fa-solid fa-chart-line"></i>
               <p>
                 Report

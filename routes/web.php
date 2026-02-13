@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\AngketController;
 use App\Http\Controllers\Admin\SekolahController as AdminSekolahController;
 use App\Http\Controllers\Admin\TanggapanController;
 use App\Http\Controllers\Admin\LogLoginController;
+use App\Http\Controllers\Admin\ReportController as AdminReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -80,6 +81,8 @@ Route::middleware('role:super_admin')->group(function (){
 
      Route::get('/admin/log-login', [LogLoginController::class, 'index'])
     ->name('admin.log-login');
+
+    Route::get('admin/report',[AdminReportController::class,'index'])->name('admin.report');
 
 
 });

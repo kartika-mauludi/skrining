@@ -214,7 +214,7 @@
         function getDataKelas() {
             const id = $('#sekolah').val();
   
-            $.get(`/guru/sekolah/${id}`, function (data, status) {
+            $.get(`{{ url('/guru/sekolah/${id}') }}`, function (data, status) {
                 if (status != 'success') {
                     swal.fire('Kesalahan sistem','Silahkan hubungi administrator','error')
                     return

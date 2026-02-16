@@ -113,11 +113,35 @@ class ReportController extends Controller
         return view('guru.report-matriks.index', $data);
     }
 
+    public function pelaku(Siswa $siswa)
+    {
+        $data = $this->getPelakuData($siswa);
+
+        return view('guru.report.pelaku', $data);
+    }
+
     public function korban(Siswa $siswa)
     {
         $data = $this->getKorbanData($siswa);
 
         return view('guru.report.korban', $data);
+    }
+
+    public function printPelaku(Request $request, Siswa $siswa)
+    {
+        $data = $this->getPelakuData($siswa);
+
+        // tambahkan image dari request
+        $data['historyImage']  = $request->history_image;
+        $data['kategoriImage'] = $request->kategori_image;
+        $data['cyberImage']    = $request->cyber_image;
+        $data['gaugeImage']    = $request->gauge_image;
+
+        $pdf = Pdf::loadView('guru.report.pelaku-pdf', $data)
+            ->setPaper('A4', 'portrait')
+            ->setOption(['isRemoteEnabled' => true]);
+
+        return $pdf->stream('report-pelaku.pdf');
     }
 
     public function printKorban(Request $request, Siswa $siswa)
@@ -134,6 +158,93 @@ class ReportController extends Controller
             ->setOption(['isRemoteEnabled' => true]);
 
         return $pdf->stream('report-korban.pdf');
+    }
+
+    private function getPelakuData(Siswa $siswa)
+    {
+        $gaugeMeter = HasilScore::where('siswa_id', $siswa->id)
+            ->avg('skor_pelaku');
+
+        $feedbacks = Feedback::select('id', 'feedback_deskripsi')
+            ->whereIn('status', ['pelaku', 'netral'])
+            ->where(function ($query) {
+                $query->where('id_guru', auth()->user()->guru->id)
+                    ->orWhereNull('id_guru');
+            })
+            ->get();
+
+        $countAsPelaku = Jawaban::where('id_siswa_pelaku', $siswa->id)
+            ->count();
+
+        $indikator = array_merge(
+            $this::$indikatorBully,
+            $this::$indikatorCiberBully
+        );
+
+        // =============================
+        // Lokasi Kejadian
+        // =============================
+        $locationCount = [];
+
+        foreach ($this::$lokasiKejadian as $lokasi) {
+            $locationCount[$lokasi] = Jawaban::whereRelation(
+                'angket_soals',
+                'lokasi_kejadian',
+                $lokasi
+            )
+                ->where('id_siswa_pelaku', $siswa->id)
+                ->count();
+        }
+
+        // =============================
+        // Alasan & Korban
+        // =============================
+        $reportReasons = [];
+
+        foreach ($this::$indikatorBully as $bully) {
+            $reportReasons[$bully] = Jawaban::with('siswa')
+                ->whereRelation('angket_soals', 'indikasi_bully', $bully)
+                ->where('id_siswa_pelaku', $siswa->id)
+                ->get()
+                ->map(function ($model) {
+                    return [
+                        'korban' => optional($model->siswa)->nama_lengkap,
+                        'alasan' => $model->alasan
+                    ];
+                });
+        }
+
+        // =============================
+        // Skor
+        // =============================
+        $skorAll = HitungSkor::hitungPelakuPerIndikator(
+            $siswa->id,
+            $indikator
+        );
+
+        $allValues = collect($skorAll['datasets'])
+            ->pluck('data')
+            ->flatten()
+            ->filter(fn ($v) => $v > 0);
+
+        $countSikap = HasilScore::where('siswa_id', $siswa->id)
+            ->whereColumn('skor_korban', '<', 'skor_pelaku')
+            ->count();
+
+        return [
+            'kelas'             => $siswa->kelas,
+            'siswa'             => $siswa,
+            'gaugeMeter'        => $gaugeMeter ?? ($allValues->count() > 0 ? $allValues->avg() : 0),
+            'feedbacks'         => $feedbacks,
+            'indikator'         => $indikator,
+            'skorKorbanAll'     => $skorAll,
+            'skorKorban'        => HitungSkor::hitungPelakuPerIndikator($siswa->id, $this::$indikatorBully),
+            'skorKorbanCyber'   => HitungSkor::hitungPelakuPerIndikator($siswa->id, $this::$indikatorCiberBully),
+            'locationCount'     => $locationCount,
+            'reportReasons'     => $reportReasons,
+            'countAsPelaku'     => $countAsPelaku,
+            'countSikap'        => $countSikap,
+        ];
     }
 
     private function getKorbanData(Siswa $siswa)
@@ -188,76 +299,5 @@ class ReportController extends Controller
             'locationCount' => $locationCount,
             'reportReasons' => $reportReasons,
         ];
-    }
-
-    public function pelaku(Siswa $siswa)
-    {
-        $gaugeMeter = HasilScore::where('siswa_id', $siswa->id)
-        ->avg('skor_pelaku');
-        $feedbacks  = Feedback::select('id', 'feedback_deskripsi')
-        ->whereIn('status', ['pelaku', 'netral'])
-        ->where(function($query) {
-            $query->where('id_guru', auth()->user()->guru->id)
-                ->orWhere('id_guru', null);
-        })
-        ->get();
-        $countAsPelaku = Jawaban::where('id_siswa_pelaku', $siswa->id)
-        ->count();
-
-        $indikator = array_merge($this::$indikatorBully, $this::$indikatorCiberBully);
-
-        $locationCount = [];
-
-        foreach ($this::$lokasiKejadian as $lokasi) {
-            $jawaban = Jawaban::withCount('angket_soals')
-            ->whereRelation('angket_soals', 'lokasi_kejadian', $lokasi)
-            ->where('id_siswa_pelaku', $siswa->id)
-            ->count();
-
-            $locationCount[$lokasi] = $jawaban;    
-        }
-
-        $reportReasons = [];
-
-        foreach ($this::$indikatorBully as $bully) {
-            $jawaban = Jawaban::with('angket_soals', 'siswa')
-            ->whereRelation('angket_soals', 'indikasi_bully', $bully)
-            ->where('id_siswa_pelaku', $siswa->id)
-            ->get()
-            ->map(function ($model) {
-                return [
-                    'korban' => optional($model->siswa)->nama_lengkap,
-                    'alasan' => $model->alasan
-                ];
-            });
-
-            $reportReasons[$bully] = $jawaban;
-        }
-
-        $skorAll = HitungSkor::hitungPelakuPerIndikator($siswa->id, $indikator);
-
-        $allValues = collect($skorAll['datasets'])
-        ->pluck('data')
-        ->flatten()
-        ->filter(fn($v) => $v > 0);
-
-        $countSikap = HasilScore::where('siswa_id', $siswa->id)
-        ->whereColumn('skor_korban', '<', 'skor_pelaku')
-        ->count();
-
-        $data['kelas'] = $siswa->kelas;
-        $data['siswa'] = $siswa;
-        $data['gaugeMeter'] = $gaugeMeter ?? $allValues->count() > 0 ? $allValues->avg() : 0;
-        $data['feedbacks'] = $feedbacks;
-        $data['indikator'] = $indikator;
-        $data['skorKorbanAll'] = $skorAll;
-        $data['skorKorban'] = HitungSkor::hitungPelakuPerIndikator($siswa->id, $this::$indikatorBully);
-        $data['skorKorbanCyber'] = HitungSkor::hitungPelakuPerIndikator($siswa->id, $this::$indikatorCiberBully);
-        $data['locationCount'] = $locationCount;
-        $data['reportReasons'] = $reportReasons;
-        $data['countAsPelaku'] = $countAsPelaku;
-        $data['countSikap']    = $countSikap;
-
-        return view('guru.report.pelaku', $data);
     }
 }

@@ -130,6 +130,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::get('report-korban/{siswa}', [ReportController::class, 'korban'])->name('guru.report.korban');
     Route::post('report-korban/{siswa}', [ReportController::class, 'printKorban'])->name('guru.report.korban.print');
     Route::get('report-pelaku/{siswa}', [ReportController::class, 'pelaku'])->name('guru.report.pelaku');
+    Route::post('report-pelaku/{siswa}', [ReportController::class, 'printPelaku'])->name('guru.report.pelaku.print');
 });
 
 // Siswa

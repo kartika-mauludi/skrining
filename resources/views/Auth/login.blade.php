@@ -18,8 +18,8 @@
                 @csrf
             <!-- Email input -->
             <div data-mdb-input-init class="form-outline mb-4">
-                <label class="form-label" for="email">Email or username or NIP</label>
-                <input type="text" id="login" name="login" class="form-control @error('login') is-invalid @enderror" value="{{ old('login') }}" required  oninvalid="this.setCustomValidity('Username / Email / NIP Harus di Isi')" oninput="this.setCustomValidity('')" placeholder="Isi email atau NIP" />
+                <label class="form-label" for="email">Email atau NIP</label>
+                <input type="text" id="login" name="login" class="form-control @error('login') is-invalid @enderror" value="{{ old('login') }}" required  oninvalid="this.setCustomValidity('Email / NIP Harus di Isi')" oninput="this.setCustomValidity('')" placeholder="Isi email atau NIP" />
                  @error('login')
                     <span class="invalid-feedback" role="alert">
                         <strong>{{ $message }}</strong>
@@ -53,7 +53,7 @@
 
                 <div class="col-md-6 d-flex justify-content-center">
                 <!-- Simple link -->
-                <a href="{{ route('forgot-password') }}">Forgot password?</a>
+                <a href="{{ route('forgot-password') }}">Lupa password?</a>
                 </div>
             </div>
 
@@ -63,7 +63,7 @@
             </div>
             <!-- Register buttons -->
             <div class="text-center">
-                <p>Not a member? <a href="{{ route('register') }}">Register</a></p>
+                <p>Bukan Member ? <a href="{{ route('register') }}">Registrasi</a></p>
             </div>
             </form>
         </div>

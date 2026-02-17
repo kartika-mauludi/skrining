@@ -32,50 +32,47 @@ class FormAngketController extends Controller
         $siswaSudahIsi = Jawaban::where('created_at', '>=', $oneWeekAgo)
         ->pluck('siswa_id')
         ->unique();
+
+         $angket = Angket::find($request->angketId);
+            
+        if (!$angket) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Form angket tidak ditemukan');
+        }
+
         if($request->filled('token')){
             $kelas = Kelas::with('sekolah')
             ->whereJsonContains('data_akses', [
                 'token' => $request->token
             ])
-            ->get();
-            if ($kelas->isEmpty()) {
+            ->first();
+            // return $kelas;
+            if (!$kelas) {
                 return redirect()
                     ->back()
                     ->withInput()
                     ->with('error', 'Token tidak valid');
             }
-            $sekolah_id = $kelas->first()->sekolah_id;
-            $kelas_id = $kelas->first()->id;
-            
-            $angket = Angket::where(function($query) use($sekolah_id, $kelas_id) {
-                // Cari yang sesuai sekolah_id dan kelas_id
-                $query->where('sekolah_id', $sekolah_id)
-                    ->where('kelas_id', $kelas_id);
-            })
-            ->orWhere(function($query) {
-                // Atau cari yang NULL
-                $query->whereNull('sekolah_id')
-                    ->whereNull('kelas_id');
-            })
-            ->orderByRaw('CASE WHEN sekolah_id = ? AND kelas_id = ? THEN 0 ELSE 1 END', 
-                [$sekolah_id, $kelas_id])
-            ->latest()
-            ->first();
-
-            if (!$angket) {
-                return redirect()
-                    ->back()
-                    ->withInput()
-                    ->with('error', 'Form angket tidak ditemukan');
-            }
+            // return $kelas;
+            $dataAkses = collect($kelas->data_akses);
+            $akses = $dataAkses->firstWhere('token', $request->token);
+            $guruId = $akses['guru_id'];
 
             $data['siswas'] = Siswa::select([ 'id','kelas_id','no_absen','nis','nama_lengkap', 'jk'])
-                ->whereIn('kelas_id', $kelas->pluck('id'))
+                ->where('kelas_id', $kelas->id)
                 ->orderBy('no_absen')->get();
+
             $data['kelas'] = $kelas;
-            $data['angketsoals'] = AngketSoal::with('angket')->get();
+            $data['angketsoals'] = AngketSoal::with('angket')
+            ->where('angket_id',$request->angketId)
+            ->where(function($query) use ($guruId) {
+                    $query->whereNull('guru_id')
+                          ->orWhere('guru_id', $guruId);
+                })
+            ->get();
             $data['angket'] = $angket;
-            $data['angket'] = Angket::latest()->first();
             $data['siswaSudahIsi'] = $siswaSudahIsi;
             $data['token'] = $request->token;
         }

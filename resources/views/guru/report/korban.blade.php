@@ -3,11 +3,11 @@
 @section('content')
 <style>
     body {
-        background: #f2f2f2;
+        background: #f2f2f2ff;
         font-size: 14px;
     }
     .sheet {
-        background: #fff;
+        background: #ffffffff;
         padding: 20px;
         border: 1px solid #000;
     }
@@ -36,8 +36,8 @@
     }
 </style>
 
-<div class="content-wrapper">
-    <section class="content-header">
+<div class="content-wrapper" style="background-color:rgba(162, 246, 186, 0.7);">
+    <section class="content-header" >
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">

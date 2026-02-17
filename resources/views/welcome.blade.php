@@ -21,7 +21,7 @@
             <h1 data-aos="fade-up" class="judul-light">Sistem Skrining</h1>
             <p data-aos="fade-up" data-aos-delay="100" style="color:white" >Kami Menyediakan Berbagai Fasilitas Seputar Skrining</p>
             <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
-              <a href="{{ route('siswa.formAngket') }}" class="btn-get-started">Get Started <i class="bi bi-arrow-right"></i></a>
+              <a href="{{ route('siswa.formAngket',['angketId' => 2]) }}" class="btn-get-started">Get Started <i class="bi bi-arrow-right"></i></a>
             </div>
           </div>
           <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out">

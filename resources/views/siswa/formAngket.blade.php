@@ -34,6 +34,7 @@
                   <div class="form-group">
                     <label for="token">Masukkan Token untuk tes </label>
                     <input type="text" class="form-control border-dark" name="token" id="token" required value="{{ old('token') }}" placeholder="Masukkan Token">
+                    <input type="hidden" name="angketId" id="angketId" value="{{ request('angketId') }}">
                     <button type="submit" class="btn btn-primary mt-3"> Masuk</button>
                   </div>
                 </form>
@@ -310,7 +311,7 @@ function isiFormSiswa(no_absen) {
     $('#siswa_id').val(siswa.id);
     $('#nama').val(siswa.nama_lengkap);
     $('#no_induk').val(siswa.nis);
-    $('#kelas').val(kelas[0].nama_kelas);
+    $('#kelas').val(kelas.nama_kelas);
     $('#jk').val(siswa.jk);
 }
 

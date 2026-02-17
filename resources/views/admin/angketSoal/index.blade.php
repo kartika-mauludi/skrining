@@ -132,8 +132,8 @@
         data    : 'sekolah_id',
         render  : (data) => data ? `${data}` : `-` 
       },{
-        data    : 'guru',
-        render  : (data) => data ? `${data.nama_lengkap}` : `Admin` 
+        data    : 'guru_id',
+        render  : (data) => data ? `${data}` : `Admin` 
       },
       {
         data: 'id',
@@ -158,8 +158,14 @@
   });
 
   // tambah data
+
+
 $(document).on('submit','#addDataForm', function(e){
-  var table = $('.table').DataTable();
+  let table;
+  if ($.fn.DataTable.isDataTable('#tbl-angketSoal')) {
+      table = $('#tbl-angketSoal').DataTable();
+  }
+
   e.preventDefault();
   showLoading();
   var form = this;
@@ -181,7 +187,9 @@ $(document).on('submit','#addDataForm', function(e){
       }
       $(form).closest('.modal').modal('hide');
       form.reset();
-      table.ajax.reload();
+      if (table) {
+        table.ajax.reload(null, false); // reload tanpa reset paging
+       }
     },
     error : function(response){
       closeLoading();
@@ -207,9 +215,13 @@ $(document).on('submit','#addDataForm', function(e){
 // delete
 
 $(document).on('click','.delete-btn',function(){
-var table = $('.table').DataTable();
 var id    = $(this).data('id');
 var url   = "{{ route('angketsoal.destroy',':id') }}".replace(':id',id);
+let table;
+  if ($.fn.DataTable.isDataTable('#tbl-angketSoal')) {
+      table = $('#tbl-angketSoal').DataTable();
+  }
+
 
   Swal.fire({
     title   :"Hapus Soal",
@@ -232,7 +244,9 @@ var url   = "{{ route('angketsoal.destroy',':id') }}".replace(':id',id);
           }else{
             Swal.fire('Gagal',response.message,'error')
           }
-          table.ajax.reload();
+           if (table) {
+                        table.ajax.reload(null, false); // reload tanpa reset paging
+                    }
         },
         error : function(response){
            closeLoading();
@@ -292,7 +306,7 @@ $(document).on('click', '#deleteAll', function () {
 
 
 // ============================
-//  tambah/edit
+//  edit
 // ============================
 
 let isEditMode = false;

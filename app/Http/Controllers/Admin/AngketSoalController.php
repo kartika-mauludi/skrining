@@ -39,13 +39,18 @@ class AngketSoalController extends Controller
         DB::beginTransaction();
 
         try {
+            $maxSequence = AngketSoal::max('sequence') ?? 0;
             foreach ($request->soal as $item) {
+                $tipe = $item['tipe_soal'] ?? null;
+                if ($tipe === 'Skala') {
+                    $tipe = 'range';
+                }
                 AngketSoal::updateOrCreate(['id' => $item['id']],[
                     'angket_id'        => $request->angket_id,
                     'sequence'         => $item['sequence'],
                     'soal'             => TextHelper::cleanSummernote($item['soal'] ?? null),
                     'lokasi_kejadian'  => $item['tipe_soal'] === 'keterangan' ? null : ($item['ruang'] ?? null),
-                    'tipe_soal'        => $item['tipe_soal'],
+                    'tipe_soal'        => $tipe,
                     'indikasi_siswa'   => $item['tipe_soal']  === 'keterangan' ? null : ($item['indikator'] ?? null),
                     'detail_tipe_soal' => $item['opsi'] ?? null,
                     'indikasi_bully'   => $item['tipe_soal'] === 'keterangan' ? "-" : ($item['indikasi_bully'] ?? '-'),
@@ -164,6 +169,10 @@ class AngketSoalController extends Controller
 
         $maxSequence = AngketSoal::max('sequence') ?? 0;
             foreach ($data as $index => $item) {
+                 $tipe = $item['tipe_soal'] ?? null;
+                if ($tipe === 'Skala') {
+                    $tipe = 'range';
+                }
                  $maxSequence++;
                 if (!isset($item['soal']) || !isset($item['tipe_soal']) || !isset($item['ruang_lingkup']) || !isset($item['indikator']) || !isset($item['indikasi'])) {
                     echo json_encode(['status' => 400, 'message' => 'Format data tidak valid!']);
@@ -173,7 +182,7 @@ class AngketSoalController extends Controller
                 }
 
                 $record = AngketSoal::Create(
-                    ['angket_id' => $item['angketId'], 'soal' => $item['soal'],'sequence'=> $maxSequence , 'tipe_soal' => $item['tipe_soal'], 'lokasi_kejadian' => $item['ruang_lingkup'], 'indikasi_siswa' => $item['indikator'], 'indikasi_bully' => $item['indikasi']],
+                    ['angket_id' => $item['angketId'], 'soal' => $item['soal'],'sequence'=> $maxSequence , 'tipe_soal' => $tipe, 'lokasi_kejadian' => $item['ruang_lingkup'], 'indikasi_siswa' => $item['indikator'], 'indikasi_bully' => $item['indikasi']],
                 );
 
                 if ($record->wasRecentlyCreated) {

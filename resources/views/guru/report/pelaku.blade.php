@@ -61,6 +61,19 @@
                     <div class="card">
                       <div class="card-header">
                         <a href="{{ route('guru.report') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                        <button type="button" id="btnExport" class="btn btn-sm btn-primary">Cetak</button>
+
+                        <form action="{{ route('guru.report.pelaku.print', $siswa->id) }}" 
+                            method="POST" 
+                            id="formPrint"
+                            target="_blank">
+                            @csrf
+
+                            <input type="hidden" name="history_image" id="history_image">
+                            <input type="hidden" name="kategori_image" id="kategori_image">
+                            <input type="hidden" name="cyber_image" id="cyber_image">
+                            <input type="hidden" name="gauge_image" id="gauge_image">
+                        </form>
                       </div>
                       <div class="card-body">
                         <div class="sheet">
@@ -456,6 +469,31 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         }
+    });
+
+    $('#btnExport').on('click', function () {
+        const charts = Object.values(Chart.instances);
+
+        charts.forEach(function(chart) {
+            chart.options.devicePixelRatio = 2;
+            chart.update();
+        });
+
+        setTimeout(function() {
+
+            $('#history_image').val(charts[0].toBase64Image());
+            $('#kategori_image').val(charts[1].toBase64Image());
+            $('#cyber_image').val(charts[2].toBase64Image());
+            $('#gauge_image').val(charts[3].toBase64Image());
+
+            charts.forEach(function(chart) {
+                chart.options.devicePixelRatio = 1;
+                chart.update();
+            });
+
+            $('#formPrint').submit();
+
+        }, 300);
     });
 });
 

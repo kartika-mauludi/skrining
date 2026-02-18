@@ -472,13 +472,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const charts = Object.values(Chart.instances);
 
-        // 🔹 Naikkan resolusi sementara
         charts.forEach(function(chart) {
             chart.options.devicePixelRatio = 2;
             chart.update();
         });
 
-        // 🔹 Ambil gambar setelah render ulang
         setTimeout(function() {
 
             $('#history_image').val(Chart.instances[0].toBase64Image());
@@ -486,7 +484,6 @@ document.addEventListener("DOMContentLoaded", function () {
             $('#cyber_image').val(Chart.instances[2].toBase64Image());
             $('#gauge_image').val(Chart.instances[3].toBase64Image());
 
-            // 🔹 Kembalikan ke normal supaya web tetap ringan
             charts.forEach(function(chart) {
                 chart.options.devicePixelRatio = 1;
                 chart.update();
@@ -494,7 +491,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             $('#formPrint').trigger('submit');
 
-        }, 300); // beri waktu render ulang
+        }, 300);
     });
 
 

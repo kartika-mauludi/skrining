@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Report Korban</title>
+    <title>Report Pelaku</title>
 
     <style>
         @page {
@@ -98,7 +98,7 @@
     <div class="header-line"></div>
 
     <div class="text-center section">
-        <h4><strong>( Sebagai Korban )</strong></h4>
+        <h4><strong>( Sebagai Pelaku )</strong></h4>
     </div>
 
     {{-- IDENTITAS --}}
@@ -176,36 +176,56 @@
         <div class="clearfix"></div>
     </div>
 
-    {{-- LOKASI --}}
-    <div class="box section">
-        <div class="text-center"><strong>Kejadian Perundungan</strong></div>
-        <table class="table-bordered text-center">
+    {{-- KEJADIAN + TOTAL --}}
+    <div class="section">
+        <table>
             <tr>
-                <th>Sosial Media</th>
-                <th>Game</th>
-                <th>Kelas</th>
-                <th>Lainnya</th>
-            </tr>
-            <tr>
-                <td>{{ $locationCount['sosmed'] ?? 0 }}</td>
-                <td>{{ $locationCount['game'] ?? 0 }}</td>
-                <td>{{ $locationCount['lingkungan kelas'] ?? 0 }}</td>
-                <td>{{ $locationCount['lainnya'] ?? 0 }}</td>
+                <td width="40%" class="box">
+                    <div class="text-center"><strong>Kejadian Perundungan</strong></div>
+                    <table class="table-bordered text-center" style="margin-top:5px;">
+                        <tr>
+                            <th>Sosial Media</th>
+                            <th>Game</th>
+                        </tr>
+                        <tr>
+                            <td>{{ $locationCount['sosmed'] ?? 0 }}</td>
+                            <td>{{ $locationCount['game'] ?? 0 }}</td>
+                        </tr>
+                        <tr>
+                            <th>Kelas</th>
+                            <th>Lainnya</th>
+                        </tr>
+                        <tr>
+                            <td>{{ $locationCount['lingkungan kelas'] ?? 0 }}</td>
+                            <td>{{ $locationCount['lainnya'] ?? 0 }}</td>
+                        </tr>
+                    </table>
+                </td>
+
+                <td width="30%" class="box text-center">
+                    <strong>Σ Aduan Sebagai Pelaku</strong>
+                    <h2 style="margin-top:15px;">{{ $countAsPelaku }}</h2>
+                </td>
+
+                <td width="30%" class="box text-center">
+                    <strong>Σ Kecenderungan Sikap</strong>
+                    <h2 style="margin-top:15px;">{{ $countSikap }}</h2>
+                </td>
             </tr>
         </table>
     </div>
 
-    {{-- PELAKU --}}
+    {{-- TEMAN YANG MENGADUKAN --}}
     <div class="box section">
-        <strong>Teman yang saya adukan:</strong><br>
-        Verbal: {{ $reportReasons['verbal']->pluck('pelaku')->implode(', ') ?? '-' }}<br>
-        Fisik: {{ $reportReasons['fisik']->pluck('pelaku')->implode(', ') ?? '-' }}<br>
-        Sosial: {{ $reportReasons['sosial']->pluck('pelaku')->implode(', ') ?? '-' }}
+        <strong>Teman yang mengadukan saya:</strong><br>
+        Verbal: {{ $reportReasons['verbal']->pluck('korban')->implode(', ') ?? '-' }}<br>
+        Fisik: {{ $reportReasons['fisik']->pluck('korban')->implode(', ') ?? '-' }}<br>
+        Sosial: {{ $reportReasons['sosial']->pluck('korban')->implode(', ') ?? '-' }}
     </div>
 
     {{-- ALASAN --}}
     <div class="box section">
-        <strong>Alasan saya mengadukan:</strong><br>
+        <strong>Alasan teman mengadukan:</strong><br>
         Verbal: {{ $reportReasons['verbal']->pluck('alasan')->implode(', ') ?? '-' }}<br>
         Fisik: {{ $reportReasons['fisik']->pluck('alasan')->implode(', ') ?? '-' }}<br>
         Sosial: {{ $reportReasons['sosial']->pluck('alasan')->implode(', ') ?? '-' }}
@@ -213,7 +233,7 @@
 
     {{-- FEEDBACK --}}
     <div class="box">
-        <strong>Jika aku mengalami perundungan:</strong>
+        <strong>Jika aku melakukan perundungan:</strong>
         <ol style="margin-top:4px;">
             @foreach ($feedbacks as $feedback)
                 <li>{!! $feedback->feedback_deskripsi !!}</li>

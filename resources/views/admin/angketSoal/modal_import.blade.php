@@ -45,7 +45,8 @@
     let tableImport = null;
     let isValid = true;
     $(document).ready(() => {
-        let tableImport = $("#importPreviewTable").DataTable({
+        if (!$.fn.DataTable.isDataTable('#importPreviewTable')) {
+        tableImport = $("#importPreviewTable").DataTable({
             paging: false,
             searching: false,
             info: false,
@@ -58,6 +59,7 @@
                 $(row).find('td').eq(1).addClass('fit text-center').css('max-width', 'fit-content !important');
             }
         });
+    }
 
         $("#excelFileInput").change(function (e) {
             let file = e.target.files[0];
@@ -65,9 +67,7 @@
             let reader = new FileReader();            
             
             reader.onload = function (event) {
-                if ($.fn.DataTable.isDataTable('#importPreviewTable')) {
-                tableImport.clear().draw();
-                }
+                tableImport.clear();
                 showLoading();
                 let data = new Uint8Array(event.target.result);
                 let workbook = XLSX.read(data, { type: "array" });
@@ -108,7 +108,7 @@
                             errorMessage
                                 ? `<span class="text-danger">${errorMessage}</span>`
                                 : `<span class="text-success">OK</span>`
-                        ]).draw(false);
+                        ]);
 
                     });
 
@@ -116,7 +116,7 @@
                 } else {
                     $("#btnUploadData").prop("disabled", true);
                 }
-
+                tableImport.draw();
                 closeLoading();
             };
             reader.readAsArrayBuffer(file);
@@ -126,14 +126,14 @@
             let tableData = [];
             let isValid = true;
 
-            $("#importPreviewTable tbody tr").each(function () {
-                let row                 = $(this).find("td");
-                let soal                = row.eq(1).text().trim();
-                let tipe_soal           = row.eq(2).text().trim();
-                let ruang_lingkup       = row.eq(3).text().trim();
-                let indikator           = row.eq(4).text().trim();
-                let indikasi            = row.eq(5).text().trim();
-                let angketId            = {{ $angket->id ?? 'null' }};
+          tableImport.rows().every(function () {
+                let row = this.data();
+                let soal          = row[1]?.trim() || "";
+                let tipe_soal     = row[2]?.trim() || "";
+                let ruang_lingkup = row[3]?.trim() || "";
+                let indikator     = row[4]?.trim() || "";
+                let indikasi      = row[5]?.trim() || "";
+                let angketId      = {{ $angket->id ?? 'null' }};
 
 
                 if (!soal || !tipe_soal || !ruang_lingkup || !indikator || !indikasi ) {
@@ -169,18 +169,23 @@
             }).then( response => {
                 const reader = response.body.getReader();
                 const decoder = new TextDecoder();
-                let table = $('#tbl-angketSoal').DataTable()
+               let table;
+
+                if ($.fn.DataTable.isDataTable('#tbl-angketSoal')) {
+                    table = $('#tbl-angketSoal').DataTable();
+                }
                 function read() {
                     reader.read().then(({ done, value }) => {
                         if (done) {
                             $("#excelFileInput").val(null);
                             Swal.fire("Selesai!", `Berhasil mengimport ${insertedCount} dari ${tableData.length} data.`, "success");
                             $("#importModal").modal("hide");
-                            if ($.fn.DataTable.isDataTable('#importPreviewTable')) {
-                            tableImport.clear().draw();
+                            if (tableImport) {
+                                tableImport.clear().draw();
                             }
-                            table.clear().draw();
-                            table.ajax.url("{{ route('admin.angketSoal.data') }}").load();
+                           if (table) {
+                                table.ajax.reload(null, false);
+                            }
                             return;
                         }
 
@@ -221,9 +226,9 @@
 
         function resetImport() {
             // clear datatable
-            if ($.fn.DataTable.isDataTable('#importPreviewTable')) {
-            tableImport.clear().draw();
-            }           
+            if (tableImport && $.fn.DataTable.isDataTable('#importPreviewTable')) {
+                tableImport.clear().draw();
+            }
 
             // reset input file
             $("#excelFileInput").val(null);

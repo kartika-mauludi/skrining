@@ -26,8 +26,8 @@ class Siswa extends Model
         return $this->belongsTo(Kelas::class);
     }
 
-    public function angketHasil()
+    public function jawaban()
     {
-        return $this->hasMany(AngketHasil::class);
+        return $this->hasMany(Jawaban::class);
     }
 }

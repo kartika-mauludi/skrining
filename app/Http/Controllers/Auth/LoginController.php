@@ -30,13 +30,8 @@ class LoginController extends Controller
         }
         
         else {
-        $user = User::where('name', $login)->first();
-
-        // 3️⃣ Kalau bukan username → cek NIP guru
-        if (!$user) {
             $guru = Guru::where('nip', $login)->first();
             $user = $guru?->user; // relasi guru -> user
-        }
     }
 
          if (!$user) {

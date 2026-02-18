@@ -36,7 +36,7 @@
     }
 </style>
 
-<div class="content-wrapper">
+<div class="content-wrapper" style="background-color:rgba(255, 180, 180, 0.5);">
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">

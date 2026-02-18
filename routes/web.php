@@ -83,7 +83,9 @@ Route::middleware('role:super_admin')->group(function (){
     ->name('admin.log-login');
 
     Route::get('admin/report',[AdminReportController::class,'index'])->name('admin.report');
-
+    Route::get('/admin/sekolah/{sekolah}',[AdminReportController::class,'sekolah'])->name('admin.report.sekolah');
+    Route::get('/report/export-csv', [AdminReportController::class, 'exportCsv'])
+    ->name('report.export.csv');
 
 });
 

@@ -3,6 +3,10 @@
 @section('content')
 
 
+@push('style')
+<style>
+</style>
+@endpush
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -10,12 +14,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Report Matriks</h1>
+            <h1 class="m-0">Report</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('guru.dashboard') }}">Home</a></li>
-              <li class="breadcrumb-item active">Report Matriks</li>
+              <li class="breadcrumb-item"><a href="{{ route('admin.index') }}">Home</a></li>
+              <li class="breadcrumb-item active">Report</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -42,15 +46,63 @@
             <div class="col-12 col-sm-6 col-md-3">
               <div class="form-group">
                 <label for="kelas" class="form-label">Kelas</label>
-                <select name="kelas" id="kelas" class="form-control form-control-sm" required>
+                <select name="kelas[]" id="kelas" class="form-control select2-selection__placeholder" multiple required>
                   <option value=""></option>
                 </select>
               </div>
             </div>
-          </div>
+            <div class="col-12 col-sm-6 col-md-2">
+              <div class="form-group">
+                <label for="kelas" class="form-label">Bulan</label>
+                   {{-- Bulan --}}
+                    <select name="bulan" class="form-control form-control-sm">
+                        <option value="">-- Pilih Bulan --</option>
+                        @for ($i = 1; $i <= 12; $i++)
+                            <option value="{{ $i }}" 
+                                {{ request('bulan') == $i ? 'selected' : '' }}>
+                                {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                            </option>
+                        @endfor
+                    </select>
+              </div>
+            </div>
 
-          <button class="btn btn-sm btn-success">Set Record</button>
-          <a href="{{ route('guru.report.matriks') }}" class="btn btn-sm btn-secondary">Reset</a>
+              <div class="col-12 col-sm-6 col-md-2">
+                <div class="form-group">
+                  <label for="kelas" class="form-label">Tahun</label>
+                    <select name="tahun" class="form-control form-control-sm">
+                        @for ($y = date('Y'); $y >= 2023; $y--)
+                            <option value="{{ $y }}" 
+                                {{ request('tahun') == $y ? 'selected' : '' }}>
+                                {{ $y }}
+                            </option>
+                        @endfor
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-2">
+              <div class="form-group">
+                <label for="kelas" class="form-label">Minggu</label>
+                  <select name="minggu" class="form-control form-control-sm">
+                      <option value="">-- Semua Minggu --</option>
+                      @for ($m = 1; $m <= 5; $m++)
+                          <option value="{{ $m }}"
+                              {{ request('minggu') == $m ? 'selected' : '' }}>
+                              Minggu {{ $m }}
+                          </option>
+                      @endfor
+                  </select>
+              </div>
+            </div>
+            
+          </div>
+        <a href="{{ route('report.export.csv', request()->all()) }}"
+          class="btn btn-sm btn-success">
+          Export CSV
+        </a>
+          <button class="btn btn-sm btn-info">Set Record</button>
+          <a href="{{ route('admin.report') }}" class="btn btn-sm btn-secondary">Reset</a>
         </form>
 
         <hr>
@@ -95,38 +147,28 @@
                   @if ($reports->isEmpty())
                     <h5 class="text-center">Belum ada data angket yang masuk di kelas ini.</h5>
                   @else
-                    @php
-                        $matrix = [];
-
-                        foreach ($reports as $r) {
-                            $matrix[$r->id_siswa_pelapor][$r->id_siswa_terlapor] = true;
-                        }
-                    @endphp
-                    
-                    <table class="sociomatrix">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>Siswa</th>
-                                @foreach ($siswa as $col)
-                                    <th>{{ $col->nama_lengkap }}</th>
+                                <th>#</th>
+                                @foreach ($soals as $soal)
+                                    <th>{{ $loop->iteration }}</th>
                                 @endforeach
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach ($siswa as $row)
+                            @foreach ($reports as $row)
                                 <tr>
-                                    <th class="text-start">{{ $row->nama_lengkap }}</th>
-
-                                    @foreach ($siswa as $col)
-                                        @if ($row->id === $col->id)
-                                            <td class="self">–</td>
-                                        @elseif (!empty($matrix[$row->id][$col->id]))
-                                            <td class="checked">✓</td>
-                                        @else
-                                            <td></td>
-                                        @endif
-                                    @endforeach
+                                  <th scope="row">{{ $loop->iteration }}</th>
+                                  @foreach( $soals as $soal) 
+                                   @php
+                                      $jawaban = $row->jawaban
+                                          ->where('soal_id', $soal->id)
+                                          ->first();
+                                  @endphp
+                                      <td>{{ $jawaban->jawaban ?? '-' }}</td>
+                                  @endforeach
                                 </tr>
                             @endforeach
                         </tbody>
@@ -162,7 +204,9 @@
       });
 
       $('#kelas').select2({
-          placeholder: '-- Pilih Data --'
+          placeholder: '-- Pilih Data --',
+          width: '100%',
+          closeOnSelect: false
       });
 
       // Load kelas jika sekolah sudah terpilih
@@ -181,7 +225,7 @@
 
       function loadKelas(sekolahId) {
 
-          $.get(`{{ url('/guru/sekolah/${sekolahId}') }}`)
+          $.get(`{{ url('/admin/sekolah/${sekolahId}') }}`)
               .done(function (res) {
 
                   const kelasList = res.data.kelas;

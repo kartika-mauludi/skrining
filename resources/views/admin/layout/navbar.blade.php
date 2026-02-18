@@ -91,7 +91,7 @@
 
             <li class="nav-item">
             <a href="{{ url('admin/report') }}" class="nav-link @if(Route::is('admin.report')) active @endif">
-               <i class="nav-icon fas fa-solid fa-chart-line"></i>
+               <i class="nav-icon fas fa-solid fa-file-alt"></i>
               <p>
                 Report
               </p>

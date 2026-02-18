@@ -591,7 +591,7 @@ $(document).on('click', '.edit-btn', function () {
 
         if (tipe === 'text') {
           ruang.val('lingkungan kelas');
-          indikator.val('pelaku');
+          indikator.val('korban');
           
           ruang.find('option').each(function () {
             if ($(this).val() !== 'lingkungan kelas') {

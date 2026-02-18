@@ -8,6 +8,7 @@ use App\Models\Kelas;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use auth;
 
 class KelasController extends Controller
 {
@@ -31,8 +32,13 @@ class KelasController extends Controller
 
     public function store(Request $request)
     {
+        $token = Str::random(6);
         $input = $request->except('_token');
-        $input['akses_token'] = Str::random(6);
+        $input['akses_token'] = $token;
+         $tokens[] = [
+                'guru_id' => auth::user()->id,
+                'token'   => $token,
+            ];
 
         try{
             Kelas::create($input);
@@ -113,7 +119,8 @@ class KelasController extends Controller
 
         try {
             $kelas->update([
-                'data_akses' => $tokens
+                'data_akses' => $tokens,
+                'akses_token' => $token
             ]);
 
             $message = 'Token berhasil diperbarui';

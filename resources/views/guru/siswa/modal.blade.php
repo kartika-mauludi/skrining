@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group">
                         <label for="nis" class="form-label">NIS</label>
-                        <input type="text" name="nis" id="nis" class="form-control form-control-sm" required>
+                        <input type="text" name="nis" id="nis" class="form-control form-control-sm">
                     </div>
                     <div class="form-group">
                         <label for="nama_lengkap" class="form-label">Nama Siswa</label>

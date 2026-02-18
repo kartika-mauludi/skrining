@@ -46,7 +46,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nama Kelas</th>
-                                        <th>Data Akses</th>
+                                        <th>Token Akses</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -106,7 +106,7 @@ $(document).ready(function(){
                 if (!Array.isArray(parsed)) return '-';
 
                 return parsed
-                    .map(item => `${item.nama_guru} = ${item.token}`)
+                    .map(item => ` ${item.token}`)
                     .join('<br>');
             }
         },{

@@ -71,6 +71,7 @@ class FormAngketController extends Controller
                     $query->whereNull('guru_id')
                           ->orWhere('guru_id', $guruId);
                 })
+            ->orderBy('sequence','desc')
             ->get();
             $data['angket'] = $angket;
             $data['siswaSudahIsi'] = $siswaSudahIsi;

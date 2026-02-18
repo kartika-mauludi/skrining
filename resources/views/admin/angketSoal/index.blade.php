@@ -287,7 +287,9 @@ $(document).on('click', '#deleteAll', function () {
                         Swal.fire('Berhasil', res.message, 'success');
 
                         // reload datatable
-                        $('.table').DataTable().ajax.reload();
+                       if (table) {
+                        table.ajax.reload(null, false); // reload tanpa reset paging
+                      }
 
                         // bersihkan modal juga
                         $('#soal-container').empty();
@@ -701,7 +703,7 @@ $(document).on('click', '.edit-btn', function () {
 
         if (tipe === 'text') {
           ruang.val('lingkungan kelas');
-          indikator.val('pelaku');
+          indikator.val('korban');
           
           ruang.find('option').each(function () {
             if ($(this).val() !== 'lingkungan kelas') {

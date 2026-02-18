@@ -13,6 +13,7 @@ use App\Models\Siswa;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ReportController extends Controller
 {
@@ -138,8 +139,7 @@ class ReportController extends Controller
         $data['gaugeImage']    = $request->gauge_image;
 
         $pdf = Pdf::loadView('guru.report.pelaku-pdf', $data)
-            ->setPaper('A4', 'portrait')
-            ->setOption(['isRemoteEnabled' => true]);
+        ->setPaper('A4', 'portrait');
 
         return $pdf->stream('report-pelaku.pdf');
     }
@@ -154,8 +154,7 @@ class ReportController extends Controller
         $data['gaugeImage'] = $request->gauge_image;
 
         $pdf = Pdf::loadView('guru.report.korban-pdf', $data)
-            ->setPaper('a4', 'portrait')
-            ->setOption(['isRemoteEnabled' => true]);
+        ->setPaper('a4', 'portrait');
 
         return $pdf->stream('report-korban.pdf');
     }

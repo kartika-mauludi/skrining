@@ -105,7 +105,7 @@
     <table class="section">
         <tr>
             <td width="20%" class="text-center">
-                <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" width="70">
+                <img src="{{ base_path('assets-landing/img/user_icon.jpg') }}" width="70">
             </td>
             <td width="80%">
                 <table>
@@ -136,7 +136,7 @@
             <div class="text-center"><strong>History</strong></div>
             <div class="chart">
                 @if(!empty($historyImage))
-                    <img src="{{ $historyImage }}">
+                    <img src="{{ $historyImage }}" style="height: 100%; width: auto">
                 @endif
             </div>
         </div>
@@ -145,7 +145,7 @@
             <div class="text-center"><strong>Gauge</strong></div>
             <div class="chart">
                 @if(!empty($gaugeImage))
-                    <img src="{{ $gaugeImage }}">
+                    <img src="{{ $gaugeImage }}" style="height: 100%; width: auto">
                 @endif
             </div>
         </div>
@@ -159,7 +159,7 @@
             <div class="text-center"><strong>Kriteria Perundungan</strong></div>
             <div class="chart">
                 @if(!empty($kategoriImage))
-                    <img src="{{ $kategoriImage }}">
+                    <img src="{{ $kategoriImage }}" style="height: 100%; width: auto">
                 @endif
             </div>
         </div>
@@ -168,7 +168,7 @@
             <div class="text-center"><strong>Kriteria Perundungan Cyber</strong></div>
             <div class="chart">
                 @if(!empty($cyberImage))
-                    <img src="{{ $cyberImage }}">
+                    <img src="{{ $cyberImage }}" style="height: 100%; width: auto">
                 @endif
             </div>
         </div>

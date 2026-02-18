@@ -26,6 +26,10 @@
             margin-bottom: 8px;
         }
 
+        .border {
+            border: 1px solid #000;
+        }
+
         .box {
             border: 1px solid #000;
             padding: 6px;
@@ -53,18 +57,28 @@
             border: 1px solid #000;
         }
 
+        .col-50 {
+            width: 50%;
+            float: left;
+        }
+
+        .col-33 {
+            width: 33.333%;
+            float: left;
+        }
+
+        .clearfix {
+            clear: both;
+        }
+
         img {
             max-width: 100%;
         }
 
-        .chart-img {
-            height: 140px;
+        .chart {
+            height: 150px;
+            text-align: center;
         }
-
-        .gauge-img {
-            height: 130px;
-        }
-
     </style>
 </head>
 <body>
@@ -91,7 +105,7 @@
     <table class="section">
         <tr>
             <td width="20%" class="text-center">
-                <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" width="70">
+                <img src="{{ base_path('assets-landing/img/user_icon.jpg') }}" width="70">
             </td>
             <td width="80%">
                 <table>
@@ -118,52 +132,48 @@
 
     {{-- HISTORY + GAUGE --}}
     <div class="section">
-        <table>
-            <tr>
-                <td width="70%" class="box text-center">
-                    <strong>History</strong>
-                    <div style="margin-top:5px;">
-                        @if(!empty($historyImage))
-                            <img src="{{ $historyImage }}" class="chart-img">
-                        @endif
-                    </div>
-                </td>
+        <div class="col-50 box">
+            <div class="text-center"><strong>History</strong></div>
+            <div class="chart">
+                @if(!empty($historyImage))
+                    <img src="{{ $historyImage }}" style="height: 100%; width: auto">
+                @endif
+            </div>
+        </div>
 
-                <td width="30%" class="box text-center">
-                    <strong>Status</strong>
-                    <div style="margin-top:5px;">
-                        @if(!empty($gaugeImage))
-                            <img src="{{ $gaugeImage }}" class="gauge-img">
-                        @endif
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="col-50 box">
+            <div class="text-center"><strong>Gauge</strong></div>
+            <div class="chart">
+                @if(!empty($gaugeImage))
+                    <img src="{{ $gaugeImage }}" style="height: 100%; width: auto">
+                @endif
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
     </div>
 
     {{-- KRITERIA --}}
     <div class="section">
-        <table>
-            <tr>
-                <td width="50%" class="box text-center">
-                    <strong>Kriteria Perundungan</strong>
-                    <div style="margin-top:5px;">
-                        @if(!empty($kategoriImage))
-                            <img src="{{ $kategoriImage }}" class="chart-img">
-                        @endif
-                    </div>
-                </td>
+        <div class="col-50 box">
+            <div class="text-center"><strong>Kriteria Perundungan</strong></div>
+            <div class="chart">
+                @if(!empty($kategoriImage))
+                    <img src="{{ $kategoriImage }}" style="height: 100%; width: auto">
+                @endif
+            </div>
+        </div>
 
-                <td width="50%" class="box text-center">
-                    <strong>Kriteria Perundungan Cyber</strong>
-                    <div style="margin-top:5px;">
-                        @if(!empty($cyberImage))
-                            <img src="{{ $cyberImage }}" class="chart-img">
-                        @endif
-                    </div>
-                </td>
-            </tr>
-        </table>
+        <div class="col-50 box">
+            <div class="text-center"><strong>Kriteria Perundungan Cyber</strong></div>
+            <div class="chart">
+                @if(!empty($cyberImage))
+                    <img src="{{ $cyberImage }}" style="height: 100%; width: auto">
+                @endif
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
     </div>
 
     {{-- KEJADIAN + TOTAL --}}

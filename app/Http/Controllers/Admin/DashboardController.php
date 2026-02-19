@@ -8,10 +8,17 @@ use App\Models\User;
 use App\Models\Pengaturan;
 use Auth;
 use Hash;
+use App\Models\Sekolah;
+use App\Models\Guru;
+use App\Models\Angket;
+
 
 class DashboardController extends Controller
 {     public function index(){
-        return view('admin.index');
+        $data['sekolah'] = Sekolah::count();
+        $data['guru'] = Guru::count();
+        $data['angket'] = Angket::count();
+        return view('admin.index',$data);
     }
 
     public function profil(){
@@ -32,10 +39,6 @@ class DashboardController extends Controller
                 $input['password'] = Hash::make($request->password);
             }
             $user = User::find($id);
-
-            if ($request->filled('password')) {
-                $input['password'] = Hash::make($request->password);
-            }
             $user->update($input);
         }
 

@@ -14,7 +14,7 @@
           <!-- <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"> -->
         </div>
         <div class="info">
-          <a href="#" class="d-block">{{ auth()->user()->name }}</a>
+          <a href="#" class="d-block">{{ App\Models\Guru::where('user_id',auth::user()->id)->first()->nama_lengkap }}</a>
         </div>
       </div>
 

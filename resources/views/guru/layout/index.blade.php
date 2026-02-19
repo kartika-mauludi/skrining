@@ -58,10 +58,10 @@
       <!-- Notifications Dropdown Menu -->
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
-          {{ auth::user()->name }}
+          {{ App\Models\Guru::where('user_id',auth::user()->id)->first()->nama_lengkap }}
         </a>
         <div class="dropdown-menu dropdown-menu-sm dropdown-menu-right">
-          <a href="#" class="dropdown-item dropdown-header">Profil</a>
+          <a href="{{ route('guru.profil') }}" class="dropdown-item dropdown-header">Profil</a>
           <div class="dropdown-divider"></div>
            <a href="{{ route('logout') }}" class="dropdown-item dropdown-footer"
             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

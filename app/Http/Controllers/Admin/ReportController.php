@@ -66,7 +66,6 @@ class ReportController extends Controller
         $data['request'] = $request->only('sekolah', 'kelas');
     }
 
-        // return $data;
         return view('admin.report.index',$data);
     }
 

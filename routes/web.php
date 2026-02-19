@@ -22,6 +22,7 @@ use App\Http\Controllers\Guru\ReportController;
 use App\Http\Controllers\Siswa\FormAngketController;
 use App\Http\Controllers\Guru\SekolahController;
 use App\Http\Controllers\Guru\SiswaController;
+use App\Http\Controllers\Guru\GuruController as ProfilGuruController;
 
 
 
@@ -133,6 +134,10 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::post('report-korban/{siswa}', [ReportController::class, 'printKorban'])->name('guru.report.korban.print');
     Route::get('report-pelaku/{siswa}', [ReportController::class, 'pelaku'])->name('guru.report.pelaku');
     Route::post('report-pelaku/{siswa}', [ReportController::class, 'printPelaku'])->name('guru.report.pelaku.print');
+
+    Route::get('profil',[ProfilGuruController::class, 'index'])->name('guru.profil');
+    Route::POST('profil',[ProfilGuruController::class, 'update'])->name('guru.profil.update');
+    
 });
 
 // Siswa

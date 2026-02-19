@@ -13,6 +13,7 @@ use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReportController extends Controller
 {
@@ -133,12 +134,17 @@ class ReportController extends Controller
 
         // tambahkan image dari request
         $data['historyImage']  = $request->history_image;
-        $data['kategoriImage'] = $request->kategori_image;
-        $data['cyberImage']    = $request->cyber_image;
-        $data['gaugeImage']    = $request->gauge_image;
+        // $data['kategoriImage'] = $request->kategori_image;
+        // $data['cyberImage']    = $request->cyber_image;
+        // $data['gaugeImage']    = $request->gauge_image;
 
         $pdf = Pdf::loadView('guru.report.pelaku-pdf', $data)
-        ->setPaper('A4', 'portrait');
+        ->setPaper('A4', 'portrait')
+        ->setOptions([
+        'isHtml5ParserEnabled' => true,
+        'isRemoteEnabled' => true,
+        'dpi' => 96
+        ]);
 
         return $pdf->stream('report-pelaku.pdf');
     }

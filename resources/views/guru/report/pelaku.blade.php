@@ -61,9 +61,16 @@
                     <div class="card">
                       <div class="card-header">
                         <a href="{{ route('guru.report') }}" class="btn btn-sm btn-secondary">Kembali</a>
-                        <button type="button" id="btnExport" class="btn btn-sm btn-primary">Cetak</button>
+                        <button type="button" data-url="{{ route('guru.report.pelaku.pdf', $siswa->id) }}" class="btn btn-sm btn-success btnExport">
+                            <span class="mr-1">Download </span>
+                            <i class="fa fa-download"></i>
+                        </button>
+                        <button type="button" data-url="{{ route('guru.report.pelaku.print', $siswa->id) }}" class="btn btn-sm btn-primary btnExport">
+                            <span class="mr-1">Cetak </span>
+                            <i class="fa fa-print"></i>
+                        </button>
 
-                        <form action="{{ route('guru.report.pelaku.print', $siswa->id) }}" 
+                        <form action="" 
                             method="POST" 
                             id="formPrint"
                             target="_blank">
@@ -471,8 +478,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    $('#btnExport').on('click', function () {
+    $('.btnExport').on('click', function () {
         const charts = Object.values(Chart.instances);
+        const url    = $(this).data('url');
 
         charts.forEach(function(chart) {
             chart.options.devicePixelRatio = 2;
@@ -491,7 +499,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 chart.update();
             });
 
-            $('#formPrint').submit();
+            $('#formPrint').prop('action', url).trigger('submit');
 
         }, 300);
     });

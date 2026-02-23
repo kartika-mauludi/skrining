@@ -131,9 +131,11 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::get('report-sosiogram', [ReportController::class, 'sosiogram'])->name('guru.report.sosiogram');
     Route::get('report-matriks', [ReportController::class, 'matriks'])->name('guru.report.matriks');
     Route::get('report-korban/{siswa}', [ReportController::class, 'korban'])->name('guru.report.korban');
-    Route::post('report-korban/{siswa}', [ReportController::class, 'printKorban'])->name('guru.report.korban.print');
+    Route::post('report-korban-cetak/{siswa}', [ReportController::class, 'printKorban'])->name('guru.report.korban.print');
+    Route::post('report-korban/{siswa}', [ReportController::class, 'printPdfKorban'])->name('guru.report.korban.pdf');
     Route::get('report-pelaku/{siswa}', [ReportController::class, 'pelaku'])->name('guru.report.pelaku');
-    Route::post('report-pelaku/{siswa}', [ReportController::class, 'printPelaku'])->name('guru.report.pelaku.print');
+    Route::post('report-pelaku-cetak/{siswa}', [ReportController::class, 'printPelaku'])->name('guru.report.pelaku.print');
+    Route::post('report-pelaku/{siswa}', [ReportController::class, 'printPdfPelaku'])->name('guru.report.pelaku.pdf');
 
     Route::get('profil',[ProfilGuruController::class, 'index'])->name('guru.profil');
     Route::POST('profil',[ProfilGuruController::class, 'update'])->name('guru.profil.update');

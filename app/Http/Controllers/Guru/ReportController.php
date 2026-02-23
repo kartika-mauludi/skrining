@@ -132,24 +132,42 @@ class ReportController extends Controller
     {
         $data = $this->getPelakuData($siswa);
 
-        // tambahkan image dari request
         $data['historyImage']  = $request->history_image;
-        // $data['kategoriImage'] = $request->kategori_image;
-        // $data['cyberImage']    = $request->cyber_image;
-        // $data['gaugeImage']    = $request->gauge_image;
+        $data['kategoriImage'] = $request->kategori_image;
+        $data['cyberImage']    = $request->cyber_image;
+        $data['gaugeImage']    = $request->gauge_image;
+
+        return view('guru.report.pelaku-print', $data);
+    }
+
+    public function printPdfPelaku(Request $request, Siswa $siswa)
+    {
+        $data = $this->getPelakuData($siswa);
+
+        $data['historyImage']  = $request->history_image;
+        $data['kategoriImage'] = $request->kategori_image;
+        $data['cyberImage']    = $request->cyber_image;
+        $data['gaugeImage']    = $request->gauge_image;
 
         $pdf = Pdf::loadView('guru.report.pelaku-pdf', $data)
-        ->setPaper('A4', 'portrait')
-        ->setOptions([
-        'isHtml5ParserEnabled' => true,
-        'isRemoteEnabled' => true,
-        'dpi' => 96
-        ]);
+        ->setPaper('a4', 'portrait');
 
         return $pdf->stream('report-pelaku.pdf');
     }
 
     public function printKorban(Request $request, Siswa $siswa)
+    {
+        $data = $this->getKorbanData($siswa);
+
+        $data['historyImage'] = $request->history_image;
+        $data['kategoriImage'] = $request->kategori_image;
+        $data['cyberImage'] = $request->cyber_image;
+        $data['gaugeImage'] = $request->gauge_image;
+
+        return view('guru.report.korban-print', $data);
+    }
+
+    public function printPdfKorban(Request $request, Siswa $siswa)
     {
         $data = $this->getKorbanData($siswa);
 

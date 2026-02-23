@@ -136,6 +136,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     Route::get('report-pelaku/{siswa}', [ReportController::class, 'pelaku'])->name('guru.report.pelaku');
     Route::post('report-pelaku-cetak/{siswa}', [ReportController::class, 'printPelaku'])->name('guru.report.pelaku.print');
     Route::post('report-pelaku/{siswa}', [ReportController::class, 'printPdfPelaku'])->name('guru.report.pelaku.pdf');
+    Route::post('report-download-all', [ReportController::class, 'downloadAll'])->name('guru.report.download.all');
 
     Route::get('profil',[ProfilGuruController::class, 'index'])->name('guru.profil');
     Route::POST('profil',[ProfilGuruController::class, 'update'])->name('guru.profil.update');

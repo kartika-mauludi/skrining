@@ -34,7 +34,10 @@
                         @endif
 
                         <div class="card-header">
-                            <h3 class="card-title"></h3>
+                            <button type="button" class="btn btn-sm btn-success btnZip">
+                                <span class="mr-1">Download All</span>
+                                <i class="fa fa-download"></i>
+                            </button>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
@@ -64,6 +67,56 @@
             </div>
         </div>
     </section>
+</div>
+
+<div class="modal fade" id="downloadAllModal" tabindex="-1" role="dialog" aria-labelledby="adddata" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="titleModal"> Download Laporan Sebagai Korban </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div>
+            <form action="{{ route('guru.report.download.all') }}" method="POST">
+                @csrf
+                <input type="hidden" name="history_image" id="historyimage">
+                <input type="hidden" name="kategori_image" id="kategoriimage">
+                <input type="hidden" name="cyber_image" id="cyberimage">
+                <input type="hidden" name="gauge_image" id="gaugeimage">
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="sekolah" class="form-label">Sekolah</label>
+                        <select name="sekolah" id="sekolah" class="form-control form-control-sm" style="width: 100%" required>
+                            <option value=""></option>
+                            @foreach ($sekolah as $sekolah)
+                                <option value="{{ $sekolah->id }}" @selected(isset($request) && $request['sekolah'] == $sekolah->id)>{{ $sekolah->nama_sekolah }}</option> 
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kelas">Kelas</label>
+                        <select name="kelas" id="kelas" class="form-control form-control-sm" style="width: 100%" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Tipe Laporan</label>
+                        <select name="type" id="type" class="form-control form-control-sm" required>
+                            <option value=""></option>
+                            <option value="pelaku">Laporan Pelaku</option>
+                            <option value="korban">Laporan Korban</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"> Close </button>
+                    <button type="submit" class="btn btn-primary" > Download </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 @endsection
 
@@ -124,6 +177,59 @@ $(document).ready(function(){
             }
         }]
     });
+
+    $('#sekolah').select2({
+        placeholder: '-- Pilih Data --',
+        dropdownParent: $('#downloadAllModal')
+    });
+
+    $('#kelas').select2({
+        placeholder: '-- Pilih Data --',
+        dropdownParent: $('#downloadAllModal')
+    });
+
+    $('.btnZip').on('click', function () {
+
+        $('#downloadAllModal').modal();
+    });
+
+    $('#sekolah').on('change', function () {
+        const sekolahId = $(this).val();
+        $('#kelas').html('<option value=""></option>').trigger('change');
+
+        if (sekolahId) {
+            loadKelas(sekolahId);
+        }
+    });
+
+    function loadKelas(sekolahId) {
+
+        $.get(`{{ url('/guru/sekolah/${sekolahId}') }}`)
+            .done(function (res) {
+
+                const kelasList = res.data.kelas;
+                let options = '<option value=""></option>';
+
+                kelasList.forEach(function (k) {
+                    options += `
+                        <option value="${k.id}">
+                            ${k.nama_kelas}
+                        </option>
+                    `;
+                });
+
+                $('#kelas').html(options)
+                .trigger('change');
+
+            })
+            .fail(function () {
+                Swal.fire(
+                    'Kesalahan sistem',
+                    'Silahkan hubungi administrator',
+                    'error'
+                );
+            });
+    }
 })
 </script>
 @endpush

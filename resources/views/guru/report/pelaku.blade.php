@@ -166,7 +166,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="position-relative mb-4">
-                                            <canvas id="kriteria-chart" height="100"></canvas>
+                                                <canvas id="kriteria-chart" height="100"></canvas>
                                             </div>
                                         </div>
                                     </div>
@@ -180,7 +180,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="position-relative mb-4">
-                                            <canvas id="cyber-chart" height="100"></canvas>
+                                                <canvas id="cyber-chart" height="100"></canvas>
                                             </div>
                                         </div>
                                     </div>

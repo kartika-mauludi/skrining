@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Report Korban</title>
+    <title>Report {{ $type }}</title>
 
     <style>
         @page {
@@ -87,9 +87,26 @@
         }
     </style>
 </head>
-<body onload="window.print()">
+<body>
 
-    @include('guru.report.partials.report-content-korban')
+    @foreach ($datas as $data)
+        @if ($type == 'pelaku')
+            @include('guru.report.partials.report-content-pelaku', $data)
+        @elseif ($type == 'korban')
+            @include('guru.report.partials.report-content-korban', $data)
+        @endif
+
+        <div style="page-break-after: always;"></div>
+    @endforeach
 
 </body>
+<script>
+
+window.onload = function() {
+    setTimeout(function(){
+        window.print();
+    }, 1500);
+}
+</script>
+
 </html>

@@ -52,18 +52,14 @@
     <div class="col-50 box">
         <div class="text-center"><strong>History</strong></div>
         <div class="chart">
-            @if(!empty($historyImage))
-                <img src="{{ $historyImage }}" style="height: 100%; width: auto">
-            @endif
+            <canvas id="history-chart-{{ $siswa->id }}" height="50"></canvas>
         </div>
     </div>
 
     <div class="col-50 box">
         <div class="text-center"><strong>Gauge</strong></div>
         <div class="chart">
-            @if(!empty($gaugeImage))
-                <img src="{{ $gaugeImage }}" style="height: 100%; width: auto">
-            @endif
+            <canvas id="gauge-chart-{{ $siswa->id }}" height="50"></canvas>
         </div>
     </div>
 </div>
@@ -75,18 +71,14 @@
     <div class="col-50 box">
         <div class="text-center"><strong>Kriteria Perundungan</strong></div>
         <div class="chart">
-            @if(!empty($kategoriImage))
-                <img src="{{ $kategoriImage }}" style="height: 100%; width: auto">
-            @endif
+            <canvas id="kriteria-chart-{{ $siswa->id }}" height="50"></canvas>
         </div>
     </div>
 
     <div class="col-50 box">
         <div class="text-center"><strong>Kriteria Perundungan Cyber</strong></div>
         <div class="chart">
-            @if(!empty($cyberImage))
-                <img src="{{ $cyberImage }}" style="height: 100%; width: auto">
-            @endif
+            <canvas id="cyber-chart-{{ $siswa->id }}" height="50"></canvas>
         </div>
     </div>
 

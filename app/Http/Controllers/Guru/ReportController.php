@@ -132,14 +132,9 @@ class ReportController extends Controller
         return view('guru.report.korban', $data);
     }
 
-    public function printPelaku(Request $request, Siswa $siswa)
+    public function printPelaku(Siswa $siswa)
     {
         $data = $this->getPelakuData($siswa);
-
-        // $data['historyImage']  = $request->history_image;
-        // $data['kategoriImage'] = $request->kategori_image;
-        // $data['cyberImage']    = $request->cyber_image;
-        // $data['gaugeImage']    = $request->gauge_image;
 
         return view('guru.report.pelaku-print', $data);
     }
@@ -163,10 +158,10 @@ class ReportController extends Controller
     {
         $data = $this->getKorbanData($siswa);
 
-        $data['historyImage'] = $request->history_image;
-        $data['kategoriImage'] = $request->kategori_image;
-        $data['cyberImage'] = $request->cyber_image;
-        $data['gaugeImage'] = $request->gauge_image;
+        // $data['historyImage'] = $request->history_image;
+        // $data['kategoriImage'] = $request->kategori_image;
+        // $data['cyberImage'] = $request->cyber_image;
+        // $data['gaugeImage'] = $request->gauge_image;
 
         return view('guru.report.korban-print', $data);
     }

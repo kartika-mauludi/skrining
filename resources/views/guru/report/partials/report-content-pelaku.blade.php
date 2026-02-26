@@ -59,7 +59,7 @@
     <div class="col-50 box">
         <div class="text-center"><strong>Gauge</strong></div>
         <div class="chart">
-            <canvas id="gauge-chart-{{ $siswa->id }}" height="150"></canvas>
+            <canvas id="gauge-chart-{{ $siswa->id }}" height="50"></canvas>
         </div>
     </div>
 </div>
@@ -71,14 +71,14 @@
     <div class="col-50 box">
         <div class="text-center"><strong>Kriteria Perundungan</strong></div>
         <div class="chart">
-            <canvas id="kriteria-chart-{{ $siswa->id }}" height="150"></canvas>
+            <canvas id="kriteria-chart-{{ $siswa->id }}" height="50"></canvas>
         </div>
     </div>
 
     <div class="col-50 box">
         <div class="text-center"><strong>Kriteria Perundungan Cyber</strong></div>
         <div class="chart">
-            <canvas id="cyber-chart-{{ $siswa->id }}" height="150"></canvas>
+            <canvas id="cyber-chart-{{ $siswa->id }}" height="50"></canvas>
         </div>
     </div>
 </div>

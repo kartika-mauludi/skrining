@@ -78,7 +78,7 @@
                     <span aria-hidden="true"></span>
                 </button>
             </div>
-            <form action="{{ route('guru.report.download.all') }}" method="POST">
+            <form action="{{ route('guru.report.download.all') }}" method="POST" target="_blank">
                 @csrf
                 <input type="hidden" name="history_image" id="historyimage">
                 <input type="hidden" name="kategori_image" id="kategoriimage">

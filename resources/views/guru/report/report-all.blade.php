@@ -68,22 +68,19 @@
             float: left;
         }
 
-        .col-33 {
-            width: 33.333%;
-            float: left;
-        }
-
         .clearfix {
             clear: both;
         }
 
-        img {
-            max-width: 100%;
+        .chart {
+            width: 100%;
+            height: 200px;
+            position: relative;
         }
 
-        .chart {
-            height: 150px;
-            text-align: center;
+        .chart canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
@@ -98,15 +95,13 @@
 
         <div style="page-break-after: always;"></div>
     @endforeach
-
 </body>
-<script>
-
-window.onload = function() {
-    setTimeout(function(){
-        window.print();
-    }, 1500);
-}
-</script>
-
 </html>
+
+<script>
+    window.onload = function() {
+        setTimeout(function(){
+            window.print();
+        }, 1500);
+    }
+</script>

@@ -68,22 +68,19 @@
             float: left;
         }
 
-        .col-33 {
-            width: 33.333%;
-            float: left;
-        }
-
         .clearfix {
             clear: both;
         }
 
-        img {
-            max-width: 100%;
+        .chart {
+            width: 100%;
+            height: 200px;
+            position: relative;
         }
 
-        .chart {
-            height: 150px;
-            text-align: center;
+        .chart canvas {
+            width: 100% !important;
+            height: 100% !important;
         }
     </style>
 </head>
@@ -130,8 +127,7 @@
             }))
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: true,
             legend: {
                 display: false
             },
@@ -203,7 +199,7 @@
             }))
         },
         options: {
-            responsive: true,
+            maintainAspectRatio: true,
             legend: {
                 display: false
             },
@@ -227,7 +223,7 @@
             }))
         },
         options: {
-            responsive: true,
+            maintainAspectRatio: true,
             legend: {
                 display: false
             },
@@ -253,7 +249,7 @@
             }]
         },
         options: {
-            responsive: true,
+            maintainAspectRatio: true,
             layout: {
                 padding: {
                     bottom: 35
@@ -306,53 +302,9 @@
         }
     });
 
-    function generateHighResChart(type, data, options, width = 1400, height = 700) {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = width;
-        tempCanvas.height = height;
-
-        const ctx = tempCanvas.getContext('2d');
-
-        const tempChart = new Chart(ctx, {
-            type: type,
-            data: data,
-            options: Object.assign({}, options, {
-                responsive: false,
-                animation: false,
-                devicePixelRatio: 2
-            })
-        });
-
-        const image = tempChart.toBase64Image('image/png', 1.0);
-        tempChart.destroy();
-
-        return image;
-    }
-
-    $('.btnExport').on('click', function () {
-        const charts = Object.values(Chart.instances);
-        const url    = $(this).data('url');
-
-        charts.forEach(function(chart) {
-            chart.options.devicePixelRatio = 2;
-            chart.update();
-        });
-
-        setTimeout(function() {
-
-            $('#history_image').val(Chart.instances[0].toBase64Image());
-            $('#kategori_image').val(Chart.instances[1].toBase64Image());
-            $('#cyber_image').val(Chart.instances[2].toBase64Image());
-            $('#gauge_image').val(Chart.instances[3].toBase64Image());
-
-            charts.forEach(function(chart) {
-                chart.options.devicePixelRatio = 1;
-                chart.update();
-            });
-
-            $('#formPrint').prop('action', url).trigger('submit');
-
-        }, 300);
+    window.addEventListener('load', function () {
+        setTimeout(() => {
+            window.print();
+        }, 900);
     });
-
 </script>

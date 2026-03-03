@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Guru\AngketController as AngketGuruController;
 use App\Http\Controllers\Guru\AngketSoalController as GuruAngketSoalController;
+use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Guru\FeedbackController;
 use App\Http\Controllers\Guru\KelasController;
 use App\Http\Controllers\Guru\ReportController;
@@ -92,7 +93,7 @@ Route::middleware('role:super_admin')->group(function (){
 
 // start route guru
 Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
-    Route::get('dashboard', [HomeController::class, 'guru'])->name('guru.dashboard');
+    Route::get('dashboard', [GuruDashboardController::class, 'index'])->name('guru.dashboard');
     Route::post('sekolah/data', [SekolahController::class, 'index'])->name('guru.sekolah.data');
     Route::resource('sekolah', SekolahController::class)
     ->names('guru.sekolah');

@@ -13,7 +13,7 @@
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('guru.dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('guru.dashboard') }}">Dashboard</a></li>
               <li class="breadcrumb-item active">Report Matriks</li>
             </ol>
           </div><!-- /.col -->

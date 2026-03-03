@@ -48,4 +48,4 @@
       }
   </style>
 </head>
-  <a href="https://wa.me/{{ App\Models\Pengaturan::first()->no_tlp }}" target="_blank" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-whatsapp"></i></a>
+  <a href="https://wa.me/{{ App\Models\Pengaturan::first()->no_tlp ?? '' }}" target="_blank" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-whatsapp"></i></a>

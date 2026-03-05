@@ -15,16 +15,16 @@ class HitungSkor
     {
         $startWeek = Carbon::now()->startOfWeek(); // Senin
         $endWeek   = Carbon::now()->endOfWeek();   // Minggu
-       $countsSoalJawaban = Jawaban::where('siswa_id', $siswaId)
-            ->whereHas('angket_soals', function ($q) use ($angketId, $guruId) {
-                $q->where('angket_id', $angketId)
-                ->where(function ($q2) use ($guruId) {
-                    $q2->whereNull('guru_id');
-                    if ($guruId) {
-                        $q2->orWhere('guru_id', $guruId);
-                    }
-                });
-            })
+        $countsSoalJawaban = Jawaban::where('siswa_id', $siswaId)
+        ->whereHas('angket_soals', function ($q) use ($angketId, $guruId) {
+            $q->where('angket_id', $angketId)
+            ->where(function ($q2) use ($guruId) {
+                $q2->whereNull('guru_id');
+                if ($guruId) {
+                    $q2->orWhere('guru_id', $guruId);
+                }
+            });
+        })
         ->whereBetween('jawaban.created_at', [$startWeek, $endWeek])
         ->join('angket_soals', 'jawaban.soal_id', '=', 'angket_soals.id')
         ->select('angket_soals.indikasi_siswa', DB::raw('COUNT(jawaban.id) as total'))
@@ -36,7 +36,7 @@ class HitungSkor
         ->whereBetween('jawaban.created_at', [$startWeek, $endWeek])
         ->sum('jawaban');
 
-         $sumJawabanPelaku = Jawaban::where('siswa_id',$siswaId)
+        $sumJawabanPelaku = Jawaban::where('siswa_id',$siswaId)
         ->whereHas('angket_soals', fn ($q) => $q->where('indikasi_siswa','pelaku'))
         ->whereBetween('jawaban.created_at', [$startWeek, $endWeek])
         ->sum('jawaban');
@@ -49,7 +49,7 @@ class HitungSkor
 
         $totalSiswa = Siswa::where('kelas_id', $kelasId)->count();
 
-       $siswaSudahIsi = Jawaban::whereBetween('created_at', [$startWeek, $endWeek])
+        $siswaSudahIsi = Jawaban::whereBetween('created_at', [$startWeek, $endWeek])
         ->whereHas('siswa', fn ($q) => $q->where('kelas_id', $kelasId))
         ->distinct('siswa_id')
         ->count('siswa_id');
@@ -58,8 +58,8 @@ class HitungSkor
             $countPelaku = 0;
         } else {
             $countPelaku = Jawaban::where('id_siswa_pelaku', $siswaId)
-                ->whereBetween('created_at', [$startWeek, $endWeek])
-                ->count();
+            ->whereBetween('created_at', [$startWeek, $endWeek])
+            ->count();
         }
 
         $jumlahSoalPelaku = $countsSoalJawaban['pelaku'] ?? 0;
@@ -77,7 +77,7 @@ class HitungSkor
         return [
             'pelaku' => $skorPelaku,
             'korban' => $skorKorban
-         ];
+        ];
     }
 
     /** HITUNG + SIMPAN */

@@ -30,6 +30,54 @@ class ReportController extends Controller
         return view('guru.report.index', $data);
     }
 
+    public function kelas(Request $request)
+    {
+        $data['sekolah'] = Sekolah::where('guru_id', auth()->user()->guru->id)->get();
+
+        if ($request->filled('kelas')) {
+            $kelas = Kelas::findOrFail($request->kelas);
+
+            $siswa = Siswa::with('sebagaipelaku')
+            ->where('kelas_id', $kelas->id)
+            ->orderBy('no_absen')
+            ->get();
+
+            $reports = Jawaban::whereIn('siswa_id', $siswa->pluck('id'))->get();
+
+            $pairs = [];
+            foreach ($reports as $r) {
+                if ($r->id_siswa_pelaku) {
+                    $pairs[] = $r->siswa_id . '-' . $r->id_siswa_pelaku;
+                }
+            }
+
+            $mutualBySiswa = [];
+
+            foreach ($reports as $r) {
+                if (!$r->id_siswa_pelaku) continue;
+
+                $reverse = $r->id_siswa_pelaku . '-' . $r->siswa_id;
+
+                if (in_array($reverse, $pairs)) {
+                    $mutualBySiswa[$r->siswa_id][] = $r->id_siswa_pelaku;
+                }
+            }
+
+            $indikator = array_merge(
+                $this::$indikatorBully,
+                $this::$indikatorCiberBully
+            );
+
+            $data['indikator'] = $indikator;
+            $data['mutualBySiswa'] = $mutualBySiswa;
+            $data['request'] = $request->only('sekolah', 'kelas');
+            $data['kelas']   = $kelas;
+            $data['siswa']   = $siswa;
+        }
+
+        return view('guru.report-kelas.index', $data);
+    }
+
     public function sosiogram(Request $request)
     {
         $data['sekolah'] = Sekolah::where('guru_id', auth()->user()->guru->id)->get();

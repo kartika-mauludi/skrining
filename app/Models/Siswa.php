@@ -28,6 +28,11 @@ class Siswa extends Model
 
     public function jawaban()
     {
-        return $this->hasMany(Jawaban::class);
+        return $this->hasMany(Jawaban::class, 'siswa_id');
+    }
+
+    public function sebagaipelaku()
+    {
+        return $this->hasMany(Jawaban::class, 'id_siswa_pelaku');
     }
 }

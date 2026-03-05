@@ -85,6 +85,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('guru.report.kelas') }}" class="nav-link @if(Route::is('guru.report.kelas')) active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Kelas</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('guru.report.sosiogram') }}" class="nav-link @if(Route::is('guru.report.sosiogram')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Sosiogram</p>

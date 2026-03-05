@@ -53,7 +53,7 @@
         <div class="text-center">
             <h6 class="fw-bold mb-1">Dinas Pendidikan Provinsi Nusantara</h6>
             <h6 class="fw-bold mb-1"></h6>
-            <h5 class="fw-bold mb-1">{{ $kelas->sekolah->nama_sekolah }}</h5>
+            <h5 class="fw-bold mb-1">{{ $kelas->sekolah->nama_sekolah ?? '-' }}</h5>
             <div class="text-small">
               Alamat : {{ $kelas->sekolah->alamat_lengkap }}<br>
                No. Telephone : {{ $kelas->sekolah->no_tlp }} Website : {{ $kelas->sekolah->website }} Email : {{ $kelas->sekolah->email }}

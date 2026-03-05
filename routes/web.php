@@ -129,6 +129,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
     ->names('guru.siswa');
 
     Route::get('report', [ReportController::class, 'index'])->name('guru.report');
+    Route::get('report-kelas', [ReportController::class, 'kelas'])->name('guru.report.kelas');
     Route::get('report-sosiogram', [ReportController::class, 'sosiogram'])->name('guru.report.sosiogram');
     Route::get('report-matriks', [ReportController::class, 'matriks'])->name('guru.report.matriks');
     Route::get('report-korban/{siswa}', [ReportController::class, 'korban'])->name('guru.report.korban');

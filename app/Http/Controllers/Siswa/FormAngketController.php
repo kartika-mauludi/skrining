@@ -43,9 +43,10 @@ class FormAngketController extends Controller
         }
 
         if($request->filled('token')){
+            $token = strtoupper($request->token);
             $kelas = Kelas::with('sekolah')
             ->whereJsonContains('data_akses', [
-                'token' => $request->token
+                'token' => $token
             ])
             ->first();
             // return $kelas;
@@ -57,7 +58,7 @@ class FormAngketController extends Controller
             }
             // return $kelas;
             $dataAkses = collect($kelas->data_akses);
-            $akses = $dataAkses->firstWhere('token', $request->token);
+            $akses = $dataAkses->firstWhere('token', $token);
             $guruId = $akses['guru_id'];
 
             $data['siswas'] = Siswa::select([ 'id','kelas_id','no_absen','nis','nama_lengkap', 'jk'])

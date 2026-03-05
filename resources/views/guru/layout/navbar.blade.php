@@ -85,6 +85,12 @@
                 </a>
               </li>
               <li class="nav-item">
+                <a href="{{ route('guru.report.history') }}" class="nav-link @if(Route::is('guru.report.history')) active @endif">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>History</p>
+                </a>
+              </li>
+              <li class="nav-item">
                 <a href="{{ route('guru.report.kelas') }}" class="nav-link @if(Route::is('guru.report.kelas')) active @endif">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Kelas</p>

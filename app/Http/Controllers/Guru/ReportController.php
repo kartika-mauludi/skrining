@@ -12,9 +12,7 @@ use App\Models\Sekolah;
 use App\Models\Siswa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
-use ZipArchive;
 
 class ReportController extends Controller
 {
@@ -28,6 +26,23 @@ class ReportController extends Controller
         ->get();
 
         return view('guru.report.index', $data);
+    }
+
+    public function history(Request $request)
+    {
+        $data['sekolah'] = Sekolah::where('guru_id', auth()->user()->guru->id)
+        ->get();
+
+        if ($request->filled('kelas')) {
+            $kelas = Kelas::findOrFail($request->kelas);
+            $dataGrafik = $this->getRataRataKelasPerIndikator($kelas->id);
+
+            $data['request'] = $request->only('sekolah', 'kelas');
+            $data['kelas']   = $kelas;
+            $data['dataGrafik'] = $dataGrafik;
+        }
+
+        return view('guru.report-history.index', $data);
     }
 
     public function kelas(Request $request)
@@ -389,4 +404,71 @@ class ReportController extends Controller
         ];
     }
 
+    private function getRataRataKelasPerIndikator(int $kelasId)
+    {
+        $siswas = Siswa::where('kelas_id', $kelasId)->get();
+
+        $indikator = array_merge(
+            $this::$indikatorBully,
+            $this::$indikatorCiberBully
+        );
+
+        $labels = [];
+        $dataPelaku = [];
+        $dataKorban = [];
+
+        foreach ($indikator as $ind) {
+
+            $totalPelaku = 0;
+            $totalKorban = 0;
+            $jumlahSiswa = 0;
+
+            foreach ($siswas as $siswa) {
+
+                // === Pelaku ===
+                $skorPelaku = HitungSkor::hitungPelakuPerIndikator(
+                    $siswa->id,
+                    [$ind]
+                );
+
+                $nilaiPelaku = collect($skorPelaku['datasets'])
+                    ->pluck('data')
+                    ->flatten()
+                    ->avg();
+
+                // === Korban ===
+                $skorKorban = HitungSkor::hitungKorbanPerIndikator(
+                    $siswa->id,
+                    [$ind]
+                );
+
+                $nilaiKorban = collect($skorKorban['datasets'])
+                    ->pluck('data')
+                    ->flatten()
+                    ->avg();
+
+                if ($nilaiPelaku !== null || $nilaiKorban !== null) {
+                    $totalPelaku += $nilaiPelaku ?? 0;
+                    $totalKorban += $nilaiKorban ?? 0;
+                    $jumlahSiswa++;
+                }
+            }
+
+            $labels[] = $ind;
+
+            $dataPelaku[] = $jumlahSiswa > 0
+                ? round($totalPelaku / $jumlahSiswa, 2)
+                : 0;
+
+            $dataKorban[] = $jumlahSiswa > 0
+                ? round($totalKorban / $jumlahSiswa, 2)
+                : 0;
+        }
+
+        return [
+            'labels' => $labels,
+            'pelaku' => $dataPelaku,
+            'korban' => $dataKorban,
+        ];
+    }
 }

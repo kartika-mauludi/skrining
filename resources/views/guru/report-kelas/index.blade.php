@@ -60,76 +60,78 @@
                     <div class="card">
                         <div class="card-body">
                             @isset($kelas)
-                                <table class="table table-sm table-bordered">
-                                    <thead class="bg-dark text-center">
-                                        <tr>
-                                            <th style="vertical-align: middle">Nomor</th>
-                                            <th style="vertical-align: middle">Nomor Induk</th>
-                                            <th style="vertical-align: middle">Nama</th>
-                                            <th style="vertical-align: middle">∑ Laporan</th>
-                                            <th style="vertical-align: middle">Nama Pelapor</th>
-                                            <th style="vertical-align: middle">Alasan</th>
-                                            <th style="vertical-align: middle">Saling Melapor</th>
-                                            <th style="vertical-align: middle">Kecenderungan <br> Sebagai Pelaku</th>
-                                            <th style="vertical-align: middle">Kecenderungan <br> Sebagai Korban</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-light">
-                                        @foreach ($siswa as $datasiswa)
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="bg-dark text-center">
                                             <tr>
-                                                <td class=" text-center">{{ $datasiswa->no_absen }}</td>
-                                                <td class=" text-center">{{ $datasiswa->nis ?? '-' }}</td>
-                                                <td>{{ $datasiswa->nama_lengkap }}</td>
-                                                <td class=" text-center">{{ $datasiswa->sebagaipelaku->count() }}</td>
-                                                <td>
-                                                    @foreach ($datasiswa->sebagaipelaku as $sebagaipelaku)
-                                                    {{ $sebagaipelaku->siswa->nama_lengkap . ";" }}
-                                                    @endforeach
-                                                </td>
-                                                <td>
-                                                    @foreach ($datasiswa->sebagaipelaku as $sebagaipelaku)
-                                                    {{ $sebagaipelaku->alasan . ";" }}
-                                                    @endforeach
-                                                </td>
-                                                <td>
-                                                    @foreach ($mutualBySiswa[$datasiswa->id] ?? [] as $partnerId)
-                                                        {{ $datasiswa->nama_lengkap }} - {{ $siswa->firstWhere('id', $partnerId)->nama_lengkap ?? '' }};
-                                                    @endforeach
-                                                </td>
-                                                <td class="text-center">
-                                                    @php
-                                                        $skorAll = App\Helpers\HitungSkor::hitungPelakuPerIndikator(
-                                                            $datasiswa->id,
-                                                            $indikator
-                                                        );
-
-                                                        $allValues = collect($skorAll['datasets'])
-                                                        ->pluck('data')
-                                                        ->flatten()
-                                                        ->filter(fn ($v) => $v > 0);
-                                                    @endphp
-
-                                                    {{ $allValues->avg() ?? 0 }}
-                                                </td>
-                                                <td class="text-center">
-                                                    @php
-                                                        $skorAll = App\Helpers\HitungSkor::hitungKorbanPerIndikator(
-                                                            $datasiswa->id,
-                                                            $indikator
-                                                        );
-
-                                                        $allValues = collect($skorAll['datasets'])
-                                                        ->pluck('data')
-                                                        ->flatten()
-                                                        ->filter(fn ($v) => $v > 0);
-                                                    @endphp
-
-                                                    {{ $allValues->avg() ?? 0 }}
-                                                </td>
+                                                <th style="vertical-align: middle">Nomor</th>
+                                                <th style="vertical-align: middle">Nomor Induk</th>
+                                                <th style="vertical-align: middle">Nama</th>
+                                                <th style="vertical-align: middle">∑ Laporan</th>
+                                                <th style="vertical-align: middle">Nama Pelapor</th>
+                                                <th style="vertical-align: middle">Alasan</th>
+                                                <th style="vertical-align: middle">Saling Melapor</th>
+                                                <th style="vertical-align: middle">Kecenderungan <br> Sebagai Pelaku</th>
+                                                <th style="vertical-align: middle">Kecenderungan <br> Sebagai Korban</th>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody class="bg-light">
+                                            @foreach ($siswa as $datasiswa)
+                                                <tr>
+                                                    <td class=" text-center">{{ $datasiswa->no_absen }}</td>
+                                                    <td class=" text-center">{{ $datasiswa->nis ?? '-' }}</td>
+                                                    <td>{{ $datasiswa->nama_lengkap }}</td>
+                                                    <td class=" text-center">{{ $datasiswa->sebagaipelaku->count() }}</td>
+                                                    <td>
+                                                        @foreach ($datasiswa->sebagaipelaku as $sebagaipelaku)
+                                                        {{ $sebagaipelaku->siswa->nama_lengkap . ";" }}
+                                                        @endforeach
+                                                    </td>
+                                                    <td>
+                                                        @foreach ($datasiswa->sebagaipelaku as $sebagaipelaku)
+                                                        {{ $sebagaipelaku->alasan . ";" }}
+                                                        @endforeach
+                                                    </td>
+                                                    <td>
+                                                        @foreach ($mutualBySiswa[$datasiswa->id] ?? [] as $partnerId)
+                                                            {{ $datasiswa->nama_lengkap }} - {{ $siswa->firstWhere('id', $partnerId)->nama_lengkap ?? '' }};
+                                                        @endforeach
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @php
+                                                            $skorAll = App\Helpers\HitungSkor::hitungPelakuPerIndikator(
+                                                                $datasiswa->id,
+                                                                $indikator
+                                                            );
+
+                                                            $allValues = collect($skorAll['datasets'])
+                                                            ->pluck('data')
+                                                            ->flatten()
+                                                            ->filter(fn ($v) => $v > 0);
+                                                        @endphp
+
+                                                        {{ $allValues->avg() ?? 0 }}
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @php
+                                                            $skorAll = App\Helpers\HitungSkor::hitungKorbanPerIndikator(
+                                                                $datasiswa->id,
+                                                                $indikator
+                                                            );
+
+                                                            $allValues = collect($skorAll['datasets'])
+                                                            ->pluck('data')
+                                                            ->flatten()
+                                                            ->filter(fn ($v) => $v > 0);
+                                                        @endphp
+
+                                                        {{ $allValues->avg() ?? 0 }}
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             @else
                                 <div class="alert alert-light fade show text-center" role="alert">
                                     Silahkan pilih sekolah dan kelas terlebih dahulu.

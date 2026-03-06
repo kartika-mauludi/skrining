@@ -110,6 +110,7 @@ Route::group(['prefix' => 'guru', 'middleware' => 'role:guru'], function (){
 
     Route::post('angket-soal/data', [GuruAngketSoalController::class, 'index'])->name('guru.soal.data');
     Route::get('angket-soal/edit-soal', [GuruAngketSoalController::class, 'edit'])->name('guru.soal.edit');
+    Route::get('print-soal/{angketId}', [GuruAngketSoalController::class,'printSoal'])->name('guru.printSoal');
     Route::resource('angket-soal', GuruAngketSoalController::class)
     ->except('show', 'edit')
     ->parameter('angket-soal', 'angketSoal')

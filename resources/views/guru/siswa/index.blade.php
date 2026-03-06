@@ -44,6 +44,7 @@
                                 <table id="datatable" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                            <th>No</th>
                                             <th>No Absen</th>
                                             <th>Kelas</th>
                                             <th>NIS</th>
@@ -97,7 +98,12 @@ $(document).ready(function(){
                 'X-CSRF-TOKEN': token.attr('content')
             }
         },
-        columns: [{
+        columns: [
+            {
+            data : null, render:(data,type,row,meta)=>{
+                return `<div class='text-center'>${meta.row + 1}.</div>`;
+            }
+        },{
             data    : 'no_absen',
             render  : (data) => data ? `${data}` : `-`
         },{

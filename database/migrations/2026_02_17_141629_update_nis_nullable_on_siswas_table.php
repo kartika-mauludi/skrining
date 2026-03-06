@@ -12,14 +12,19 @@ return new class extends Migration
     public function up(): void
     {
           Schema::table('siswas', function(Blueprint $table) {
-            $table->dropUnique(['nis']);
-             $table->dropUnique(['no_absen']);
+            $table->dropUnique('no_absen');
 
             // 2️⃣ Ubah jadi nullable
             $table->unsignedBigInteger('nis')
                   ->nullable()
                   ->change();
+
+             $table->unsignedBigInteger('no_absen')
+                  ->nullable()
+                  ->change();
         });
+
+        
 
     }
 

@@ -92,9 +92,15 @@
 </html>
 
 <script>
-    window.onload = function() {
-        setTimeout(function(){
-            window.print();
-        }, 1500);
-    }
+window.onload = function () {
+
+    setTimeout(function () {
+        window.print();
+    }, 500);
+
+    window.onafterprint = function () {
+        window.close();
+    };
+
+};
 </script>

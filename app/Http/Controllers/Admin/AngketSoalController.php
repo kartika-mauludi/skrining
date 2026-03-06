@@ -39,24 +39,43 @@ class AngketSoalController extends Controller
         DB::beginTransaction();
 
         try {
-            $maxSequence = AngketSoal::max('sequence') ?? 0;
-            foreach ($request->soal as $item) {
-                $tipe = $item['tipe_soal'] ?? null;
-                if ($tipe === 'Skala') {
-                    $tipe = 'range';
-                }
-                AngketSoal::updateOrCreate(['id' => $item['id']],[
-                    'angket_id'        => $request->angket_id,
-                    'sequence'         => $item['sequence'],
-                    'soal'             => TextHelper::cleanSummernote($item['soal'] ?? null),
-                    'lokasi_kejadian'  => $item['tipe_soal'] === 'keterangan' ? null : ($item['ruang'] ?? null),
-                    'tipe_soal'        => $tipe,
-                    'indikasi_siswa'   => $item['tipe_soal']  === 'keterangan' ? null : ($item['indikator'] ?? null),
-                    'detail_tipe_soal' => $item['opsi'] ?? null,
-                    'indikasi_bully'   => $item['tipe_soal'] === 'keterangan' ? "-" : ($item['indikasi_bully'] ?? '-'),
-                    'bobot'            => 3
-                ]);
+         $maxSequence = AngketSoal::where('angket_id', $request->angket_id)
+                ->max('sequence') ?? 0;
+
+        foreach ($request->soal as $item) {
+
+            $tipe = $item['tipe_soal'] ?? null;
+            if ($tipe === 'Skala') {
+                $tipe = 'range';
             }
+
+            $data = [
+                'angket_id'        => $request->angket_id,
+                'soal'             => TextHelper::cleanSummernote($item['soal'] ?? ''),
+                'lokasi_kejadian'  => $item['ruang'] ?? null,
+                'tipe_soal'        => $tipe,
+                'indikasi_siswa'   => $item['indikator'] ?? null,
+                'detail_tipe_soal' => $item['opsi'] ?? null,
+                'indikasi_bully'   => $item['indikasi_bully'] ?? '-',
+                'bobot'            => 3
+            ];
+
+            // ✅ Kalau ID ada → UPDATE
+            if (!empty($item['id'])) {
+
+                $data['sequence'] = $item['sequence']; // pakai dari form
+                AngketSoal::where('id', $item['id'])->update($data);
+
+            } 
+            // ✅ Kalau ID kosong → INSERT di urutan terakhir
+            else {
+
+                $maxSequence++;
+                $data['sequence'] = $maxSequence;
+
+                AngketSoal::create($data);
+            }
+        }
 
             DB::commit();
 
@@ -67,10 +86,9 @@ class AngketSoalController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-
             return response()->json([
                 'status'  => 422,
-                'message' => 'Data gagal ditambahkan',
+                'message' => 'Data gagal',
                 'error'   => $e->getMessage()
             ], 422);
         }
@@ -142,7 +160,7 @@ class AngketSoalController extends Controller
 
     public function data(){
         $data = AngketSoal::with('guru:id,nip,nama_lengkap')
-        ->orderBy('sequence','desc')->get();
+        ->orderBy('sequence','asc')->get();
 
         return response()->json([
             'data' => $data

@@ -37,11 +37,11 @@
                     </div>
                     <div class="form-group">
                         <label for="tgl_lahir" class="form-label">Tanggal Lahir</label>
-                        <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control form-control-sm" required>
+                        <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control form-control-sm" >
                     </div>
                     <div class="form-group">
                         <label for="tempat_lahir" class="form-label">Tempat Lahir</label>
-                        <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control form-control-sm" required>
+                        <input type="text" name="tempat_lahir" id="tempat_lahir" class="form-control form-control-sm" >
                     </div>
                     <div class="form-group">
                         <label for="alamat" class="form-label">Alamat</label>

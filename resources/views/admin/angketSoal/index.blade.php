@@ -168,8 +168,23 @@ $(document).on('submit','#addDataForm', function(e){
 
   e.preventDefault();
   showLoading();
-  var form = this;
-  var formData = new FormData($(this)[0]);
+    var form = this;
+
+  // 🔥 1. Update name index kalau perlu
+  updateSoalOrder();
+
+  // 🔥 2. Sync Summernote KE TEXTAREA DULU
+  $('.summernote').each(function () {
+      $(this).val($(this).summernote('code'));
+  });
+
+  // 🔥 3. BARU buat FormData
+  var formData = new FormData(form);
+
+  // 🔎 DEBUG (WAJIB CEK SEKALI)
+  for (let pair of formData.entries()) {
+      console.log(pair[0] + " => " + pair[1]);
+  }
   let error = "Terjadi Kesalahan Ketika Menambah Data";
   
   $.ajax({
@@ -192,20 +207,43 @@ $(document).on('submit','#addDataForm', function(e){
        }
     },
     error : function(response){
-      closeLoading();
-      if(response.status === 400 ||  response.status === 422){
-        let errors = response.responseJSON.errors;
-        errorMessage = Object.values(errors).flat().join('<br>');
+      // closeLoading();
+      // if(response.status === 400 ||  response.status === 422){
+      //   let errors = response.responseJSON.errors;
+      //   errorMessage = Object.values(errors).flat().join('<br>');
        
-      }
-      else if (response.responseJSON && response.responseJSON.message) {
-                errorMessage = response.responseJSON.message;
+      // }
+
+      // closeLoading();
+
+if (response.status === 400 || response.status === 422) {
+
+    let errorMessage = 'Terjadi kesalahan';
+
+    if (response.responseJSON) {
+
+        if (response.responseJSON.errors) {
+            errorMessage = Object.values(response.responseJSON.errors)
+                .flat()
+                .join('<br>');
+        } else if (response.responseJSON.message) {
+            errorMessage = response.responseJSON.message;
+        }
+
     }
-    Swal.fire({
-        title : 'Gagal tambah data',
+
+    console.log(errorMessage);
+       Swal.fire({
+        title : 'Data Gagal',
         html  : errorMessage,
         icon  : 'error' 
     });
+
+}
+      else if (response.responseJSON && response.responseJSON.message) {
+                errorMessage = response.responseJSON.message;
+    }
+
 
     }
   });
@@ -345,7 +383,7 @@ function renderSoal(data = null) {
                 <i class="fas fa-trash"></i>
             </span>
 
-            <input type="hidden" name="soal[${idx}][id]" value="${data?.id ?? ''}">
+            <input type="hidden" name="soal[${idx}][id]" class="inputId" value="${data?.id ?? ''}">
             <input type="hidden" name="soal[${idx}][sequence]" class="sequence-input" value="${idx + 1}">
 
             <div class="w-100">
@@ -450,7 +488,7 @@ function renderSoalHTML(data, idx) {
                 <i class="fas fa-trash"></i>
             </span>
 
-            <input type="hidden" name="soal[${idx}][id]" value="${data?.id ?? ''}">
+            <input type="text" name="soal[${idx}][id]" class="inputId" value="${data?.id ?? ''}">
             <input type="hidden" name="soal[${idx}][sequence]" class="sequence-input" value="${idx + 1}">
 
             <div class="w-100">
@@ -614,15 +652,13 @@ $(document).on('click', '.edit-btn', function () {
                 .attr('name', `soal[${index}][sequence]`);
 
              // ✅ id juga HARUS ikut rename
-             $(this).find('input[name*="[id]"]')
-                .attr('name', `soal[${index}][id]`);
+             $(this).find('.inputId')
+              .attr('name', `soal[${index}][id]`);
             // update sequence (1,2,3,...)
 
             // soal
-            $(this).find('textarea').attr(
-                'name',
-                `soal[${index}][soal]`
-            );
+            $(this).find('textarea.summernote')
+              .attr('name', `soal[${index}][soal]`);
 
             $(this).find('.lokasi_kejadian').attr(
                 'name',

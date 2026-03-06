@@ -37,6 +37,8 @@
                         <div class="card-header d-flex justify-content-between">
                             <div>
                                 <a href="{{ route('guru.angket.index') }}" class="btn btn-sm btn-secondary p-1">Kembali</a>
+  
+                                <a href="{{ route('guru.printSoal',$angket->id) }}" target="_blank" class="btn btn-sm btn-primary p-1">Cetak <i class="fa fa-print"></i></a>
                             </div>
                             <div class="ml-auto">
                                 <button class="btn btn-sm btn-success p-1 addNew" id="add">Tambah</button>

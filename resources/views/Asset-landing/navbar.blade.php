@@ -26,7 +26,7 @@
         @if(auth()->user()->role == 'super_admin')
           <a class="btn-getstarted flex-md-shrink-0" href="{{ route('admin.index') }}">Dashboard</a>
         @elseif(auth()->user()->role == 'guru')
-        <a class="btn-getstarted flex-md-shrink-0" href="{{ route('guru.index') }}">Dashboard</a>
+        <a class="btn-getstarted flex-md-shrink-0" href="{{ route('guru.dashboard') }}">Dashboard</a>
         @endif
       @endauth
 

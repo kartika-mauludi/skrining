@@ -13,27 +13,34 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SiswaController extends Controller
 {
-    public function index()
-    {
-        $sekolah = Sekolah::where('guru_id', auth()->user()->guru->id)
-        ->pluck('id')
-        ->toArray();
+    public function index(Request $request)
+{
+    $sekolah = Sekolah::where('guru_id', auth()->user()->guru->id)->get();
 
-        $kelas = Kelas::whereIn('sekolah_id', $sekolah)
-        ->get();
+    $kelas = Kelas::whereIn('sekolah_id', $sekolah->pluck('id'))->get();
 
-        if (request()->ajax()) {
-            $data = Siswa::whereIn('kelas_id', $kelas->pluck('id'))
-            ->with('kelas')
-            ->orderBy('no_absen')->get();
+    if ($request->ajax()) {
 
-            return response()->json([
-                'data' => $data
-            ]);
+        $query = Siswa::with('kelas')->orderBy('no_absen');
+
+        if ($request->sekolah) {
+            $kelasSekolah = Kelas::where('sekolah_id', $request->sekolah)->pluck('id');
+            $query->whereIn('kelas_id', $kelasSekolah);
         }
 
-        return view('guru.siswa.index', ['kelas' => $kelas]);
+        if ($request->kelas) {
+            $query->where('kelas_id', $request->kelas);
+        }
+
+        $data = $query->get();
+
+        return response()->json([
+            'data' => $data
+        ]);
     }
+
+    return view('guru.siswa.index', compact('kelas','sekolah'));
+}
 
     public function store(Request $request)
     {

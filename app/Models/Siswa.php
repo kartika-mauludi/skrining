@@ -14,6 +14,7 @@ class Siswa extends Model
         'no_absen',
         'nis',
         'nama_lengkap',
+        'jk',
         'tgl_lahir',
         'tempat_lahir',
         'alamat',

@@ -28,10 +28,11 @@
                     <table id="importPreview" class="table table-bordered">
                         <thead>
                             <tr>
-                                <th class="fit text-center" style="max-width: 1px !important;">No.</th>
+                                <th class="fit text- center" style="max-width: 1px !important;">No.</th>
                                 <th>NIS</th>
                                 <th>No. Absen</th>
                                 <th>Nama Siswa</th>
+                                <th>Jenis Kelamin</th>
                                 <th>Tempat Lahir</th>
                                 <th>Tanggal Lahir</th>
                                 <th>Alamat</th>

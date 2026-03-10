@@ -106,8 +106,11 @@
                             <!-- IDENTITAS -->
                             <div class="row mb-3">
                                 <div class="col-3 text-center">
-                                    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"
-                                        class="img-fluid" width="100">
+                                    @if($siswa->jk === "laki-laki")
+                                        <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png"class="img-fluid" width="100">
+                                    @elseif($siswa->jk === "perempuan")
+                                        <img src="https://cdn-icons-png.flaticon.com/512/4140/4140049.png"class="img-fluid" width="100">
+                                    @endif
                                 </div>
                                 <div class="col-9">
                                     <table class="table table-borderless table-sm">

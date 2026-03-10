@@ -36,6 +36,13 @@
                         <input type="text" name="nama_lengkap" id="nama_lengkap" class="form-control form-control-sm" required>
                     </div>
                     <div class="form-group">
+                        <label for="jk" class="form-label">Jenis Kelamin</label>
+                        <select name="jk" id="jk" class="form-control form-control-sm">
+                            <option value="laki-laki">Laki-laki</option>
+                            <option value="perempuan">Perempuan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
                         <label for="tgl_lahir" class="form-label">Tanggal Lahir</label>
                         <input type="date" name="tgl_lahir" id="tgl_lahir" class="form-control form-control-sm" >
                     </div>

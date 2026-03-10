@@ -31,14 +31,14 @@
             <!-- small box -->
             <div class="small-box bg-info">
               <div class="inner">
-                <h3>150</h3>
+                <h3>{{ $siswa }}</h3>
 
                 <p>Jumlah Siswa</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-stalker"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('guru.siswa.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -98,7 +98,7 @@
               <div class="card-header">
                 <h3 class="card-title">
                   <i class="fas fa-chart-pie mr-1"></i>
-                  Informasi Korban dan Pelaku
+                  Informasi Siswa
                 </h3>
                 <div class="card-tools">
                   <ul class="nav nav-pills ml-auto">
@@ -160,12 +160,15 @@
   const ctx = document.getElementById('sales-chart-canvas');
   if (!ctx || typeof Chart === 'undefined') return;
 
+  let laki = {{ $laki }};
+  let perempuan = {{ $perempuan }};
+
   new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: ['Korban', 'Pelaku'],
+      labels: ['Laki Laki', 'Perempuan'],
       datasets: [{
-        data: [700, 500],
+        data: [laki, perempuan],
         backgroundColor: [
           '#00a65a',
           '#f56954',

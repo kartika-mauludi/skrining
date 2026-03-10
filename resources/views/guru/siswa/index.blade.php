@@ -20,10 +20,36 @@
 
     <section class="content">
         <div class="container-fluid">
+              <form action="" method="GET">
+                <div class="row py-3">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label for="sekolah" class="form-label">Sekolah</label>
+                            <select name="sekolah" id="sekolah" class="form-control form-control-sm" required>
+                            <option value=""></option>
+                            @foreach ($sekolah as $sekolah)
+                                <option value="{{ $sekolah->id }}" @selected(isset($request) && $request['sekolah'] == $sekolah->id)>{{ $sekolah->nama_sekolah }}</option> 
+                            @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="form-group">
+                            <label for="kelas" class="form-label">Kelas</label>
+                            <select name="kelas" id="kelas" class="form-control form-control-sm" required>
+                            <option value=""></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3 d-flex align-items-center pt-3">
+                        <a href="{{ route('guru.siswa.index') }}" class="my-auto btn btn-sm btn-secondary">Reset</a>
+                    </div>
+                </div>
+                </form>
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
-
                         @if (session('message'))
                             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                 {{ session('message') }}
@@ -40,6 +66,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            @isset($kelas)
                             <div class="table-responsive">
                                 <table id="datatable" class="table table-bordered table-striped">
                                     <thead>
@@ -49,6 +76,7 @@
                                             <th>Kelas</th>
                                             <th>NIS</th>
                                             <th>Nama Siswa</th>
+                                            <th>Jenis Kelamin</th>
                                             <th>Tempat Lahir</th>
                                             <th>Tanggal Lahir</th>
                                             <th>Alamat</th>
@@ -61,6 +89,11 @@
                                     </tbody>
                                 </table>
                             </div>
+                              @else
+                                <div class="alert alert-light fade show text-center" role="alert">
+                                    Silahkan pilih sekolah dan kelas terlebih dahulu.
+                                </div>
+                            @endisset
                         </div>
                     </div>
                 </div>
@@ -71,6 +104,8 @@
 
 @include('guru.siswa.modal')
 @include('guru.siswa.modal_import')
+
+
 @endsection
 
 @push('script')
@@ -96,7 +131,10 @@ $(document).ready(function(){
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': token.attr('content')
-            }
+            },  
+            data: function(d){
+            d.kelas   = $('#kelas').val();
+        }
         },
         columns: [
             {
@@ -114,6 +152,9 @@ $(document).ready(function(){
             render  : (data) => data ? `${data}` : `-` 
         },{
             data    : 'nama_lengkap',
+            render  : (data) => data ? `${data}` : `-` 
+        },{
+            data    : 'jk',
             render  : (data) => data ? `${data}` : `-` 
         },{
             data    : 'tgl_lahir',
@@ -149,6 +190,10 @@ $(document).ready(function(){
         }]
     });
 
+    $('#kelas').on('change', function(){
+        table.ajax.reload();
+    });
+
     $('#add').on('click', function () {
         let storeUrl = "{{ route('guru.siswa.store', ':id') }}";
 
@@ -171,7 +216,8 @@ $(document).ready(function(){
         
             $('#method').val('PUT')
             $('#kelas_id').val(data['data']['kelas_id']).change();
-            $('#nama_lengkap').val(data['data']['nama_wali']);
+            $('#nama_lengkap').val(data['data']['nama_lengkap']);
+            $('#jk').val(data['data']['jk']);
             $('#no_absen').val(data['data']['no_absen']);
             $('#nis').val(data['data']['nis']);
             $('#tgl_lahir').val(data['data']['tgl_lahir']);
@@ -261,12 +307,13 @@ $(document).ready(function(){
                 sheet.slice(1).forEach((row, index) => {
                     let nis             = row[0] != null ? String(row[0]).trim() : "";
                     let no_absen        = row[1] != null ? String(row[1]).trim() : "";
-                    let nama_lengkap      = row[2] != null ? String(row[2]).trim() : "";
-                    let tempat_lahir    = row[3] != null ? String(row[3]).trim() : "";
-                    let tgl_lahir       = parseExcelDate(row[4]);
-                    let alamat          = row[5] != null ? String(row[5]).trim() : "";
-                    let nama_wali       = row[6] != null ? String(row[6]).trim() : "";
-                    let no_tlp_wali     = row[7] != null ? String(row[7]).trim() : "";
+                    let nama_lengkap    = row[2] != null ? String(row[2]).trim() : "";
+                    let jk              = row[3] != null ? String(row[3]).trim() : "";
+                    let tempat_lahir    = row[4] != null ? String(row[4]).trim() : "";
+                    let tgl_lahir       = parseExcelDate(row[5]);
+                    let alamat          = row[6] != null ? String(row[6]).trim() : "";
+                    let nama_wali       = row[7] != null ? String(row[7]).trim() : "";
+                    let no_tlp_wali     = row[8] != null ? String(row[8]).trim() : "";
 
                         if ( !nis && !nama_lengkap && !no_absen) {
                             return;
@@ -283,6 +330,7 @@ $(document).ready(function(){
                         nis,
                         no_absen,
                         nama_lengkap,
+                        jk,
                         tempat_lahir,
                         tgl_lahir,
                         alamat,
@@ -318,11 +366,12 @@ $(document).ready(function(){
                 nis: row.eq(1).text().trim(),
                 no_absen: row.eq(2).text().trim(),
                 nama_lengkap: row.eq(3).text().trim(),
-                tempat_lahir: row.eq(4).text().trim(),
-                tgl_lahir: row.eq(5).text().trim(),
-                alamat: row.eq(6).text().trim(),
-                nama_wali: row.eq(7).text().trim(),
-                no_tlp_wali: row.eq(8).text().trim(),
+                nama_lengkap: row.eq(4).text().trim(),
+                tempat_lahir: row.eq(5).text().trim(),
+                tgl_lahir: row.eq(6).text().trim(),
+                alamat: row.eq(7).text().trim(),
+                nama_wali: row.eq(8).text().trim(),
+                no_tlp_wali: row.eq(9).text().trim(),
             };
 
             if (!data.nis || !data.no_absen || !data.nama_lengkap) {
@@ -510,5 +559,70 @@ $(document).ready(function(){
         return "";
     }
 })
+</script>
+@endpush
+
+
+@push('script')
+<script>
+  $(function () {
+
+      const Idkelas = @json($request['kelas'] ?? null);
+
+      // Init select2
+      $('#sekolah').select2({
+          placeholder: '-- Pilih Data --'
+      });
+
+      $('#kelas').select2({
+          placeholder: '-- Pilih Data --'
+      });
+
+      // Load kelas jika sekolah sudah terpilih
+      if ($('#sekolah').val()) {
+          loadKelas($('#sekolah').val());
+      }
+
+      $('#sekolah').on('change', function () {
+          const sekolahId = $(this).val();
+          $('#kelas').html('<option value=""></option>').trigger('change');
+
+          if (sekolahId) {
+              loadKelas(sekolahId);
+          }
+      });
+
+      function loadKelas(sekolahId) {
+
+          $.get(`{{ url('/guru/sekolah/${sekolahId}') }}`)
+              .done(function (res) {
+
+                  const kelasList = res.data.kelas;
+                  let options = '<option value=""></option>';
+
+                  kelasList.forEach(function (k) {
+                      options += `
+                          <option value="${k.id}">
+                              ${k.nama_kelas}
+                          </option>
+                      `;
+                  });
+
+                  $('#kelas')
+                      .html(options)
+                      .val(Idkelas)
+                      .trigger('change');
+
+              })
+              .fail(function () {
+                  Swal.fire(
+                      'Kesalahan sistem',
+                      'Silahkan hubungi administrator',
+                      'error'
+                  );
+              });
+      }
+
+  });
 </script>
 @endpush
